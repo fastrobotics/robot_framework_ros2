@@ -1,0 +1,63 @@
+\chapter{Dev Tools}
+\hypertarget{md_dev__tools_2README}{}\label{md_dev__tools_2README}\index{Dev Tools@{Dev Tools}}
+\label{md_dev__tools_2README_autotoc_md0}%
+\Hypertarget{md_dev__tools_2README_autotoc_md0}%
+
+\begin{DoxyItemize}
+\item Dev Tools
+\item Setup
+\begin{DoxyItemize}
+\item 1.1 Option A\+: Use Submodules (preferred)
+\item 1.2 Option B\+: Clone this repo into your repo
+\item 2. Configuration
+\end{DoxyItemize}
+\item Tools Available
+\begin{DoxyItemize}
+\item \`{}dev\+\_\+tools\`{} Script
+\begin{DoxyItemize}
+\item Usage
+\item Modes Avaialble
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_dev__tools_2README_autotoc_md1}{}\doxysection{\texorpdfstring{Setup}{Setup}}\label{md_dev__tools_2README_autotoc_md1}
+\hypertarget{md_dev__tools_2README_autotoc_md2}{}\doxysubsection{\texorpdfstring{1.\+1 Option A\+: Use Submodules (preferred)}{1.1 Option A: Use Submodules (preferred)}}\label{md_dev__tools_2README_autotoc_md2}
+Run the following\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd\ <repo>}
+\DoxyCodeLine{git\ submodule\ add\ https://github.com/fastrobotics/dev\_tools.git\ dev\_tools}
+
+\end{DoxyCode}
+
+
+To update\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd\ <repo>}
+\DoxyCodeLine{git\ submodule\ update\ -\/-\/remote}
+
+\end{DoxyCode}
+\hypertarget{md_dev__tools_2README_autotoc_md3}{}\doxysubsection{\texorpdfstring{1.\+2 Option B\+: Clone this repo into your repo}{1.2 Option B: Clone this repo into your repo}}\label{md_dev__tools_2README_autotoc_md3}
+\hypertarget{md_dev__tools_2README_autotoc_md4}{}\doxysubsection{\texorpdfstring{2. Configuration}{2. Configuration}}\label{md_dev__tools_2README_autotoc_md4}
+Create a file called {\ttfamily repo\+\_\+config.\+sh} in the root of your repo, like the following\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#!/bin/bash}
+\DoxyCodeLine{\#\ REPO\ Config}
+\DoxyCodeLine{\#\#\ General\ Config}
+\DoxyCodeLine{export\ REPO\_NAME="{}Your\ Rep\ Name"{}}
+\DoxyCodeLine{export\ BUILD\_TOOL="{}catkin"{}\ \#cmake,\ catkin}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\#\ Coverage\ Config}
+\DoxyCodeLine{export\ LINE\_COVERAGE\_THRESHOLD=50}
+\DoxyCodeLine{export\ BRANCH\_COVERAGE\_THRESHOLD=0\ \#\ Don't\ care\ about\ Branch\ Coverage.}
+
+\end{DoxyCode}
+\hypertarget{md_dev__tools_2README_autotoc_md5}{}\doxysection{\texorpdfstring{Tools Available}{Tools Available}}\label{md_dev__tools_2README_autotoc_md5}
+\hypertarget{md_dev__tools_2README_autotoc_md6}{}\doxysubsection{\texorpdfstring{$<$tt$>$dev\+\_\+tools$<$/tt$>$ Script}{<tt>dev\_tools</tt> Script}}\label{md_dev__tools_2README_autotoc_md6}
+\hypertarget{md_dev__tools_2README_autotoc_md7}{}\doxysubsubsection{\texorpdfstring{Usage}{Usage}}\label{md_dev__tools_2README_autotoc_md7}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd\ <repo>}
+\DoxyCodeLine{./dev\_tools/scripts/dev\_tools.sh\ <mode>}
+
+\end{DoxyCode}
+\hypertarget{md_dev__tools_2README_autotoc_md8}{}\doxysubsubsection{\texorpdfstring{Modes Avaialble}{Modes Avaialble}}\label{md_dev__tools_2README_autotoc_md8}
+\texorpdfstring{$\vert$}{|} Mode \texorpdfstring{$\vert$}{|} Description \texorpdfstring{$\vert$}{|} Support \texorpdfstring{$\vert$}{|} \texorpdfstring{$\vert$}{|} --- \texorpdfstring{$\vert$}{|} --- \texorpdfstring{$\vert$}{|} \texorpdfstring{$\vert$}{|} {\ttfamily code\+\_\+coverage} \texorpdfstring{$\vert$}{|} Generates Code Coverage \texorpdfstring{$\vert$}{|} Supports {\ttfamily cmake} and {\ttfamily catkin} \texorpdfstring{$\vert$}{|} 

@@ -1,5 +1,4 @@
 @startuml
-
 class Default
 class Investigating #Yellow
 class Developing #Orange

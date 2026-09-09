@@ -3,12 +3,10 @@
 # FAST Robotics - Robot Framework: ROS v2 Middleware
 
 - [FAST Robotics - Robot Framework: ROS v2 Middleware](#fast-robotics---robot-framework-ros-v2-middleware)
-- [Requirements](#requirements)
 - [Architecture](#architecture)
 - [Setup](#setup)
 
-# Requirements
-[Requirements](doc/Requirements/Requirements.md)
+
 
 # Architecture
 ![](Legend.png)

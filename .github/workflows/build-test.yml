@@ -1,0 +1,46 @@
+name: Build and Test CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-22.04
+    container:
+      image: ros:noetic 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          path: catkin_ws/src/robot_framework_ros
+
+      - name: Install Build Tools
+        run: |
+          apt-get update -q
+          apt-get install -y python3-catkin-tools python3-osrf-pycommon git ros-noetic-imu-pipeline ros-noetic-rviz
+
+      - name: Install Dependencies
+        run: ./scripts/setup_robot.sh
+        working-directory: catkin_ws/src/robot_framework_ros
+    
+      - name: Rosdep Install Dependencies
+        run: |
+          apt-get update -q
+          rosdep update
+          cd $GITHUB_WORKSPACE/catkin_ws
+          rosdep install --from-paths src --ignore-src -r -y
+
+      - name: Catkin Build and Test
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/catkin_ws
+          # Source the global ROS environment first
+          source /opt/ros/noetic/setup.bash
+          catkin build --summarize
+          catkin run_tests
+          catkin_test_results
+
+      

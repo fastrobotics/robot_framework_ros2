@@ -1,0 +1,15 @@
+{
+    "files.watcherExclude": {
+        "build/**": true,
+        "install/**": true,
+        "html/**": true,
+        "coverage/**": true
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+        "editor.formatOnSave": true
+    },
+    "[plantuml]": {
+        "editor.formatOnSave": false
+    },
+}

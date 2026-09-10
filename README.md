@@ -4,14 +4,18 @@
 
 - [FAST Robotics - Robot Framework: ROS v2 Middleware](#fast-robotics---robot-framework-ros-v2-middleware)
 - [Architecture](#architecture)
+  - [Messages](#messages)
 - [Setup](#setup)
 - [Build](#build)
+  - [Build and run Unit Tests](#build-and-run-unit-tests)
 
 
 
 # Architecture
 ![](Legend.png)
 
+## Messages
+![](msg/puml/RobotFrameworkROS2MessageDiagram.png)
 
 # Setup
 
@@ -43,4 +47,12 @@ colcon build
 To refresh the cmake cache, instead run:
 ```
 colcon build --cmake-clean-cache
+```
+
+## Build and run Unit Tests
+```bash
+cd <workspace>
+colcon build
+source install/setup.bash
+colcon test --event-handlers console_cohesion+
 ```

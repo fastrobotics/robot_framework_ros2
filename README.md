@@ -4,7 +4,9 @@
 
 - [FAST Robotics - Robot Framework: ROS v2 Middleware](#fast-robotics---robot-framework-ros-v2-middleware)
 - [Architecture](#architecture)
-  - [Messages](#messages)
+- [Interfaces](#interfaces)
+- [Systems](#systems)
+- [Features](#features)
 - [Setup](#setup)
 - [Build](#build)
   - [Build and run Unit Tests](#build-and-run-unit-tests)
@@ -14,8 +16,15 @@
 # Architecture
 ![](Legend.png)
 
-## Messages
+# Interfaces
 ![](msg/puml/RobotFrameworkROS2MessageDiagram.png)
+
+# Systems
+
+# Features
+| Status | Feature                                          |
+| ------ | ------------------------------------------------ |
+| DRAFT  | [Core](include/robot_framework_ros2/doc/Core.md) |
 
 # Setup
 

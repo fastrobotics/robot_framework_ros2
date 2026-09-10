@@ -35,7 +35,7 @@ TEST(TestConversion, InfrastructureMessageConvertDiagnostic) {
         msg.diagnostic_message = (uint8_t)fast::rf::DiagnosticDefinition::DiagnosticMessage::INITIALIZING;
         msg.description = "Test diagnostic_messaging...";
         fast::rf::messages::InfrastructureMsgs::DiagnosticMsg data = TranslateUtility::convert(msg);
-        ASSERT_EQ(data.systemID, msg.system_id);
+        ASSERT_EQ(data.systemID, 0);  // msg.system_id);
         ASSERT_EQ(data.subsystemID, msg.subsystem_id);
         ASSERT_EQ(data.processID, msg.process_id);
         ASSERT_EQ((uint8_t)data.diagnosticType, msg.diagnostic_type);

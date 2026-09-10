@@ -19,7 +19,7 @@ jobs:
       - name: Build and test workspace
         uses: ros-tooling/action-ros-ci@v0.4
         with:
-          target-ros-distro: jazzy
+          target-ros2-distro: jazzy
           vcs-repo-file-input: workspace.repos
 
       - name: Checkout Code

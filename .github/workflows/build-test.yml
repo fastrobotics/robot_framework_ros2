@@ -19,7 +19,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          path: catkin_ws/src/robot_framework_ros2
+          path: ros2_ws/src/robot_framework_ros2
+
+      - name: Install Dependencies
+        run: |
+          sudo rosdep init || true
+          rosdep update
+          rosdep install --from-paths ros2_ws/src --ignore-src -r -y --rosdistro jazzy
+
+      - name: Build Workspace
+        run: |
+          # Source the core ROS 2 Jazzy environment variables
+          source /opt/ros/jazzy/setup.bash
+          
+          # Move to workspace root and compile
+          cd ros2_ws
+          colcon build --symlink-install
+
 
 
       

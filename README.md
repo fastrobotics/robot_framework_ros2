@@ -1,4 +1,4 @@
-
+[![Build and Test CI](https://github.com/fastrobotics/robot_framework_ros2/actions/workflows/build-test.yml/badge.svg)](https://github.com/fastrobotics/robot_framework_ros2/actions/workflows/build-test.yml)
 
 # FAST Robotics - Robot Framework: ROS v2 Middleware
 
@@ -20,14 +20,14 @@ Pre-Requisites:
 - Ubuntu system running 24.04 LTS
 
 1. Clone this repo using:
-```bash
+```
 git clone --recurse-submodules https://github.com/fastrobotics/robot_framework_ros2.git
 cd robot_framework_ros2
 git submodule update --remote
 ```
 2. Run the following:
 
-```bash
+```
 cd <repo>
 ./scripts/setup_ide.sh
 ./scripts/setup_robot.sh
@@ -35,12 +35,12 @@ cd <repo>
 
 # Build
 To build, run the following:
-```bash
+```
 cd <workspace>
 colcon build
 ```
 
 To refresh the cmake cache, instead run:
-```bash
+```
 colcon build --cmake-clean-cache
 ```

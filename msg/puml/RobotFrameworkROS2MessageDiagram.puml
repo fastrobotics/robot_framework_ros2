@@ -1,0 +1,62 @@
+@startuml
+title Robot Framework ROS Message Diagram
+package builtin_interfaces  <<ROS2>> {
+    class Time <<(M,#FFFF00)>>
+}
+package robot_framework_ros #LightYellow;line:blue {
+    class nodestate <<(M,#FFFF00)>> <<ROS>> {
+        +uint8_t state
+        +uint8_t STATE_UNKNOWN = 0
+        +uint8_t STATE_INITIALIZING = 1
+        +uint8_t STATE_INITIALIZED = 2
+        +uint8_t STATE_START = 3
+        +uint8_t STATE_RUNNING = 4
+        +uint8_t STATE_PAUSED = 5
+        +uint8_t STATE_FINISHED = 6
+        +uint8_t STATE_END_OF_LIST = 7
+    }
+    class armedstate <<(M,#FFFF00)>> <<ROS>>  {
+        +uint8_t state
+        +uint8_t UNKNOWN = 0
+        +uint8_t DISARMED = 1
+        +uint8_t DISARMED_CANNOTARM = 2
+        +uint8_t ARMING = 3
+        +uint8_t ARMED = 4
+        +uint8_t END_OF_LIST = 5      
+    }
+    class heartbeat <<(M,#FFFF00)>> <<ROS>>  {
+        +time stamp
+        +string HostName
+        +string BaseNodeName
+        +string NodeName
+        +nodestate NodeState
+    }
+    heartbeat --> nodestate: <<use>>
+    class Diagnostic <<(M,#FFFF00)>> <<ROS>> #Orange {
+        +Time timestamp
+        +string node_name
+        +uint8_t system_id
+        +uint8_t subsystem_id
+        +uint8_t process_id
+        +uint8_t diagnostic_type
+        +uint8_t level
+        +uint8_t diagnostic_message
+        +string description
+
+    }
+    class ready_to_arm <<(M,#FFFF00)>> <<ROS>>  {
+        +time stamp
+        +string HostName
+        +uint8_t SystemID
+        +uint8_t SubsystemID
+        +uint8_t ProcessID
+        +bool ready_to_arm
+    }
+
+    class arm_command <<(M,#FFFF00)>> <<ROS>>  {
+        +armedstate armed_state
+    }
+    arm_command --> armedstate: <<use>>
+
+}
+@enduml

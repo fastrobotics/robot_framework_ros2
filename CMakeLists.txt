@@ -8,7 +8,12 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-
+find_package(builtin_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Diagnostic.msg"
+  DEPENDENCIES builtin_interfaces
+)
 include(FetchContent)
 
 # Declare the robot_framework dependency

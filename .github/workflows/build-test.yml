@@ -17,7 +17,7 @@ jobs:
           required-ros-distributions: jazzy
           
       - name: Build and test workspace
-        uses: ros-tooling/action-ros-ci@0.3
+        uses: ros-tooling/action-ros-ci@v0.4
         with:
           target-ros-distro: jazzy
           vcs-repo-file-input: workspace.repos

@@ -11,15 +11,21 @@
 
 #pragma once
 // Robot Framework Dependencies
+#include <ArmCommandMsg.hpp>
+#include <ArmStateChangeSrv.hpp>
 #include <Covariance3DMsg.hpp>
 #include <Covariance6DMsg.hpp>
 #include <DiagnosticMsg.hpp>
+#include <ReadyToArmStatusMsg.hpp>
 #include <Vector3DMsg.hpp>
 
-// Robot Framework ROS2 Message Dependencies
+// Robot Framework ROS2 Interface Dependencies
+#include "robot_framework_ros2/msg/arm_command.hpp"
 #include "robot_framework_ros2/msg/diagnostic.hpp"
+#include "robot_framework_ros2/msg/ready_to_arm.hpp"
+#include "robot_framework_ros2/srv/arm_state_change.hpp"
 
-// ROS2 Message Dependencies
+// ROS2 Interface Dependencies
 #include <geometry_msgs/msg/vector3.hpp>
 
 // General Dependencies
@@ -107,5 +113,182 @@ namespace fast::rf_ros2::utils {
          * @return robot_framework_ros::diagnostic
          */
         static robot_framework_ros2::msg::Diagnostic convert(fast::rf::messages::InfrastructureMsgs::DiagnosticMsg msg);
+
+        /**
+         * @brief Translate to a Core Message to a ROS2 message of type ReadyToArm
+         *
+         * @param msg
+         * @return fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg
+         */
+        static fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg convert(
+            robot_framework_ros2::msg::ReadyToArm msg);
+
+        /**
+         * @brief Translate from a Core Message to a ROS2 message of type ReadyToArm
+         *
+         * @param msg
+         * @return robot_framework_ros2::msg::ReadyToArm
+         */
+        static robot_framework_ros2::msg::ReadyToArm convert(
+            fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg msg);
+
+        /**
+         * @brief Translate from a ROS2 message to a Core message of type ArmCommand
+         *
+         * @param msg
+         * @return fast::rf::messages::InfrastructureMsgs::ArmCommandMsg
+         */
+        static fast::rf::messages::InfrastructureMsgs::ArmCommandMsg convert(robot_framework_ros2::msg::ArmCommand msg);
+
+        /**
+         * @brief Translate from a Core Message to a ROS2 message of type ArmCommand
+         *
+         * @param msg
+         * @return robot_framework_ros2::msg::ArmCommand
+         */
+        static robot_framework_ros2::msg::ArmCommand convert(fast::rf::messages::InfrastructureMsgs::ArmCommandMsg msg);
+
+        /**
+         * @brief Translate from a ROS2 Service Request to a Core Service Request of type ArmStateChange
+         *
+         * @param req
+         * @return fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvRequest
+         */
+        static fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvRequest convert(
+            robot_framework_ros2::srv::ArmStateChange::Request req);
+
+        /**
+         * @brief Translate from a Core Service Request to a ROS2 Service Request of type ArmStateChange
+         *
+         * @param req
+         * @return robot_framework_ros2::srv::ArmStateChange::Request
+         */
+        static robot_framework_ros2::srv::ArmStateChange::Request convert(
+            fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvRequest req);
+
+        /**
+         * @brief Translate from a ROS2 Service Response to a Core Service Response of type ArmStateChange
+         *
+         * @param resp
+         * @return fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvResponse
+         */
+        static fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvResponse convert(
+            robot_framework_ros2::srv::ArmStateChange::Response resp);
+
+        /**
+         * @brief Translate from a Core Service Request to a ROS2 Service Request of type ArmStateChange
+         *
+         * @param resp
+         * @return robot_framework_ros2::srv::ArmStateChange::Response
+         */
+        static robot_framework_ros2::srv::ArmStateChange::Response convert(
+            fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvResponse resp);
+
+        // Geometry Messages
+
+        // static fast::rf::messages::GeometryMsgs::AccelMsg convert(const geometry_msgs::Accel& msg);
+        // static geometry_msgs::Accel convert(fast::rf::messages::GeometryMsgs::AccelMsg msg);
+        // static fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg convert(
+        //     geometry_msgs::AccelWithCovarianceStamped msg);
+        // static geometry_msgs::AccelWithCovarianceStamped convert(
+        // fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg msg);
+
+        /**
+         * @brief Convert from a ROS message to a Core message of type Quaternion->Orientation
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::OrientationMsg
+         */
+        // static fast::rf::messages::GeometryMsgs::OrientationMsg convert(const geometry_msgs::Quaternion& msg);
+
+        /**
+         * @brief Convert from a Core Message to a ROS message of type Orientation->Quaternion
+         *
+         * @param msg
+         * @return geometry_msgs::Quaternion
+         */
+        // static geometry_msgs::Quaternion convert(fast::rf::messages::GeometryMsgs::OrientationMsg msg);
+
+        /**
+         * @brief Translate from a ROS mesage to a Core message of type Twist
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::TwistMsg
+         */
+        // static fast::rf::messages::GeometryMsgs::TwistMsg convert(geometry_msgs::Twist msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS message of type Twist
+         *
+         * @param msg
+         * @return geometry_msgs::Twist
+         */
+        // static geometry_msgs::Twist convert(fast::rf::messages::GeometryMsgs::TwistMsg msg);
+
+        /**
+         * @brief Translate from a ROS mesage to a Core message of type Odometry
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::OdomMsg
+         */
+        // static fast::rf::messages::GeometryMsgs::OdomMsg convert(nav_msgs::Odometry msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS message of type Odometry
+         *
+         * @param msg
+         * @return nav_msgs::Odometry
+         */
+        // static nav_msgs::Odometry convert(fast::rf::messages::GeometryMsgs::OdomMsg msg);
+
+        // Sensor Messages
+
+        /**
+         * @brief Convert from a ROS message to a Core message of type Joy
+         *
+         * @param msg
+         * @return fast::rf::messages::SensorMsgs::JoyMsg
+         */
+        // static fast::rf::messages::SensorMsgs::JoyMsg convert(sensor_msgs::Joy msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS message of type Joy
+         *
+         * @param msg
+         * @return sensor_msgs::Joy
+         */
+        // static sensor_msgs::Joy convert(fast::rf::messages::SensorMsgs::JoyMsg msg);
+
+        /**
+         * @brief Convert from a ROS message to a Core message of type Imu
+         *
+         * @param data
+         * @return fast::rf::messages::SensorMsgs::ImuMsg
+         */
+        // static fast::rf::messages::SensorMsgs::ImuMsg convert(sensor_msgs::Imu data);
+
+        /**
+         * @brief Convert from a Core message to a ROS message of type IMU
+         *
+         * @param data
+         * @return sensor_msgs::Imu
+         */
+        // static sensor_msgs::Imu convert(fast::rf::messages::SensorMsgs::ImuMsg data);
+
+        /**
+         * @brief Convert from a ROS message to a Core message of type MagneticField
+         *
+         * @param data
+         * @return fast::rf::messages::SensorMsgs::MagneticFieldMsg
+         */
+        // static fast::rf::messages::SensorMsgs::MagneticFieldMsg convert(sensor_msgs::MagneticField data);
+
+        /**
+         * @brief Convert from a Core message to a ROS message of type MagneticField
+         *
+         * @param data
+         * @return sensor_msgs::MagneticField
+         */
+        // static sensor_msgs::MagneticField convert(fast::rf::messages::SensorMsgs::MagneticFieldMsg data);
     };
 }  // namespace fast::rf_ros2::utils

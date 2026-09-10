@@ -3,8 +3,8 @@ title Robot Framework ROS Message Diagram
 package builtin_interfaces  <<ROS2>> {
     class Time <<(M,#FFFF00)>>
 }
-package robot_framework_ros #LightYellow;line:blue {
-    class nodestate <<(M,#FFFF00)>> <<ROS>> {
+package robot_framework_ros2 #LightYellow;line:blue {
+    class NodeState <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
         +uint8_t state
         +uint8_t STATE_UNKNOWN = 0
         +uint8_t STATE_INITIALIZING = 1
@@ -15,7 +15,7 @@ package robot_framework_ros #LightYellow;line:blue {
         +uint8_t STATE_FINISHED = 6
         +uint8_t STATE_END_OF_LIST = 7
     }
-    class armedstate <<(M,#FFFF00)>> <<ROS>>  {
+    class ArmedState <<(M,#FFFF00)>> <<ROS2>> #LimeGreen  {
         +uint8_t state
         +uint8_t UNKNOWN = 0
         +uint8_t DISARMED = 1
@@ -24,15 +24,15 @@ package robot_framework_ros #LightYellow;line:blue {
         +uint8_t ARMED = 4
         +uint8_t END_OF_LIST = 5      
     }
-    class heartbeat <<(M,#FFFF00)>> <<ROS>>  {
-        +time stamp
-        +string HostName
-        +string BaseNodeName
-        +string NodeName
-        +nodestate NodeState
+    class Heartbeat <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +Time timestamp
+        +string hostname
+        +string base_nodename
+        +string nodename
+        +NodeState node_state
     }
-    heartbeat --> nodestate: <<use>>
-    class Diagnostic <<(M,#FFFF00)>> <<ROS>> #Orange {
+    Heartbeat --> NodeState: <<use>>
+    class Diagnostic <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
         +Time timestamp
         +string node_name
         +uint8_t system_id
@@ -44,19 +44,19 @@ package robot_framework_ros #LightYellow;line:blue {
         +string description
 
     }
-    class ready_to_arm <<(M,#FFFF00)>> <<ROS>>  {
-        +time stamp
-        +string HostName
-        +uint8_t SystemID
-        +uint8_t SubsystemID
-        +uint8_t ProcessID
+    class ReadyToArm <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +Time timestamp
+        +string nodename
+        +uint8_t system_id
+        +uint8_t subsystem_id
+        +uint8_t process_id
         +bool ready_to_arm
     }
 
-    class arm_command <<(M,#FFFF00)>> <<ROS>>  {
-        +armedstate armed_state
+    class ArmCommand <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +ArmedState armed_state
     }
-    arm_command --> armedstate: <<use>>
+    ArmCommand --> ArmedState: <<use>>
 
 }
 @enduml

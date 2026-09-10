@@ -18,6 +18,7 @@
 
 # Interfaces
 ![](msg/puml/RobotFrameworkROS2MessageDiagram.png)
+![](srv/puml/RobotFrameworkROS2ServiceDiagram.png)
 
 # Systems
 

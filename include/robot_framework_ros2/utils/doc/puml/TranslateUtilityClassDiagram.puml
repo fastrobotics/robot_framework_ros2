@@ -43,10 +43,10 @@ namespace fast::rf::messages {
         class ImuMsg <<(M,#FFFF00)>>
     }
 }
-namespace robot_framework_ros2 {
-    class diagnostic <<(M,#FFFF00)>> <<ROS>>
-    class ready_to_arm <<(M,#FFFF00)>> <<ROS>>
-    class arm_command <<(M,#FFFF00)>> <<ROS>>
+namespace robot_framework_ros2 #Orange {
+    class Diagnostic <<(M,#FFFF00)>> <<ROS2>>
+    class ReadyToArm <<(M,#FFFF00)>> <<ROS2>>
+    class ArmCommand <<(M,#FFFF00)>> <<ROS2>>
     class arm_state_change <<(M,#FFFF00)>> <<ROS>>
     
 }

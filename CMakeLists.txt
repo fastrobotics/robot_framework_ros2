@@ -12,8 +12,17 @@ find_package(rclcpp REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(geometry_msgs REQUIRED)
-rosidl_generate_interfaces(${PROJECT_NAME} "msg/Diagnostic.msg" DEPENDENCIES
-                           builtin_interfaces)
+rosidl_generate_interfaces(
+  ${PROJECT_NAME}
+  "msg/ArmCommand.msg"
+  "msg/ArmedState.msg"
+  "msg/Diagnostic.msg"
+  "msg/Heartbeat.msg"
+  "msg/NodeState.msg"
+  "msg/ReadyToArm.msg"
+  "srv/ArmStateChange.srv"
+  DEPENDENCIES
+  builtin_interfaces)
 include(FetchContent)
 
 FetchContent_Declare(

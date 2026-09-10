@@ -1,0 +1,9 @@
+/**
+* @namespace fast
+* @brief Namespace for FAST Robotics
+*/
+
+/**
+* @namespace fast::rf_ros2
+* @brief Namespace for FAST Robotics ROS2 Robot Framework
+*/

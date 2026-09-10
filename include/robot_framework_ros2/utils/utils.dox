@@ -1,0 +1,4 @@
+/**
+* @namespace fast::rf_ros2::utils
+* @brief Namespace for Utilities
+*/

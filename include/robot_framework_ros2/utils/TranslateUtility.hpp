@@ -11,12 +11,17 @@
 
 #pragma once
 // Robot Framework Dependencies
+#include <AccelMsg.hpp>
+#include <AccelWithCovarianceMsg.hpp>
 #include <ArmCommandMsg.hpp>
 #include <ArmStateChangeSrv.hpp>
 #include <Covariance3DMsg.hpp>
 #include <Covariance6DMsg.hpp>
 #include <DiagnosticMsg.hpp>
+#include <OdomMsg.hpp>
+#include <OrientationMsg.hpp>
 #include <ReadyToArmStatusMsg.hpp>
+#include <TwistMsg.hpp>
 #include <Vector3DMsg.hpp>
 
 // Robot Framework ROS2 Interface Dependencies
@@ -26,7 +31,12 @@
 #include "robot_framework_ros2/srv/arm_state_change.hpp"
 
 // ROS2 Interface Dependencies
+#include <geometry_msgs/msg/accel.hpp>
+#include <geometry_msgs/msg/accel_with_covariance_stamped.hpp>
+#include <geometry_msgs/msg/quaternion.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 
 // General Dependencies
 #include <array>
@@ -185,61 +195,87 @@ namespace fast::rf_ros2::utils {
             fast::rf::messages::InfrastructureMsgs::ArmStateChangeSrv::ArmStateChangeSrvResponse resp);
 
         // Geometry Messages
-
-        // static fast::rf::messages::GeometryMsgs::AccelMsg convert(const geometry_msgs::Accel& msg);
-        // static geometry_msgs::Accel convert(fast::rf::messages::GeometryMsgs::AccelMsg msg);
-        // static fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg convert(
-        //     geometry_msgs::AccelWithCovarianceStamped msg);
-        // static geometry_msgs::AccelWithCovarianceStamped convert(
-        // fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg msg);
+        /**
+         * @brief Translate from a ROS2 Message to a Core Message of type Accel
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::AccelMsg
+         */
+        static fast::rf::messages::GeometryMsgs::AccelMsg convert(const geometry_msgs::msg::Accel& msg);
 
         /**
-         * @brief Convert from a ROS message to a Core message of type Quaternion->Orientation
+         * @brief  Translate from a Core Message to a ROS2 Message of type Accel
+         *
+         * @param msg
+         * @return geometry_msgs::msg::Accel
+         */
+        static geometry_msgs::msg::Accel convert(fast::rf::messages::GeometryMsgs::AccelMsg msg);
+
+        /**
+         * @brief Translate from a ROS2 Message to a Core Message of type AccelWithCovariance
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg
+         */
+        static fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg convert(
+            geometry_msgs::msg::AccelWithCovarianceStamped msg);
+
+        /**
+         * @brief Translate from a Core Message to a ROS2 Message of type AccelWithCovarianceStamped
+         *
+         * @param msg
+         * @return geometry_msgs::msg::AccelWithCovarianceStamped
+         */
+        static geometry_msgs::msg::AccelWithCovarianceStamped convert(
+            fast::rf::messages::GeometryMsgs::AccelWithCovarianceMsg msg);
+
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type Quaternion
          *
          * @param msg
          * @return fast::rf::messages::GeometryMsgs::OrientationMsg
          */
-        // static fast::rf::messages::GeometryMsgs::OrientationMsg convert(const geometry_msgs::Quaternion& msg);
+        static fast::rf::messages::GeometryMsgs::OrientationMsg convert(const geometry_msgs::msg::Quaternion& msg);
 
         /**
-         * @brief Convert from a Core Message to a ROS message of type Orientation->Quaternion
+         * @brief Convert from a Core Message to a ROS2 message of type Quaternion
          *
          * @param msg
-         * @return geometry_msgs::Quaternion
+         * @return geometry_msgs::msg::Quaternion
          */
-        // static geometry_msgs::Quaternion convert(fast::rf::messages::GeometryMsgs::OrientationMsg msg);
+        static geometry_msgs::msg::Quaternion convert(fast::rf::messages::GeometryMsgs::OrientationMsg msg);
 
         /**
-         * @brief Translate from a ROS mesage to a Core message of type Twist
+         * @brief Translate from a ROS2 mesage to a Core message of type Twist
          *
          * @param msg
          * @return fast::rf::messages::GeometryMsgs::TwistMsg
          */
-        // static fast::rf::messages::GeometryMsgs::TwistMsg convert(geometry_msgs::Twist msg);
+        static fast::rf::messages::GeometryMsgs::TwistMsg convert(geometry_msgs::msg::Twist msg);
 
         /**
-         * @brief Convert from a Core message to a ROS message of type Twist
+         * @brief Convert from a Core message to a ROS2 message of type Twist
          *
          * @param msg
-         * @return geometry_msgs::Twist
+         * @return geometry_msgs::msg::Twist
          */
-        // static geometry_msgs::Twist convert(fast::rf::messages::GeometryMsgs::TwistMsg msg);
+        static geometry_msgs::msg::Twist convert(fast::rf::messages::GeometryMsgs::TwistMsg msg);
 
         /**
-         * @brief Translate from a ROS mesage to a Core message of type Odometry
+         * @brief Translate from a ROS2 mesage to a Core message of type Odometry
          *
          * @param msg
          * @return fast::rf::messages::GeometryMsgs::OdomMsg
          */
-        // static fast::rf::messages::GeometryMsgs::OdomMsg convert(nav_msgs::Odometry msg);
+        static fast::rf::messages::GeometryMsgs::OdomMsg convert(nav_msgs::msg::Odometry msg);
 
         /**
-         * @brief Convert from a Core message to a ROS message of type Odometry
+         * @brief Convert from a Core message to a ROS2 message of type Odometry
          *
          * @param msg
-         * @return nav_msgs::Odometry
+         * @return nav_msgs::msg::Odometry
          */
-        // static nav_msgs::Odometry convert(fast::rf::messages::GeometryMsgs::OdomMsg msg);
+        static nav_msgs::msg::Odometry convert(fast::rf::messages::GeometryMsgs::OdomMsg msg);
 
         // Sensor Messages
 

@@ -1,5 +1,4 @@
 # ReadyToArm
-builtin_interfaces/Time timestamp
 string nodename
 uint8 system_id
 uint8 subsystem_id

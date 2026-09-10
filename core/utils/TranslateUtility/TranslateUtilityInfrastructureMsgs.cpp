@@ -1,3 +1,5 @@
+#include <rclcpp/rclcpp.hpp>
+
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 namespace fast::rf_ros2::utils {
     fast::rf::messages::InfrastructureMsgs::DiagnosticMsg TranslateUtility::convert(

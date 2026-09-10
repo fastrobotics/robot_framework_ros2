@@ -1,5 +1,4 @@
 #Diagnostic
-builtin_interfaces/Time timestamp
 string node_name
 uint8 system_id
 uint8 subsystem_id

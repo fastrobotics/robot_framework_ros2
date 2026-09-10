@@ -33,7 +33,6 @@ package robot_framework_ros2 #LightYellow;line:blue {
     }
     Heartbeat --> NodeState: <<use>>
     class Diagnostic <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
-        +Time timestamp
         +string node_name
         +uint8_t system_id
         +uint8_t subsystem_id
@@ -45,7 +44,6 @@ package robot_framework_ros2 #LightYellow;line:blue {
 
     }
     class ReadyToArm <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
-        +Time timestamp
         +string nodename
         +uint8_t system_id
         +uint8_t subsystem_id

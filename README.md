@@ -5,6 +5,7 @@
 - [FAST Robotics - Robot Framework: ROS v2 Middleware](#fast-robotics---robot-framework-ros-v2-middleware)
 - [Architecture](#architecture)
 - [Setup](#setup)
+- [Build](#build)
 
 
 
@@ -30,4 +31,16 @@ git submodule update --remote
 cd <repo>
 ./scripts/setup_ide.sh
 ./scripts/setup_robot.sh
+```
+
+# Build
+To build, run the following:
+```bash
+cd <workspace>
+colcon build
+```
+
+To refresh the cmake cache, instead run:
+```bash
+colcon build --cmake-clean-cache
 ```

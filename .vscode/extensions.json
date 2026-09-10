@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "yzhang.markdown-all-in-one",
+        "cschlosser.doxdocgen",
+        "jebbs.plantuml",
+        "sonarsource.sonarlint-vscode",
+        "ms-vscode.cpptools",
+        "llvm-vs-code-extensions.vscode-clangd",
+    ]
+}

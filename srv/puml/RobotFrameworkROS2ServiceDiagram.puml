@@ -1,0 +1,13 @@
+@startuml
+title Robot Framework ROS2 Service Diagram
+package robot_framework_ros2 #LightYellow;line:blue {
+    class ArmStateChange <<(M,#FFFF00)>> <<ROS>> #LimeGreen {
+        +ArmedState requested_armed_state
+        ---
+        +ArmedState current_armed_state
+        +bool request_approved
+    }
+    ArmStateChange --> ArmedState: <<use>>
+
+}
+@enduml

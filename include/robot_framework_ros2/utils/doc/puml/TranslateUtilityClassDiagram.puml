@@ -1,0 +1,103 @@
+@startuml
+title Translate Utility Class Diagram
+namespace ros2 {
+    namespace geometry_msgs {
+        class Accel <<(M,#FFFF00)>> <<RO2S>>
+        class AccelWithCovarianceStamped <<(M,#FFFF00)>> <<ROS2>>
+        class Twist <<(M,#FFFF00)>> <<RO2S>>
+        class Vector3 <<(M,#FFFF00)>> <<ROS2>>
+        class Quaternion <<(M,#FFFF00)>> <<ROS2>>
+    }
+    namespace sensor_msgs {
+        class Joy <<(M,#FFFF00)>> <<ROS>>
+        class Imu <<(M,#FFFF00)>> <<ROS>>
+        class MagneticField <<(M,#FFFF00)>> <<ROS>>
+
+    }
+}
+namespace fast::rf::messages {
+    namespace StandardMsgs {
+        class Vector3DMsg <<(M,#FFFF00)>>
+        class Covariance3DMsg <<(M,#FFFF00)>>
+        class Covariance6DMsg <<(M,#FFFF00)>>
+    }
+    namespace GeometryMsgs {
+        class AccelMsg <<(M,#FFFF00)>>
+        class AccelWithCovarianceMsg <<(M,#FFFF00)>>
+        class TwistMsg <<(M,#FFFF00)>>
+        class OrientationMsg <<(M,#FFFF00)>>
+    }
+    namespace InfrastructureMsgs {
+        class DiagnosticMsg <<(M,#FFFF00)>>
+        class ArmStateChangeSrv <<(M,#FFFF00)>>
+        struct ArmStateChangeSrvRequest
+        ArmStateChangeSrv +-- ArmStateChangeSrvRequest
+        struct ArmStateChangeSrvResponse
+        ArmStateChangeSrv +-- ArmStateChangeSrvResponse
+        class ReadyToArmStatusMsg <<(M,#FFFF00)>>
+        class ArmCommandMsg <<(M,#FFFF00)>>
+    }
+    namespace SensorMsgs {
+        class JoyMsg <<(M,#FFFF00)>>
+        class MagneticFieldMsg <<(M,#FFFF00)>>
+        class ImuMsg <<(M,#FFFF00)>>
+    }
+}
+namespace robot_framework_ros2  {
+    class Diagnostic <<(M,#FFFF00)>> <<ROS2>>
+    class ReadyToArm <<(M,#FFFF00)>> <<ROS2>>
+    class ArmCommand <<(M,#FFFF00)>> <<ROS2>>
+    class ArmStateChange <<(M,#FFFF00)>> <<ROS2>>
+    
+}
+namespace fast::rf_ros2 {
+    package utils  #LightYellow;line:blue {
+        class TranslateUtility #LimeGreen {
+            -- Standard Messages --
+            +{static} Vector3DMsg convert(geometry_msgs::msg::Vector3 msg)
+            +{static} geometry_msgs::msg::Vector3 convert(Vector3DMsg msg)
+            +{static} Covariance3DMsg convert_covariance3D(double[] covariance)
+            +{static} double[] convert_covariance3D(Covariance3DMsg msg)
+            +{static} Covariance6DMsg convert_covariance6D(double[] covariance)
+            +{static} double[] convert_covariance6D(Covariance6DMsg msg)
+
+            -- Infrastructure Messages --
+
+            +{static} DiagnosticMsg convert(robot_framework_ros2::diagnostic diagnostic)
+            +{static} robot_framework_ros2::diagnostic convert(DiagnosticMsg msg)
+            +{static} ReadyToArmStatusMsg convert(robot_framework_ros2::ready_to_arm msg)
+            +{static} robot_framework_ros2::ready_to_arm convert(ReadyToArmStatusMsg msg)
+            +{static} ArmCommandMsg convert(robot_framework_ros2::arm_command msg)
+            +{static} robot_framework_ros2::arm_command convert(ArmCommandMsg msg)
+            +{static} ArmStateChangeSrvRequest convert(arm_state_change::Request req)
+            +{static} arm_state_change::Request convert(ArmStateChangeSrvRequest req)
+            +{static} ArmStateChangeSrvResponse convert(arm_state_change::Response resp)
+            +{static} arm_state_change::Response convert(ArmStateChangeSrvResponse resp)
+            
+
+            -- Geometry Messages --
+
+            +{static} AccelMsg convert(geometry_msgs::msg::Accel msg)
+            +{static} geometry_msgs::msg::Accel convert(AccelMsg msg)
+            +{static} AccelWithCovarianceMsg convert(geometry_msgs::msg::AccelWithCovarianceStamped msg)
+            +{static} geometry_msgs::msg::AccelWithCovarianceStamped convert(AccelWithCovarianceMsg msg)
+            +{static} TwistMsg convert(geometry_msgs::msg::Twist msg)
+            +{static} geometry_msgs::msg::Twist convert(TwistMsg msg)
+            +{static} OrientationMsg convert(geometry_msgs::Quaternion msg)
+            +{static} geometry_msgs::Quaternion convert(OrientationMsg msg)
+            
+
+            -- Sensor Messages --
+            +{static} JoyMsg convert(sensor_msgs::msg::Joy data)
+            +{static} sensor_msgs::msg::Joy convert(JoyMsg data)
+            +{static} ImuMsg convert(sensor_msgs::msg::Imu data)
+            +{static} sensor_msgs::msg::Imu convert(ImuMsg data)
+            +{static} MagneticFieldMsg convert(sensor_msgs::msg::MagneticField data)
+            +{static} sensor_msgs::msg::MagneticField convert(MagneticFieldMsg data)
+            
+        }
+        
+    }
+}
+
+@enduml

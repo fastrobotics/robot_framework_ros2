@@ -1,0 +1,60 @@
+@startuml
+title Robot Framework ROS Message Diagram
+package builtin_interfaces  <<ROS2>> {
+    class Time <<(M,#FFFF00)>>
+}
+package robot_framework_ros2 #LightYellow;line:blue {
+    class NodeState <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +uint8_t state
+        +uint8_t STATE_UNKNOWN = 0
+        +uint8_t STATE_INITIALIZING = 1
+        +uint8_t STATE_INITIALIZED = 2
+        +uint8_t STATE_START = 3
+        +uint8_t STATE_RUNNING = 4
+        +uint8_t STATE_PAUSED = 5
+        +uint8_t STATE_FINISHED = 6
+        +uint8_t STATE_END_OF_LIST = 7
+    }
+    class ArmedState <<(M,#FFFF00)>> <<ROS2>> #LimeGreen  {
+        +uint8_t state
+        +uint8_t UNKNOWN = 0
+        +uint8_t DISARMED = 1
+        +uint8_t DISARMED_CANNOTARM = 2
+        +uint8_t ARMING = 3
+        +uint8_t ARMED = 4
+        +uint8_t END_OF_LIST = 5      
+    }
+    class Heartbeat <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +Time timestamp
+        +string hostname
+        +string base_nodename
+        +string nodename
+        +NodeState node_state
+    }
+    Heartbeat --> NodeState: <<use>>
+    class Diagnostic <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +string node_name
+        +uint8_t system_id
+        +uint8_t subsystem_id
+        +uint8_t process_id
+        +uint8_t diagnostic_type
+        +uint8_t level
+        +uint8_t diagnostic_message
+        +string description
+
+    }
+    class ReadyToArm <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +string nodename
+        +uint8_t system_id
+        +uint8_t subsystem_id
+        +uint8_t process_id
+        +bool ready_to_arm
+    }
+
+    class ArmCommand <<(M,#FFFF00)>> <<ROS2>> #LimeGreen {
+        +ArmedState armed_state
+    }
+    ArmCommand --> ArmedState: <<use>>
+
+}
+@enduml

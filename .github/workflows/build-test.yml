@@ -36,6 +36,27 @@ jobs:
           cd ros2_ws
           colcon build --symlink-install
 
+      
+      - name: Run Tests
+        run: |
+          # Source the core ROS 2 environment
+          source /opt/ros/jazzy/setup.bash
+          
+          # Move to workspace root, source your new build, and run tests
+          cd ros2_ws
+          source install/setup.bash
+          colcon test --ctest-args tests
+
+      - name: Check Test Results
+        run: |
+          # Source ROS 2 environment so the colcon command is available
+          source /opt/ros/jazzy/setup.bash
+          
+          # Check results and return a non-zero exit code on failure
+          cd ros2_ws
+          colcon test-result --all --verbose
+
+
 
 
       

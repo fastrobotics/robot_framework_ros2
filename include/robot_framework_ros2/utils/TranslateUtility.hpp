@@ -18,6 +18,9 @@
 #include <Covariance3DMsg.hpp>
 #include <Covariance6DMsg.hpp>
 #include <DiagnosticMsg.hpp>
+#include <ImuMsg.hpp>
+#include <JoyMsg.hpp>
+#include <MagneticFieldMsg.hpp>
 #include <OdomMsg.hpp>
 #include <OrientationMsg.hpp>
 #include <ReadyToArmStatusMsg.hpp>
@@ -37,6 +40,9 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/joy.hpp>
+#include <sensor_msgs/msg/magnetic_field.hpp>
 
 // General Dependencies
 #include <array>
@@ -280,51 +286,51 @@ namespace fast::rf_ros2::utils {
         // Sensor Messages
 
         /**
-         * @brief Convert from a ROS message to a Core message of type Joy
+         * @brief Convert from a ROS2 message to a Core message of type Joy
          *
          * @param msg
          * @return fast::rf::messages::SensorMsgs::JoyMsg
          */
-        // static fast::rf::messages::SensorMsgs::JoyMsg convert(sensor_msgs::Joy msg);
+        static fast::rf::messages::SensorMsgs::JoyMsg convert(sensor_msgs::msg::Joy msg);
 
         /**
-         * @brief Convert from a Core message to a ROS message of type Joy
+         * @brief Convert from a Core message to a ROS2 message of type Joy
          *
          * @param msg
-         * @return sensor_msgs::Joy
+         * @return sensor_msgs::msg::Joy
          */
-        // static sensor_msgs::Joy convert(fast::rf::messages::SensorMsgs::JoyMsg msg);
+        static sensor_msgs::msg::Joy convert(fast::rf::messages::SensorMsgs::JoyMsg msg);
 
         /**
-         * @brief Convert from a ROS message to a Core message of type Imu
+         * @brief Convert from a ROS2 message to a Core message of type Imu
          *
          * @param data
          * @return fast::rf::messages::SensorMsgs::ImuMsg
          */
-        // static fast::rf::messages::SensorMsgs::ImuMsg convert(sensor_msgs::Imu data);
+        static fast::rf::messages::SensorMsgs::ImuMsg convert(sensor_msgs::msg::Imu data);
 
         /**
-         * @brief Convert from a Core message to a ROS message of type IMU
+         * @brief Convert from a Core message to a ROS2 message of type IMU
          *
          * @param data
-         * @return sensor_msgs::Imu
+         * @return sensor_msgs::msg::Imu
          */
-        // static sensor_msgs::Imu convert(fast::rf::messages::SensorMsgs::ImuMsg data);
+        static sensor_msgs::msg::Imu convert(fast::rf::messages::SensorMsgs::ImuMsg data);
 
         /**
-         * @brief Convert from a ROS message to a Core message of type MagneticField
+         * @brief Convert from a ROS2 message to a Core message of type MagneticField
          *
          * @param data
          * @return fast::rf::messages::SensorMsgs::MagneticFieldMsg
          */
-        // static fast::rf::messages::SensorMsgs::MagneticFieldMsg convert(sensor_msgs::MagneticField data);
+        static fast::rf::messages::SensorMsgs::MagneticFieldMsg convert(sensor_msgs::msg::MagneticField data);
 
         /**
-         * @brief Convert from a Core message to a ROS message of type MagneticField
+         * @brief Convert from a Core message to a ROS2 message of type MagneticField
          *
          * @param data
-         * @return sensor_msgs::MagneticField
+         * @return sensor_msgs::msg::MagneticField
          */
-        // static sensor_msgs::MagneticField convert(fast::rf::messages::SensorMsgs::MagneticFieldMsg data);
+        static sensor_msgs::msg::MagneticField convert(fast::rf::messages::SensorMsgs::MagneticFieldMsg data);
     };
 }  // namespace fast::rf_ros2::utils

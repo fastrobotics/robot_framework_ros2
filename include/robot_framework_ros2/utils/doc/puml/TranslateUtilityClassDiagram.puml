@@ -1,12 +1,12 @@
 @startuml
 title Translate Utility Class Diagram
 namespace ros2 {
-    namespace geometry_msgs #Orange {
-        class Accel <<(M,#FFFF00)>> <<ROS>>
-        class AccelWithCovarianceStamped <<(M,#FFFF00)>> <<ROS>>
-        class Twist <<(M,#FFFF00)>> <<ROS>>
+    namespace geometry_msgs {
+        class Accel <<(M,#FFFF00)>> <<RO2S>>
+        class AccelWithCovarianceStamped <<(M,#FFFF00)>> <<ROS2>>
+        class Twist <<(M,#FFFF00)>> <<RO2S>>
         class Vector3 <<(M,#FFFF00)>> <<ROS2>>
-        class Quaternion <<(M,#FFFF00)>> <<ROS>>
+        class Quaternion <<(M,#FFFF00)>> <<ROS2>>
     }
     namespace sensor_msgs {
         class Joy <<(M,#FFFF00)>> <<ROS>>
@@ -43,7 +43,7 @@ namespace fast::rf::messages {
         class ImuMsg <<(M,#FFFF00)>>
     }
 }
-namespace robot_framework_ros2 #LimeGreen {
+namespace robot_framework_ros2  {
     class Diagnostic <<(M,#FFFF00)>> <<ROS2>>
     class ReadyToArm <<(M,#FFFF00)>> <<ROS2>>
     class ArmCommand <<(M,#FFFF00)>> <<ROS2>>
@@ -52,10 +52,10 @@ namespace robot_framework_ros2 #LimeGreen {
 }
 namespace fast::rf_ros2 {
     package utils  #LightYellow;line:blue {
-        class TranslateUtility #Orange {
+        class TranslateUtility #LimeGreen {
             -- Standard Messages --
-            +{static} Vector3DMsg convert(geometry_msgs::Vector3 msg)
-            +{static} geometry_msgs::Vector3 convert(Vector3DMsg msg)
+            +{static} Vector3DMsg convert(geometry_msgs::msg::Vector3 msg)
+            +{static} geometry_msgs::msg::Vector3 convert(Vector3DMsg msg)
             +{static} Covariance3DMsg convert_covariance3D(double[] covariance)
             +{static} double[] convert_covariance3D(Covariance3DMsg msg)
             +{static} Covariance6DMsg convert_covariance6D(double[] covariance)
@@ -63,12 +63,12 @@ namespace fast::rf_ros2 {
 
             -- Infrastructure Messages --
 
-            +{static} DiagnosticMsg convert(robot_framework_ros::diagnostic diagnostic)
-            +{static} robot_framework_ros::diagnostic convert(DiagnosticMsg msg)
-            +{static} ReadyToArmStatusMsg convert(robot_framework_ros::ready_to_arm msg)
-            +{static} robot_framework_ros::ready_to_arm convert(ReadyToArmStatusMsg msg)
-            +{static} ArmCommandMsg convert(robot_framework_ros::arm_command msg)
-            +{static} robot_framework_ros::arm_command convert(ArmCommandMsg msg)
+            +{static} DiagnosticMsg convert(robot_framework_ros2::diagnostic diagnostic)
+            +{static} robot_framework_ros2::diagnostic convert(DiagnosticMsg msg)
+            +{static} ReadyToArmStatusMsg convert(robot_framework_ros2::ready_to_arm msg)
+            +{static} robot_framework_ros2::ready_to_arm convert(ReadyToArmStatusMsg msg)
+            +{static} ArmCommandMsg convert(robot_framework_ros2::arm_command msg)
+            +{static} robot_framework_ros2::arm_command convert(ArmCommandMsg msg)
             +{static} ArmStateChangeSrvRequest convert(arm_state_change::Request req)
             +{static} arm_state_change::Request convert(ArmStateChangeSrvRequest req)
             +{static} ArmStateChangeSrvResponse convert(arm_state_change::Response resp)
@@ -77,23 +77,23 @@ namespace fast::rf_ros2 {
 
             -- Geometry Messages --
 
-            +{static} AccelMsg convert(geometry_msgs::Accel msg)
-            +{static} geometry_msgs::Accel convert(AccelMsg msg)
-            +{static} AccelWithCovarianceMsg convert(geometry_msgs::AccelWithCovarianceStamped msg)
-            +{static} geometry_msgs::AccelWithCovarianceStamped convert(AccelWithCovarianceMsg msg)
-            +{static} TwistMsg convert(geometry_msgs::Twist msg)
-            +{static} geometry_msgs::Twist convert(TwistMsg msg)
+            +{static} AccelMsg convert(geometry_msgs::msg::Accel msg)
+            +{static} geometry_msgs::msg::Accel convert(AccelMsg msg)
+            +{static} AccelWithCovarianceMsg convert(geometry_msgs::msg::AccelWithCovarianceStamped msg)
+            +{static} geometry_msgs::msg::AccelWithCovarianceStamped convert(AccelWithCovarianceMsg msg)
+            +{static} TwistMsg convert(geometry_msgs::msg::Twist msg)
+            +{static} geometry_msgs::msg::Twist convert(TwistMsg msg)
             +{static} OrientationMsg convert(geometry_msgs::Quaternion msg)
             +{static} geometry_msgs::Quaternion convert(OrientationMsg msg)
             
 
             -- Sensor Messages --
-            +{static} JoyMsg convert(sensor_msgs::Joy data)
-            +{static} sensor_msgs::Joy convert(JoyMsg data)
-            +{static} ImuMsg convert(sensor_msgs::Imu data)
-            +{static} sensor_msgs::Imu convert(ImuMsg data)
-            +{static} MagneticFieldMsg convert(sensor_msgs::MagneticField data)
-            +{static} sensor_msgs::MagneticField convert(MagneticFieldMsg data)
+            +{static} JoyMsg convert(sensor_msgs::msg::Joy data)
+            +{static} sensor_msgs::msg::Joy convert(JoyMsg data)
+            +{static} ImuMsg convert(sensor_msgs::msg::Imu data)
+            +{static} sensor_msgs::msg::Imu convert(ImuMsg data)
+            +{static} MagneticFieldMsg convert(sensor_msgs::msg::MagneticField data)
+            +{static} sensor_msgs::msg::MagneticField convert(MagneticFieldMsg data)
             
         }
         

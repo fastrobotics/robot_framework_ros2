@@ -4,7 +4,7 @@ find_package(std_msgs REQUIRED)
 add_library(
   translateUtility SHARED
   TranslateUtilityStandardMsgs.cpp TranslateUtilityInfrastructureMsgs.cpp
-  TranslateUtilityGeometryMsgs.cpp)
+  TranslateUtilityGeometryMsgs.cpp TranslateUtilitySensorMsgs.cpp)
 target_include_directories(
   translateUtility PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                           $<INSTALL_INTERFACE:include>)
@@ -18,6 +18,8 @@ target_link_libraries(
          standard_msgs
          infrastructure_msgs
          geometry_msgs
+         sensor_msgs
+         ${sensor_msgs_TARGETS}
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs
          rclcpp::rclcpp)

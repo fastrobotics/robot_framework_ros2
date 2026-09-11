@@ -30,3 +30,14 @@ rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}"
                               "rosidl_typesupport_cpp")
 target_link_libraries(test_translateUtilityGeometryMsgs translateUtility
                       "${cpp_typesupport_target}")
+
+# Test: Sensor Msgs
+ament_add_gtest(test_translateUtilitySensorMsgs
+                test_TranslateUtilitySensorMsgs.cpp)
+target_include_directories(
+  test_translateUtilitySensorMsgs
+  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}"
+                              "rosidl_typesupport_cpp")
+target_link_libraries(test_translateUtilitySensorMsgs translateUtility
+                      "${cpp_typesupport_target}")

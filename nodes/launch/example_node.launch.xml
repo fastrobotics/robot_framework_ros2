@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="verbosity_level" default="NOTICE" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
+  <arg name="node_name" default="example_node" description="Name of the node at runtime"/>
+  
+  <node pkg="robot_framework_ros2" 
+        exec="example_node" 
+        name="$(var node_name)" 
+        output="screen"  
+        emulate_tty="true">
+    <param name="verbosity_level" value="$(var verbosity_level)"/>
+  </node>
+</launch>

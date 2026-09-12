@@ -1,4 +1,4 @@
-#include "base_node.hpp"
+#include "robot_framework_ros2/BaseNode.hpp"
 
 #include <unistd.h>
 
@@ -40,8 +40,10 @@ namespace fast::rf_ros2 {
         return true;
     }
     bool BaseNode::baseInitPubSubs() {
-        m_heartbeatPub = this->create_publisher<robot_framework_ros2::msg::Heartbeat>("heartbeat", 10);
-        m_readyToArmPub = this->create_publisher<robot_framework_ros2::msg::ReadyToArm>("ready_to_arm", 10);
+        m_heartbeatPub =
+            this->create_publisher<robot_framework_ros2::msg::Heartbeat>("~/heartbeat", 10);  // Under node name
+        m_readyToArmPub =
+            this->create_publisher<robot_framework_ros2::msg::ReadyToArm>("~/ready_to_arm", 10);  // Under node name
         return true;
     }
     bool BaseNode::baseInitServices() { return true; }

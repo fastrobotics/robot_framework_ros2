@@ -15,7 +15,10 @@ def generate_test_description():
     production_node_xml = IncludeLaunchDescription(
         XMLLaunchDescriptionSource([
             package_share, '/launch/example_node.launch.xml'
-        ])
+        ]),
+        launch_arguments={
+            'robot_namespace': '/test/'
+        }.items()
     )
     tester_agent_node = Node(
         package='robot_framework_ros2',

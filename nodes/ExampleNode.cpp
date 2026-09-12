@@ -1,4 +1,4 @@
-#include "example_node.hpp"
+#include "ExampleNode.hpp"
 namespace fast::rf_ros2 {
     bool ExampleNode::loadConfig() {
         std::string paramExampleParameter = "example_parameter";

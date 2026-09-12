@@ -1,5 +1,5 @@
 /**
- * @file example_node.hpp
+ * @file ExampleNode.hpp
  * @author David Gitz (davidgitz@gmail.com)
  * @brief
  * @version 0.1
@@ -9,7 +9,7 @@
  *
  */
 #pragma once
-#include "base_node.hpp"
+#include "robot_framework_ros2/BaseNode.hpp"
 namespace fast::rf_ros2 {
     class ExampleNode : public BaseNode {
        public:

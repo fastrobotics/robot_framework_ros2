@@ -5,13 +5,12 @@
 - template node
 - testing
 - auto gen template and testing in CI
-- Repo layout
 - Add timestamps to messages (and conversions, setting, etc)
 
 # Follow-On
 - Node State change via service
 - Code Coverage
-
+- Unit tests on actual BaseNode Class
 # Done
 - Heartbeat
 -  Node State Machine
@@ -22,3 +21,4 @@
 - Loop Timing
 - Config loading
 - Launch under namespace
+- Repo layout

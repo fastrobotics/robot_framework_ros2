@@ -1,5 +1,5 @@
 /**
- * @file base_node.hpp
+ * @file BaseNode.hpp
  * @author David Gitz (davidgitz@gmail.com)
  * @brief
  * @version 0.1

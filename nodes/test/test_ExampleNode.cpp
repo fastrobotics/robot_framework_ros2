@@ -22,9 +22,14 @@ class ExampleTestFixture : public ::testing::Test {
         m_heartbeatSub = test_node->create_subscription<robot_framework_ros2::msg::Heartbeat>(
             "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/heartbeat", 10,
             [this](const robot_framework_ros2::msg::Heartbeat::SharedPtr msg) {
-                fast::rf::Logger::logNotice("Got Heartbeat!");
-                m_receivedHeartbeat = true;
+                m_receivedHeartbeatRxCount++;
                 m_latestHeartbeat = std::move(*msg);
+            });
+        m_readyToArmSub = test_node->create_subscription<robot_framework_ros2::msg::ReadyToArm>(
+            "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/ready_to_arm", 10,
+            [this](const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg) {
+                m_receivedReadyToArmRxCount++;
+                m_latestReadyToArm = std::move(*msg);
             });
     }
 
@@ -32,9 +37,12 @@ class ExampleTestFixture : public ::testing::Test {
 
     rclcpp::Node::SharedPtr test_node;
     rclcpp::Subscription<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatSub;
+    rclcpp::Subscription<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmSub;
 
-    bool m_receivedHeartbeat = false;
+    uint64_t m_receivedHeartbeatRxCount = 0;
     robot_framework_ros2::msg::Heartbeat m_latestHeartbeat;
+    uint64_t m_receivedReadyToArmRxCount = 0;
+    robot_framework_ros2::msg::ReadyToArm m_latestReadyToArm;
 };
 TEST_F(ExampleTestFixture, VerifyHeartbeatReception) {
     auto start_time = test_node->get_clock()->now();
@@ -44,6 +52,10 @@ TEST_F(ExampleTestFixture, VerifyHeartbeatReception) {
         rclcpp::spin_some(test_node);
         rclcpp::sleep_for(std::chrono::milliseconds(100));
     }
-    ASSERT_TRUE(m_receivedHeartbeat) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
+    ASSERT_TRUE(m_receivedHeartbeatRxCount > 0) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
     ASSERT_EQ(m_latestHeartbeat.node_state.state, robot_framework_ros2::msg::NodeState::STATE_RUNNING);
+
+    ASSERT_TRUE(m_receivedReadyToArmRxCount > 0)
+        << "ERROR: Failed to receive a message on /ready_to_arm within timeout.";
+    ASSERT_EQ(m_latestReadyToArm.ready_to_arm, true) << "ERROR: Node is not able to Arm.";
 }

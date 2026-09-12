@@ -16,7 +16,19 @@ namespace fast::rf_ros2 {
         ExampleNode() : BaseNode("example_node") {}
 
        protected:
+        void run100Hz() override;
         void run10Hz() override;
         void run1Hz() override;
+        void run01Hz() override;
+        void run001Hz() override;
+        void runLoop1() override;
+        void runLoop2() override;
+        void runLoop3() override;
+
+        bool loadConfig() override;
+        bool initPubSubs() override;
+        bool initServices() override;
+        bool initDiagnostics() override;
+        bool initData() override;
     };
 }  // namespace fast::rf_ros2

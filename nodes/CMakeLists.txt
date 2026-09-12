@@ -19,7 +19,7 @@ add_executable(example_node example_node.cpp)
 target_link_libraries(example_node PUBLIC baseNode)
 register_framework_rpath(example_node logger)
 install(TARGETS example_node DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
+install(DIRECTORY launch config DESTINATION share/${PROJECT_NAME}/)
 
 if(BUILD_TESTING)
   add_subdirectory(test)

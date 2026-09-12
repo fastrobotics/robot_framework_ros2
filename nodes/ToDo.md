@@ -1,18 +1,24 @@
-- Config loading
-- Loop Timing
-- Node State Machine
-- (DONE) Logger
-- Logger Verbosity Level
 - Pretty Function
-- util functions (robot namespace, node name, )
 - diagnostic support
 - ready to arm
 - timing diagnostics
-- all loops
 - template node
 - testing
 - auto gen template and testing in CI
 - Repo layout
-- (DONE) Heartbeat
 - Add timestamps to messages (and conversions, setting, etc)
+
+# Follow-On
+- Node State change via service
 - Code Coverage
+
+# Done
+- Heartbeat
+-  Node State Machine
+- Logger
+- Logger Verbosity Level
+- util functions (robot namespace, node name, )
+- all loops
+- Loop Timing
+- Config loading
+- Launch under namespace

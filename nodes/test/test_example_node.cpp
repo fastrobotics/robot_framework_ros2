@@ -17,9 +17,10 @@ class ExampleTestFixture : public ::testing::Test {
         test_node = std::make_shared<rclcpp::Node>("example_node_tester_agent");
 
         m_heartbeatSub = test_node->create_subscription<robot_framework_ros2::msg::Heartbeat>(
-            "/heartbeat", 10, [this](const robot_framework_ros2::msg::Heartbeat::SharedPtr) {
+            "/heartbeat", 10, [this](const robot_framework_ros2::msg::Heartbeat::SharedPtr msg) {
                 fast::rf::Logger::logNotice("Got Heartbeat!");
-                received_heartbeat = true;
+                m_receivedHeartbeat = true;
+                m_latestHeartbeat = std::move(*msg);
             });
     }
 
@@ -28,8 +29,8 @@ class ExampleTestFixture : public ::testing::Test {
     rclcpp::Node::SharedPtr test_node;
     rclcpp::Subscription<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatSub;
 
-    // Test flags
-    bool received_heartbeat = false;
+    bool m_receivedHeartbeat = false;
+    robot_framework_ros2::msg::Heartbeat m_latestHeartbeat;
 };
 TEST_F(ExampleTestFixture, VerifyHeartbeatReception) {
     // ASSERT_TRUE(false);
@@ -41,5 +42,6 @@ TEST_F(ExampleTestFixture, VerifyHeartbeatReception) {
         rclcpp::sleep_for(std::chrono::milliseconds(100));
     }
 
-    ASSERT_TRUE(received_heartbeat) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
+    ASSERT_TRUE(m_receivedHeartbeat) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
+    ASSERT_EQ(m_latestHeartbeat.node_state.state, robot_framework_ros2::msg::NodeState::STATE_RUNNING);
 }

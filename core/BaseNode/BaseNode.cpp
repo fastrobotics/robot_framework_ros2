@@ -1,9 +1,15 @@
+// Robot Framework Includes
 #include "robot_framework_ros2/BaseNode.hpp"
 
+#include "robot_framework_ros2/utils/TranslateUtility.hpp"
+// ROS2 Includes
+
+// C++ Includes
 #include <unistd.h>
 
 #include <chrono>
 #include <functional>
+
 using namespace std::chrono_literals;
 namespace fast::rf_ros2 {
     BaseNode::BaseNode(const std::string& nodeName)
@@ -44,6 +50,8 @@ namespace fast::rf_ros2 {
             this->create_publisher<robot_framework_ros2::msg::Heartbeat>("~/heartbeat", 10);  // Under node name
         m_readyToArmPub =
             this->create_publisher<robot_framework_ros2::msg::ReadyToArm>("~/ready_to_arm", 10);  // Under node name
+        m_diagnosticPub =
+            this->create_publisher<robot_framework_ros2::msg::Diagnostic>("~/diagnostic", 10);  // Under node name
         return true;
     }
     bool BaseNode::baseInitServices() { return true; }
@@ -215,7 +223,20 @@ namespace fast::rf_ros2 {
         m_heartbeat.node_state = m_nodeState;
         m_heartbeatPub->publish(m_heartbeat);
     }
-    void BaseNode::baseRun1Hz() { m_readyToArmPub->publish(m_readyToArm); }
+    void BaseNode::baseRun1Hz() {
+        if (m_diagnostics.size() > 0) {
+            for (auto diagnostic : m_diagnostics) {
+                fast::rf::Logger::logDiagnostic(diagnostic);
+                robot_framework_ros2::msg::Diagnostic diagnosticMsg =
+                    fast::rf_ros2::utils::TranslateUtility::convert(diagnostic);
+
+                diagnosticMsg.timestamp = this->get_clock()->now();
+                diagnosticMsg.node_name = this->get_name();
+                m_diagnosticPub->publish(diagnosticMsg);
+            }
+        }
+        m_readyToArmPub->publish(m_readyToArm);
+    }
     void BaseNode::baseRun01Hz() {}
     void BaseNode::baseRun001Hz() {}
     bool BaseNode::requestNodeStateChange(uint8_t newState, bool override) {

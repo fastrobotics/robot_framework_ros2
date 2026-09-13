@@ -9,11 +9,13 @@
  *
  */
 #pragma once
+#include <DiagnosticMsg.hpp>
 #include <Infrastructure/Logger.hpp>
 
 #include "rclcpp/rclcpp.hpp"
 
 // Interface Definitions
+#include <robot_framework_ros2/msg/diagnostic.hpp>
 #include <robot_framework_ros2/msg/heartbeat.hpp>
 #include <robot_framework_ros2/msg/node_state.hpp>
 #include <robot_framework_ros2/msg/ready_to_arm.hpp>
@@ -45,6 +47,9 @@ namespace fast::rf_ros2 {
 
        protected:
         std::string getHostName();
+        void setDiagnostics(std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> diagnostics) {
+            m_diagnostics = diagnostics;
+        }
         // User Timing Loops
         virtual void run100Hz() = 0;
         virtual void run10Hz() = 0;
@@ -114,5 +119,9 @@ namespace fast::rf_ros2 {
         // Pubs and Subs
         rclcpp::Publisher<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatPub;
         rclcpp::Publisher<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmPub;
+        rclcpp::Publisher<robot_framework_ros2::msg::Diagnostic>::SharedPtr m_diagnosticPub;
+
+        // Data
+        std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> m_diagnostics;
     };
 }  // namespace fast::rf_ros2

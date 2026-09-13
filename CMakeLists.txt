@@ -67,6 +67,21 @@ set(BUILD_TESTING
     OFF
     CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(robot_framework)
+file(GLOB_RECURSE ENTIRE_HEADER_LIST "${robot_framework_SOURCE_DIR}/msgs/*.hpp"
+     "${robot_framework_SOURCE_DIR}/Systems/*.hpp"
+     "${robot_framework_SOURCE_DIR}/Systems/*.h")
+set(RECURSIVE_INCLUDE_DIRS "")
+foreach(HEADER_FILE ${ENTIRE_HEADER_LIST})
+  get_filename_component(HEADER_DIR ${HEADER_FILE} DIRECTORY)
+  list(APPEND RECURSIVE_INCLUDE_DIRS ${HEADER_DIR})
+endforeach()
+
+# 1. Clean up any duplicate directory tracks to keep the compiler fast
+if(RECURSIVE_INCLUDE_DIRS)
+  list(REMOVE_DUPLICATES RECURSIVE_INCLUDE_DIRS)
+endif()
+include_directories(include ${robot_framework_SOURCE_DIR}
+                    ${RECURSIVE_INCLUDE_DIRS})
 set(BUILD_TESTING
     ON
     CACHE BOOL "" FORCE)

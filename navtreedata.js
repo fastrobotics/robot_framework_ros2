@@ -28,16 +28,41 @@ var NAVTREE =
     [ "FAST Robotics: ROS Robot Framework", "md_DoxygenHome.html", [
       [ "References", "md_DoxygenHome.html#autotoc_md1", null ]
     ] ],
+    [ "BaseNode", "md_include_2robot__framework__ros2_2doc_2BaseNode.html", [
+      [ "Base Node", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md2", null ],
+      [ "Architecture", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md3", [
+        [ "Class Diagrams", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md4", null ],
+        [ "Sequence Diagrams", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md5", null ],
+        [ "State Machine Diagrams", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md6", null ]
+      ] ],
+      [ "Features", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md7", [
+        [ "Common Publishers", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md8", [
+          [ "Publisher: Heartbeat", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md9", null ],
+          [ "Publisher: Diagnostic", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md10", null ],
+          [ "Publisher: Ready To Arm", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md11", null ]
+        ] ],
+        [ "Timed Loops", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md12", [
+          [ "Pre-Defined Loops", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md13", [
+            [ "Loop: 100Hz", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md14", null ],
+            [ "Loop: 10Hz", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md15", null ],
+            [ "Loop: 1Hz", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md16", null ],
+            [ "Loop: 0.1Hz", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md17", null ],
+            [ "Loop: 0.01Hz", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md18", null ]
+          ] ],
+          [ "User-Defined Loops", "md_include_2robot__framework__ros2_2doc_2BaseNode.html#autotoc_md19", null ]
+        ] ]
+      ] ]
+    ] ],
     [ "Core", "md_include_2robot__framework__ros2_2doc_2Core.html", [
-      [ "Core Functionality", "md_include_2robot__framework__ros2_2doc_2Core.html#autotoc_md2", [
-        [ "Overview", "md_include_2robot__framework__ros2_2doc_2Core.html#autotoc_md3", null ],
-        [ "Content", "md_include_2robot__framework__ros2_2doc_2Core.html#autotoc_md4", null ]
+      [ "Core Functionality", "md_include_2robot__framework__ros2_2doc_2Core.html#autotoc_md20", [
+        [ "Overview", "md_include_2robot__framework__ros2_2doc_2Core.html#autotoc_md21", null ],
+        [ "Content", "md_include_2robot__framework__ros2_2doc_2Core.html#autotoc_md22", null ]
       ] ]
     ] ],
     [ "Utilities", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html", [
-      [ "Utilities", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html#autotoc_md5", null ],
-      [ "Architecture", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html#autotoc_md6", [
-        [ "Class Diagrams", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html#autotoc_md7", null ]
+      [ "Utilities", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html#autotoc_md23", null ],
+      [ "Architecture", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html#autotoc_md24", [
+        [ "Class Diagrams", "md_include_2robot__framework__ros2_2utils_2doc_2Utilities.html#autotoc_md25", null ]
       ] ]
     ] ],
     [ "Namespaces", "namespaces.html", [
@@ -46,6 +71,7 @@ var NAVTREE =
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
+      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ]
@@ -59,7 +85,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"TranslateUtility_8hpp.html"
+"BaseNode_8hpp.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

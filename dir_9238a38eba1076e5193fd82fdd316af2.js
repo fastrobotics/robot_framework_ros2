@@ -1,4 +1,5 @@
 var dir_9238a38eba1076e5193fd82fdd316af2 =
 [
-    [ "utils", "dir_05d60561705282005516b124b69e1807.html", "dir_05d60561705282005516b124b69e1807" ]
+    [ "utils", "dir_05d60561705282005516b124b69e1807.html", "dir_05d60561705282005516b124b69e1807" ],
+    [ "BaseNode.hpp", "BaseNode_8hpp.html", "BaseNode_8hpp" ]
 ];

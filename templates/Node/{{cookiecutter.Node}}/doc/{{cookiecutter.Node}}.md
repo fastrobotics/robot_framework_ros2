@@ -3,6 +3,7 @@
 - [{{cookiecutter.Node}} Node](#cookiecutternode-node)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
+- [Architecture](#architecture-1)
 - [Configuration](#configuration)
   - [Launch](#launch)
   - [Yaml](#yaml)
@@ -12,10 +13,12 @@
 # {{cookiecutter.Node}} Node
 
 # Architecture
-![](../../../../../../../../Legend.png)
+![](../../../Legend.png)
 
 ## Class Diagram
-![](puml/{{cookiecutter.Node}}NodeClassDiagram.png)
+![](puml/{{cookiecutter.Node}}ClassDiagram.png)
+
+# Architecture
 
 # Configuration
 ## Launch

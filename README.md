@@ -10,6 +10,7 @@
 - [Setup](#setup)
 - [Build](#build)
   - [Build and run Unit Tests](#build-and-run-unit-tests)
+- [Templates](#templates)
 
 
 
@@ -65,4 +66,20 @@ cd <workspace>
 colcon build
 source install/setup.bash
 colcon test --event-handlers console_cohesion+
+```
+
+# Templates
+This project makes extensive use of cookiecutter templates.
+| Template | Folder           | Use Case               |
+| -------- | ---------------- | ---------------------- |
+| Node     | `templates/Node` | Used to create a Node. |
+
+To use these templates, run:
+```bash
+cookiecutter <Template Folder containing cookiecutter.json> -o <OutputDirectory>
+```
+
+To Check if the templates are up to date with the implementation files, run:
+```bash
+python dev_tools/scripts/update_from_template.py --templates templates/<Template> --impl <Location to check>/
 ```

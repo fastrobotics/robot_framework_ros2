@@ -3,6 +3,7 @@
 - [ExampleNode Node](#cookiecutternode-node)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
+- [Architecture](#architecture-1)
 - [Configuration](#configuration)
   - [Launch](#launch)
   - [Yaml](#yaml)
@@ -12,10 +13,12 @@
 # ExampleNode Node
 
 # Architecture
-![](../../../../../../../../Legend.png)
+![](../../../Legend.png)
 
 ## Class Diagram
-![](puml/ExampleNodeNodeClassDiagram.png)
+![](puml/ExampleNodeClassDiagram.png)
+
+# Architecture
 
 # Configuration
 ## Launch

@@ -1,3 +1,4 @@
+' @compare_tag Node-ClassDiagram v0.1
 @startuml
 title {{cookiecutter.Node}} Node Class Diagram
 namespace fast::rf {

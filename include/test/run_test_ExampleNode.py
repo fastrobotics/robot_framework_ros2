@@ -1,4 +1,3 @@
-# @compare_tag Node-PythonTestWraper v0.1
 #!/usr/bin/env python3
 import pytest
 import unittest
@@ -15,7 +14,7 @@ def generate_test_description():
     package_share = FindPackageShare('robot_framework_ros2')
     production_node_xml = IncludeLaunchDescription(
         XMLLaunchDescriptionSource([
-            package_share, '/launch/{{cookiecutter.NodeBinary}}.launch.xml'
+            package_share, '/launch/example_node.launch.xml'
         ]),
         launch_arguments={
             'robot_namespace': '/test/'
@@ -23,8 +22,8 @@ def generate_test_description():
     )
     tester_agent_node = Node(
         package='robot_framework_ros2',
-        executable='test_{{cookiecutter.NodeBinary}}',
-        name='{{cookiecutter.NodeBinary}}_tester_agent',
+        executable='test_example_node',
+        name='example_node_tester_agent',
         output='screen',
         emulate_tty=True
     )

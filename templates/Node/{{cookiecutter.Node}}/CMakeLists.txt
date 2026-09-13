@@ -1,3 +1,4 @@
+# @compare_tag Node-SourceCompile v0.1`
 add_executable({{cookiecutter.NodeBinary}} {{cookiecutter.Node}}.cpp)
 target_include_directories(
   {{cookiecutter.NodeBinary}}

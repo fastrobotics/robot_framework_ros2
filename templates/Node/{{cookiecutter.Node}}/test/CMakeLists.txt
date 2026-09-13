@@ -1,3 +1,4 @@
+# @compare_tag Node-SourceTestCompile v0.1`
 find_package(ament_cmake_ros REQUIRED)
 find_package(launch_testing_ament_cmake REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)

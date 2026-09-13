@@ -1,3 +1,14 @@
+/**
+ * @file test_{{cookiecutter.Node}}.cpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2026-09-13
+ * 
+ * @copyright Copyright (c) 2026
+ * @compare_tag Node-Test v0.1
+ * 
+ */
 #include <gtest/gtest.h>
 
 #include <Infrastructure/Logger.hpp>

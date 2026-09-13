@@ -1,3 +1,4 @@
+# @compare_tag Node-SourceCompile v0.1`
 add_executable(example_node ExampleNode.cpp)
 target_include_directories(
   example_node PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

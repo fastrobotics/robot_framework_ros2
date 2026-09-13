@@ -1,3 +1,4 @@
+<!-- @compare_tag Node-Launch v0.1 -->
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
     <arg name="robot_namespace" default="/"/> 

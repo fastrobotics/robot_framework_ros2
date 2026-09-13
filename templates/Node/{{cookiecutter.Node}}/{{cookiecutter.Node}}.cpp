@@ -1,3 +1,14 @@
+/**
+ * @file {{cookiecutter.Node}}.cpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2026-09-13
+ * 
+ * @copyright Copyright (c) 2026
+ * @compare_tag Node-Source v0.1
+ * 
+ */
 #include "{{cookiecutter.Node}}.hpp"
 namespace fast::rf_ros2 {
     bool {{cookiecutter.Node}}::loadConfig() {

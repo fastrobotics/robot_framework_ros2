@@ -1,3 +1,4 @@
+# @compare_tag Node-PythonTestWraper v0.1
 #!/usr/bin/env python3
 import pytest
 import unittest

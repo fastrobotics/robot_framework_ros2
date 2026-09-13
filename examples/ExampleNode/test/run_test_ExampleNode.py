@@ -23,7 +23,7 @@ def generate_test_description():
     tester_agent_node = Node(
         package='robot_framework_ros2',
         executable='test_example_node',
-        name='example_tester_agent',
+        name='example_node_tester_agent',
         output='screen',
         emulate_tty=True
     )

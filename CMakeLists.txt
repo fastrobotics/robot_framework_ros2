@@ -87,6 +87,6 @@ set(BUILD_TESTING
     CACHE BOOL "" FORCE)
 
 add_subdirectory(core)
-add_subdirectory(nodes)
+add_subdirectory(examples)
 
 ament_package()

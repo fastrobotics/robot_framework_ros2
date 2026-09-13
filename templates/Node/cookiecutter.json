@@ -1,0 +1,7 @@
+{
+    "System": "Example",
+    "Subsystem": "Example",
+    "Process": "Example",
+    "Node": "ExampleNode",
+    "NodeBinary": "example_node"
+}

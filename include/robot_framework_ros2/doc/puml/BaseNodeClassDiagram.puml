@@ -15,7 +15,7 @@ package fast::rf_ros2 #LightYellow;line:blue {
     namespace utils {
         class CoreUtility
     }
-    abstract BaseNode #Orange{
+    abstract BaseNode #LimeGreen{
         --Node Life Cycle Functions--
         +bool init()
         +bool start()

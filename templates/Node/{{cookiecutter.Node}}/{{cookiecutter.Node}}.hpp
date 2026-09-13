@@ -1,5 +1,5 @@
 /**
- * @file ExampleNode.hpp
+ * @file {{cookiecutter.Node}}.hpp
  * @author David Gitz (davidgitz@gmail.com)
  * @brief
  * @version 0.1
@@ -9,14 +9,13 @@
  *
  */
 #pragma once
-// You must type out the path starting from the root folder:
-#include <BasicExampleProcess.hpp>
+#include <Basic{{cookiecutter.Process}}Process.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
 namespace fast::rf_ros2 {
-    class ExampleNode : public BaseNode {
+    class {{cookiecutter.Node}} : public BaseNode {
        public:
-        ExampleNode() : BaseNode("example_node") {}
+        {{cookiecutter.Node}}() : BaseNode("{{cookiecutter.NodeBinary}}") {}
 
        protected:
         void run100Hz() override;
@@ -36,6 +35,6 @@ namespace fast::rf_ros2 {
 
        private:
         std::string pretty() override;
-        fast::rf::ExampleSystem::ExampleSubsystem::Example::BasicExampleProcess process;
+        fast::rf::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}}::Basic{{cookiecutter.Process}}Process process;
     };
 }  // namespace fast::rf_ros2

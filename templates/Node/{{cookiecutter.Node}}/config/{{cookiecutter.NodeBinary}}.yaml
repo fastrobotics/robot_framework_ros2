@@ -1,0 +1,7 @@
+/**:
+  {{cookiecutter.System|lower}}: #System
+    {{cookiecutter.Subsystem|lower}}: #Subsystem
+      {{cookiecutter.Process|lower}}: #Generic Process
+        {{cookiecutter.NodeBinary}}: #Specific Node Name
+          ros__parameters:
+            example_parameter: 1.234

@@ -1,6 +1,6 @@
 `@compare_tag Node-Document v0.1`
 
-- [{{cookiecutter.Node}} Node](#cookiecutternode-node)
+- [ExampleNode Node](#cookiecutternode-node)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
 - [Architecture](#architecture-1)
@@ -10,13 +10,13 @@
     - [1. Yaml Config:](#1-yaml-config)
     - [2. Fetching Parameters](#2-fetching-parameters)
 
-# {{cookiecutter.Node}} Node
+# ExampleNode Node
 
 # Architecture
 ![](../../../Legend.png)
 
 ## Class Diagram
-![](puml/{{cookiecutter.Node}}ClassDiagram.png)
+![](puml/ExampleNodeClassDiagram.png)
 
 # Architecture
 

@@ -1,5 +1,5 @@
 `@compare_tag Node-Document v0.1`
-[Nodes - <blah>](../../doc/Nodes-blah.md)
+
 - [ExampleNode Node](#cookiecutternode-node)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)

@@ -12,8 +12,7 @@ class Ros2TestEnvironment : public ::testing::Environment {
 };
 testing::Environment* const ros2_env = testing::AddGlobalTestEnvironment(new Ros2TestEnvironment);
 std::string robotNamespace = "test";
-std::string nodeNamespace =
-    "example/example/example";
+std::string nodeNamespace = "example/example/example";
 std::string nodeUnderTest = "example_node";
 class ExampleNodeTestFixture : public ::testing::Test {
    protected:
@@ -54,8 +53,7 @@ class ExampleNodeTestFixture : public ::testing::Test {
     uint64_t m_receivedReadyToArmRxCount = 0;
     robot_framework_ros2::msg::ReadyToArm m_latestReadyToArm;
 };
-TEST_F(ExampleNodeTestFixture,
-    VerifyHeartbeatReception) {
+TEST_F(ExampleNodeTestFixture, VerifyHeartbeatReception) {
     auto start_time = test_node->get_clock()->now();
     double timeout_seconds = 5.0;
 

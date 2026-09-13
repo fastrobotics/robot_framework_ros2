@@ -7,6 +7,11 @@ repos:
         pass_filenames: false
         language: system
 
+      - id: pre-commit-template-modified
+        name: Check if Templates are modified
+        entry: ./scripts/pre_commit/check_template_changes.sh
+        language: script
+
       - id: pre-commit-code-format
         name: Code Formatting
         entry: ./scripts/pre_commit/format_code.sh

@@ -1,4 +1,5 @@
 - Architecture Documents
+- template tags
 - template node
 - testing
 - auto gen template and testing in CI

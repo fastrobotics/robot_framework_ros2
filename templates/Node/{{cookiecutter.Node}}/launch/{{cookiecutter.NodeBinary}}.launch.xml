@@ -1,5 +1,5 @@
-<!-- @compare_tag Node-Launch v0.1 -->
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- @compare_tag Node-Launch v0.1 -->
 <launch>
     <arg name="robot_namespace" default="/"/> 
     <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>

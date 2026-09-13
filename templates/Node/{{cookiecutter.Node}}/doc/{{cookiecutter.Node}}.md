@@ -1,4 +1,4 @@
-`@compare_tag Node-Document v0.1`
+`@compare_tag Node-Document v0.2`
 
 - [{{cookiecutter.Node}} Node](#cookiecutternode-node)
 - [Architecture](#architecture)

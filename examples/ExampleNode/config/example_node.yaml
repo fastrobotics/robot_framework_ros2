@@ -1,8 +1,0 @@
-#`@compare_tag Node-YamlConfig v0.1`
-/**:
-  example: #System
-    example: #Subsystem
-      example: #Generic Process
-        example_node: #Specific Node Name
-          ros__parameters:
-            example_parameter: 1.234

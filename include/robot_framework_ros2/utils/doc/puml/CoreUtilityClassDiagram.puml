@@ -1,0 +1,15 @@
+@startuml
+title Core Utility Class Diagram
+namespace robot_framework_ros2  {
+    class NodeState <<(M,#FFFF00)>> <<ROS2>>
+    
+}
+namespace fast::rf_ros2 {
+    package utils  #LightYellow;line:blue {
+        class CoreUtility #LimeGreen {
+            +{static} pretty(robot_framework_ros2::msg::NodeState state);
+        }
+    }
+}
+
+@enduml

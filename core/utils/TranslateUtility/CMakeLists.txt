@@ -23,6 +23,11 @@ target_link_libraries(
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs
          rclcpp::rclcpp)
+install(
+  TARGETS translateUtility
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()

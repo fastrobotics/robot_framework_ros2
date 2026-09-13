@@ -1,0 +1,88 @@
+/**
+ * @file test_{{cookiecutter.Node}}.cpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2026-09-13
+ * 
+ * @copyright Copyright (c) 2026
+ * @compare_tag Node-Test v0.1
+ * 
+ */
+#include <gtest/gtest.h>
+
+#include <Infrastructure/Logger.hpp>
+
+#include "../{{cookiecutter.Node}}.hpp"
+#include "rclcpp/rclcpp.hpp"
+class Ros2TestEnvironment : public ::testing::Environment {
+   public:
+    ~Ros2TestEnvironment() override {}
+    void SetUp() override { rclcpp::init(0, nullptr); }
+    void TearDown() override { rclcpp::shutdown(); }
+};
+testing::Environment* const ros2_env = testing::AddGlobalTestEnvironment(new Ros2TestEnvironment);
+std::string robotNamespace = "test";
+std::string nodeNamespace =
+    "{{cookiecutter.System|lower}}/{{cookiecutter.Subsystem|lower}}/{{cookiecutter.Process|lower}}";
+std::string nodeUnderTest = "{{cookiecutter.NodeBinary}}";
+class {{cookiecutter.Node}}TestFixture : public ::testing::Test {
+   protected:
+    void SetUp() override {
+        test_node = std::make_shared<rclcpp::Node>("{{cookiecutter.NodeBinary}}_tester_agent", nodeNamespace);
+
+        m_heartbeatSub = test_node->create_subscription<robot_framework_ros2::msg::Heartbeat>(
+            "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/heartbeat", 10,
+            [this](const robot_framework_ros2::msg::Heartbeat::SharedPtr msg) {
+                m_receivedHeartbeatRxCount++;
+                m_latestHeartbeat = std::move(*msg);
+            });
+        m_diagnosticSub = test_node->create_subscription<robot_framework_ros2::msg::Diagnostic>(
+            "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/diagnostic", 10,
+            [this](const robot_framework_ros2::msg::Diagnostic::SharedPtr msg) {
+                m_receivedDiagnosticRxCount++;
+                m_latestDiagnostic = std::move(*msg);
+            });
+        m_readyToArmSub = test_node->create_subscription<robot_framework_ros2::msg::ReadyToArm>(
+            "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/ready_to_arm", 10,
+            [this](const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg) {
+                m_receivedReadyToArmRxCount++;
+                m_latestReadyToArm = std::move(*msg);
+            });
+    }
+
+    void TearDown() override { test_node.reset(); }
+
+    rclcpp::Node::SharedPtr test_node;
+    rclcpp::Subscription<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatSub;
+    rclcpp::Subscription<robot_framework_ros2::msg::Diagnostic>::SharedPtr m_diagnosticSub;
+    rclcpp::Subscription<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmSub;
+
+    uint64_t m_receivedHeartbeatRxCount = 0;
+    robot_framework_ros2::msg::Heartbeat m_latestHeartbeat;
+    uint64_t m_receivedDiagnosticRxCount = 0;
+    robot_framework_ros2::msg::Diagnostic m_latestDiagnostic;
+    uint64_t m_receivedReadyToArmRxCount = 0;
+    robot_framework_ros2::msg::ReadyToArm m_latestReadyToArm;
+};
+TEST_F({{cookiecutter.Node}}TestFixture,
+    VerifyHeartbeatReception) {
+    auto start_time = test_node->get_clock()->now();
+    double timeout_seconds = 5.0;
+
+    while ((test_node->get_clock()->now() - start_time).seconds() < timeout_seconds) {
+        rclcpp::spin_some(test_node);
+        rclcpp::sleep_for(std::chrono::milliseconds(100));
+    }
+    ASSERT_TRUE(m_receivedHeartbeatRxCount > 0) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
+    ASSERT_EQ(m_latestHeartbeat.node_state.state, robot_framework_ros2::msg::NodeState::STATE_RUNNING);
+
+    ASSERT_TRUE(m_receivedDiagnosticRxCount > 0) << "ERROR: Failed to receive a message on /diagnostic within timeout.";
+
+    ASSERT_TRUE(m_receivedReadyToArmRxCount > 0)
+        << "ERROR: Failed to receive a message on /ready_to_arm within timeout.";
+    ASSERT_GT(m_latestReadyToArm.system_id, 0);
+    ASSERT_GT(m_latestReadyToArm.subsystem_id, 0);
+    ASSERT_GT(m_latestReadyToArm.process_id, 0);
+    ASSERT_EQ(m_latestReadyToArm.ready_to_arm, true) << "ERROR: Node is not able to Arm.";
+}

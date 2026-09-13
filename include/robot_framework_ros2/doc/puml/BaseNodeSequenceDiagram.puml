@@ -1,0 +1,93 @@
+@startuml
+title Base Node Sequence DiagramBorderColor
+actor MainFunction as main
+actor ExampleNode as node
+participant BaseNode as baseNode
+
+alt if node.m_nodeState() == STATE_UNKNOWN
+    hnote across: Initialization
+    main -> baseNode++: init()
+    baseNode --> baseNode++: request_node_statechange(STATE_INITIALIZING)
+    baseNode --> baseNode--
+    baseNode -> baseNode++: baseLoadConfig()
+    baseNode --> baseNode--
+    baseNode -> baseNode++: baseInitPubSubs()
+    baseNode --> baseNode--
+    baseNode -> baseNode++: baseInitServices()
+    baseNode --> baseNode--
+    baseNode -> baseNode++: baseInitDiagnostics()
+    baseNode --> baseNode--
+    baseNode -> baseNode++: baseInitData()
+    baseNode --> baseNode--
+    baseNode -> node++: loadConfig()
+    node --> baseNode--
+    baseNode -> node++: initPubSubs()
+    node --> baseNode--
+    baseNode -> node++: initServices()
+    node --> baseNode--
+    baseNode -> node++: initDiagnostics()
+    node --> baseNode--
+    baseNode -> node++: initData()
+    node --> baseNode--
+    baseNode --> baseNode++: request_node_statechange(STATE_INITIALIZING)
+    baseNode --> baseNode--: status
+    baseNode --> main--: status
+end
+
+alt if node.m_nodeState() == STATE_INITIALIZING
+    hnote across: Start
+    main -> baseNode++: start()
+    baseNode --> baseNode++: request_node_statechange(STATE_STARTING)
+    baseNode --> baseNode--: status
+    note over baseNode
+    Start any content required (timers, threads, et)
+    end note
+    baseNode --> main--: status
+end
+
+alt if node.m_nodeState() == STATE_RUNNING
+    hnote across: General Timer Loops
+    main -> baseNode++: timer100HzCallback()
+    baseNode -> baseNode++: baseRun100Hz()
+    baseNode --> baseNode--
+    baseNode -> node++: run100Hz()
+    node --> baseNode--
+    baseNode --> main--
+
+    main -> baseNode++: timer10HzCallback()
+    baseNode -> baseNode++: baseRun10Hz()
+    baseNode -> baseNode: m_heartbeatPub->publish()
+    baseNode --> baseNode--
+    baseNode -> node++: run10Hz()
+    node --> baseNode--
+    baseNode --> main--
+
+    main -> baseNode++: timer1HzCallback()
+    baseNode -> baseNode++: baseRun1Hz()
+    baseNode -> baseNode: m_diagnosticPub->publish()
+     baseNode -> baseNode: m_readyToArmPub->publish()
+    baseNode --> baseNode--
+    baseNode -> node++: run1Hz()
+    node --> baseNode--
+    baseNode --> main--
+
+    main -> baseNode++: timer01HzCallback()
+    baseNode -> baseNode++: baseRun01Hz()
+
+    baseNode --> baseNode--
+    baseNode -> node++: run01Hz()
+    node --> baseNode--
+    baseNode --> main--
+
+    main -> baseNode++: timer001HzCallback()
+    baseNode -> baseNode++: baseRun001Hz()
+    baseNode --> baseNode--
+    baseNode -> node++: run001Hz()
+    node --> baseNode--
+    baseNode --> main--
+
+end
+
+
+
+@enduml

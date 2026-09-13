@@ -9,7 +9,7 @@
         <node pkg="robot_framework_ros2" 
             exec="example_node" 
             name="$(var node_name)" 
-            namespace="pose/inertial_sensor/imu" 
+            namespace="example/example/example" 
             output="screen"  
             emulate_tty="true">
             <param from="$(var config_path)"/>

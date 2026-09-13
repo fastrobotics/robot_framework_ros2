@@ -10,7 +10,7 @@
  */
 #pragma once
 // You must type out the path starting from the root folder:
-#include <IMUProcess.hpp>
+#include <BasicExampleProcess.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
 namespace fast::rf_ros2 {
@@ -35,6 +35,7 @@ namespace fast::rf_ros2 {
         bool initData() override;
 
        private:
-        fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IMUProcess process;
+        std::string pretty() override;
+        fast::rf::ExampleSystem::ExampleSubsystem::Example::BasicExampleProcess process;
     };
 }  // namespace fast::rf_ros2

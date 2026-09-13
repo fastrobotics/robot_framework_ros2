@@ -1,7 +1,7 @@
 /**:
-  pose: #System
-    inertial_sensor: #Subsystem
-      imu: #Generic Process
+  example: #System
+    example: #Subsystem
+      example: #Generic Process
         example_node: #Specific Node Name
           ros__parameters:
             example_parameter: 1.234

@@ -1,6 +1,7 @@
 // Robot Framework Includes
 #include "robot_framework_ros2/BaseNode.hpp"
 
+#include "robot_framework_ros2/utils/CoreUtility.hpp"
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 // ROS2 Includes
 
@@ -272,6 +273,10 @@ namespace fast::rf_ros2 {
                                        std::to_string(newState));
             return false;
         }
+    }
+    std::string BaseNode::pretty() {
+        std::string str = "Node State: " + fast::rf_ros2::utils::CoreUtility::pretty(m_nodeState);
+        return str;
     }
     // Util Functions
     std::string BaseNode::getHostName() {

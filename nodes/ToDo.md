@@ -1,16 +1,15 @@
-- Pretty Function
-- diagnostic support
-- ready to arm
-- timing diagnostics
+- Architecture Documents
 - template node
 - testing
 - auto gen template and testing in CI
-- Add timestamps to messages (and conversions, setting, etc)
+
 
 # Follow-On
 - Node State change via service
 - Code Coverage
 - Unit tests on actual BaseNode Class
+- Add timestamps to messages (and conversions, setting, etc)
+- timing diagnostics
 # Done
 - Heartbeat
 -  Node State Machine
@@ -22,3 +21,6 @@
 - Config loading
 - Launch under namespace
 - Repo layout
+- diagnostic support
+- ready to arm
+- Pretty Function

@@ -11,6 +11,7 @@
 #pragma once
 #include <DiagnosticMsg.hpp>
 #include <Infrastructure/Logger.hpp>
+#include <ReadyToArmStatusMsg.hpp>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -50,6 +51,12 @@ namespace fast::rf_ros2 {
         void setDiagnostics(std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> diagnostics) {
             m_diagnostics = diagnostics;
         }
+        void setReadyToArm(fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg readyToArm) {
+            m_readyToArm.system_id = readyToArm.systemID;
+            m_readyToArm.subsystem_id = readyToArm.subsystemID;
+            m_readyToArm.process_id = readyToArm.processID;
+            m_readyToArm.ready_to_arm = readyToArm.ready_to_arm;
+        }
         // User Timing Loops
         virtual void run100Hz() = 0;
         virtual void run10Hz() = 0;
@@ -71,6 +78,8 @@ namespace fast::rf_ros2 {
         virtual bool initServices() = 0;
         virtual bool initDiagnostics() = 0;
         virtual bool initData() = 0;
+
+        virtual std::string pretty() = 0;
 
        private:
         bool restart();

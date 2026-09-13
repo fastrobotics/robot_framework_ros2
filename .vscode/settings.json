@@ -12,5 +12,11 @@
     "[plantuml]": {
         "editor.formatOnSave": false
     },
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.mmd": "markdown"
+    },
+    "files.exclude": {
+        "**/templates/**": false 
+    }
 }

@@ -66,7 +66,3 @@ TEST(TestConversion, SensorMsgsConvertMagneticField) {
         ASSERT_FLOAT_EQ(msg.magnetic_field.z, data.magnetic_field.z);
     }
 }
-int main(int argc, char** argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

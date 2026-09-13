@@ -7,8 +7,9 @@ target_include_directories(
   baseNode PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                   $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(baseNode PUBLIC logger rclcpp::rclcpp translateUtility
-                                      ${PROJECT_NAME}__rosidl_typesupport_cpp)
+target_link_libraries(
+  baseNode PUBLIC logger rclcpp::rclcpp translateUtility coreUtility
+                  ${PROJECT_NAME}__rosidl_typesupport_cpp)
 install(
   TARGETS baseNode
   ARCHIVE DESTINATION lib

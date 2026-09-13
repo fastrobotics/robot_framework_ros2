@@ -12,7 +12,7 @@ class Ros2TestEnvironment : public ::testing::Environment {
 };
 testing::Environment* const ros2_env = testing::AddGlobalTestEnvironment(new Ros2TestEnvironment);
 std::string robotNamespace = "test";
-std::string nodeNamespace = "pose/inertial_sensor/imu";
+std::string nodeNamespace = "example/example/example";
 std::string nodeUnderTest = "example_node";
 class ExampleTestFixture : public ::testing::Test {
    protected:
@@ -24,6 +24,12 @@ class ExampleTestFixture : public ::testing::Test {
             [this](const robot_framework_ros2::msg::Heartbeat::SharedPtr msg) {
                 m_receivedHeartbeatRxCount++;
                 m_latestHeartbeat = std::move(*msg);
+            });
+        m_diagnosticSub = test_node->create_subscription<robot_framework_ros2::msg::Diagnostic>(
+            "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/diagnostic", 10,
+            [this](const robot_framework_ros2::msg::Diagnostic::SharedPtr msg) {
+                m_receivedDiagnosticRxCount++;
+                m_latestDiagnostic = std::move(*msg);
             });
         m_readyToArmSub = test_node->create_subscription<robot_framework_ros2::msg::ReadyToArm>(
             "/" + robotNamespace + "/" + nodeNamespace + "/" + nodeUnderTest + "/ready_to_arm", 10,
@@ -37,10 +43,13 @@ class ExampleTestFixture : public ::testing::Test {
 
     rclcpp::Node::SharedPtr test_node;
     rclcpp::Subscription<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatSub;
+    rclcpp::Subscription<robot_framework_ros2::msg::Diagnostic>::SharedPtr m_diagnosticSub;
     rclcpp::Subscription<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmSub;
 
     uint64_t m_receivedHeartbeatRxCount = 0;
     robot_framework_ros2::msg::Heartbeat m_latestHeartbeat;
+    uint64_t m_receivedDiagnosticRxCount = 0;
+    robot_framework_ros2::msg::Diagnostic m_latestDiagnostic;
     uint64_t m_receivedReadyToArmRxCount = 0;
     robot_framework_ros2::msg::ReadyToArm m_latestReadyToArm;
 };
@@ -55,7 +64,12 @@ TEST_F(ExampleTestFixture, VerifyHeartbeatReception) {
     ASSERT_TRUE(m_receivedHeartbeatRxCount > 0) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
     ASSERT_EQ(m_latestHeartbeat.node_state.state, robot_framework_ros2::msg::NodeState::STATE_RUNNING);
 
+    ASSERT_TRUE(m_receivedDiagnosticRxCount > 0) << "ERROR: Failed to receive a message on /diagnostic within timeout.";
+
     ASSERT_TRUE(m_receivedReadyToArmRxCount > 0)
         << "ERROR: Failed to receive a message on /ready_to_arm within timeout.";
+    ASSERT_GT(m_latestReadyToArm.system_id, 0);
+    ASSERT_GT(m_latestReadyToArm.subsystem_id, 0);
+    ASSERT_GT(m_latestReadyToArm.process_id, 0);
     ASSERT_EQ(m_latestReadyToArm.ready_to_arm, true) << "ERROR: Node is not able to Arm.";
 }

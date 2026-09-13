@@ -7,4 +7,5 @@ This package provides various Utility functions
 ![](../../../../Legend.png)
 
 ## Class Diagrams
+![](puml/CoreUtilityClassDiagram.png)
 ![](puml/TranslateUtilityClassDiagram.png)

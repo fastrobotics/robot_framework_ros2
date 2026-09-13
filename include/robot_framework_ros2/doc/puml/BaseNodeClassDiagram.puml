@@ -1,0 +1,59 @@
+@startuml
+title Base Node Class Diagram
+namespace fast::rf::messages {
+    namespace InfrastructureMsgs {
+        class DiagnosticMsg <<(M,#FFFF00)>>
+        class ReadyToArmStatusMsg <<(M,#FFFF00)>>
+    }
+}
+namespace robot_framework_ros2 {
+    class Heartbeat <<(M,#FFFF00)>> <<ROS2>>
+    class ReadyToArm <<(M,#FFFF00)>> <<ROS2>>
+    class Diagnostic <<(M,#FFFF00)>> <<ROS2>>
+}
+package fast::rf_ros2 #LightYellow;line:blue {
+    namespace utils {
+        class CoreUtility
+    }
+    abstract BaseNode #Orange{
+        --Node Life Cycle Functions--
+        +bool init()
+        +bool start()
+        +bool reset()
+
+        --Data Update Functions--
+        void setDiagnostics(DiagnosticMsg[] diagnostics)
+        void setReadyToArm(ReadyToArmStatusMsg readyToArm)
+
+        -- User Initializers ---
+        #{abstract} bool loadConfig()
+        #{abstract} bool initPubSubs()
+        #{abstract} bool initServices()
+        #{abstract} bool initDiagnostics()
+        #{abstract} bool initData()
+
+        --Timed Loop Functions--
+        #{abstract} bool run100hz()
+        #{abstract} bool run10hz()
+        #{abstract} bool run1hz()
+        #{abstract} bool run01hz()
+        #{abstract} bool run001hz()
+        #{abstract} bool runLoop1()
+        #{abstract} bool runLoop2()
+        #{abstract} bool runLoop3()
+
+        -- Base Initializers --
+        -bool baseLoadConfig()
+        -bool baseInitPubSubs()
+        -bool baseInitServices()
+        -bool baseInitDiagnostics()
+        -bool baseInitData()
+
+        --Publishers and Subscribers--
+        -ros::Publisher m_heartbeatPub
+        -ros::Publisher m_diagnosticPub
+        -ros::Publisher m_readyToArmPub
+        -DiagnosticMsg[] m_diagnostics
+    }    
+}
+@enduml

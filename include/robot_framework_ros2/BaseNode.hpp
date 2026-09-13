@@ -46,6 +46,14 @@ namespace fast::rf_ros2 {
          */
         bool start();
 
+        /**
+         * @brief Restart the Node
+         *
+         * @return true
+         * @return false
+         */
+        bool reset();
+
        protected:
         std::string getHostName();
         void setDiagnostics(std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> diagnostics) {
@@ -82,7 +90,6 @@ namespace fast::rf_ros2 {
         virtual std::string pretty() = 0;
 
        private:
-        bool restart();
         /**
          * @brief Load and set Data Members Config.
          *
@@ -127,8 +134,8 @@ namespace fast::rf_ros2 {
 
         // Pubs and Subs
         rclcpp::Publisher<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatPub;
-        rclcpp::Publisher<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmPub;
         rclcpp::Publisher<robot_framework_ros2::msg::Diagnostic>::SharedPtr m_diagnosticPub;
+        rclcpp::Publisher<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmPub;
 
         // Data
         std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> m_diagnostics;

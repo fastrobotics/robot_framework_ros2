@@ -148,7 +148,7 @@ namespace fast::rf_ros2 {
         }
         return true;
     }
-    bool BaseNode::restart() {
+    bool BaseNode::reset() {
         if (!requestNodeStateChange(robot_framework_ros2::msg::NodeState::STATE_STARTING, false)) {
             return false;
         }

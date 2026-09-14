@@ -3,8 +3,8 @@ project(robot_framework_ros2)
 set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage -fpermissive ${WARNING_FLAGS}"
 )
-if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL armv7l)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARCHITECTURE_ARMV7L")
+if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "aarch64")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARCHITECTURE_AARCH64")
   add_compile_options(-Wno-psabi)
 endif()
 add_definitions(-Wall -Wextra -Wno-switch -Werror)

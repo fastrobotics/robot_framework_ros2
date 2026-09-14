@@ -12,7 +12,6 @@ namespace fast::rf {
 }
 package fast::rf_ros2 #LightYellow;line:blue { 
     abstract BaseNode {
-
     }
     class ExampleNodeNode #Yellow {
         #void run100Hz()

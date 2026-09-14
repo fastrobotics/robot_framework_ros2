@@ -1,0 +1,6 @@
+pose: #System
+  inertial_sensor: #Subsystem
+    imu: #Generic Process
+      nodeIMU: #Node
+        high_packet_dropped_rate_threshold: 10.0 # Packet rate for dropped IMU messages, that if it's exceeded will trigger a diagnostic.
+        low_packet_rx_rate_threshold: 50.0 # Packet rate for received IMU messages,that if it's too low will trigger a diagnostic.

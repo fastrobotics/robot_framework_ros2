@@ -22,7 +22,9 @@
 ![](srv/puml/RobotFrameworkROS2ServiceDiagram.png)
 
 # Systems
-
+| Status | System                                         |
+| ------ | ---------------------------------------------- |
+| DRAFT  | [Pose System](Systems/Pose/doc/System-Pose.md) |
 # Features
 | Status | Feature                                          |
 | ------ | ------------------------------------------------ |
@@ -70,9 +72,11 @@ colcon test --event-handlers console_cohesion+
 
 # Templates
 This project makes extensive use of cookiecutter templates.
-| Template | Folder           | Use Case               |
-| -------- | ---------------- | ---------------------- |
-| Node     | `templates/Node` | Used to create a Node. |
+| Template  | Folder                | Use Case                    |
+| --------- | --------------------- | --------------------------- |
+| System    | `templates/System`    | Used to create a System.    |
+| Subsystem | `templates/Subsystem` | Used to create a Subsystem. |
+| Node      | `templates/Node`      | Used to create a Node.      |
 
 To use these templates, run:
 ```bash

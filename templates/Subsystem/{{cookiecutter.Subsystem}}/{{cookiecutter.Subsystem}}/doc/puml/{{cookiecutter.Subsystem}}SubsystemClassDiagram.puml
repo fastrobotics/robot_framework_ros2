@@ -1,0 +1,11 @@
+' @compare_tag Subsystem-ClassDiagram v0.1
+@startuml
+title {{cookiecutter.Subsystem}} Subsystem Class Diagram
+
+namespace fast::rf_ros2 {
+    namespace {{cookiecutter.System}}System {
+        package {{cookiecutter.Subsystem}}Subsystem #LightYellow;line:blue {
+        }
+    }
+}
+@enduml

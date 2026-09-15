@@ -6,7 +6,7 @@
  * @date 2026-09-13
  * 
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.1
+ * @compare_tag Node-Source v0.2
  * 
  */
 #include "{{cookiecutter.Node}}.hpp"
@@ -22,13 +22,14 @@ namespace fast::rf_ros2 {
     bool {{cookiecutter.Node}}::initServices() { return true; }
     bool {{cookiecutter.Node}}::initDiagnostics() { return true; }
     bool {{cookiecutter.Node}}::initData() {
-        process.update(this->get_clock()->now().seconds());  // Kick off the Process
-        setReadyToArm(process.get_ready_to_arm());return true;
+        m_process.update(this->get_clock()->now().seconds());  // Kick off the Process
+        setReadyToArm(m_process.get_ready_to_arm());
+        return true;
     }
     void {{cookiecutter.Node}}::run100Hz() { fast::rf::Logger::logDebug("100 Hz"); }
     void {{cookiecutter.Node}}::run10Hz() {setReadyToArm(process.get_ready_to_arm());fast::rf::Logger::logDebug("10 Hz");}
     void {{cookiecutter.Node}}::run1Hz() {
-        auto diagnostics = process.getDiagnostics();setDiagnostics(diagnostics);
+        auto diagnostics = m_process.getDiagnostics();setDiagnostics(diagnostics);
         fast::rf::Logger::logDebug("1 Hz");
     }
     void {{cookiecutter.Node}}::run01Hz() { fast::rf::Logger::logInfo(pretty()); }
@@ -42,7 +43,7 @@ namespace fast::rf_ros2 {
     std::string {{cookiecutter.Node}}::pretty() {
         std::string str = "\n--- {{cookiecutter.Node}} ---\n";
         str += BaseNode::pretty() + "\n";
-        str += process.pretty();return str;
+        str += m_process.pretty();return str;
     }
 
     std::shared_ptr<BaseNode> BaseNode::createNode() { return std::make_shared<{{cookiecutter.Node}}>(); }

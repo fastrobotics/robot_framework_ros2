@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @compare_tag Node-Launch v0.1 -->
+<launch>
+    <arg name="robot_namespace" default="/"/> 
+    <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
+    <arg name="node_name" default="imu_node" description="Name of the node at runtime"/>
+    <let name="config_path" value="$(find-pkg-share robot_framework_ros2)/config/imu_node_config.yaml"/>
+    <group>
+        <push-ros-namespace namespace="$(var robot_namespace)"/>
+        <node pkg="robot_framework_ros2" 
+            exec="imu_node" 
+            name="$(var node_name)" 
+            namespace="pose/inertialsensor/imu" 
+            output="screen"  
+            emulate_tty="true">
+            <param from="$(var config_path)"/>
+            <param name="verbosity_level" value="$(var verbosity_level)"/>
+            <param name="loop1_rate" value="200.0"/> <!-- General Update -->
+            <param name="loop2_rate" value="200.0"/> <!-- Publish IMU Data -->
+        </node>
+    </group>
+</launch>

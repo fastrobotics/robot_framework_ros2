@@ -1,4 +1,4 @@
-# @compare_tag Node-SourceTestCompile v0.1`
+# @compare_tag Node-SourceTestCompile v0.2`
 find_package(ament_cmake_ros REQUIRED)
 find_package(launch_testing_ament_cmake REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)
@@ -15,4 +15,4 @@ register_framework_rpath(test_{{cookiecutter.NodeBinary}} logger)
 
 install(TARGETS test_{{cookiecutter.NodeBinary}}
         DESTINATION lib/${PROJECT_NAME})
-add_launch_test(run_test_{{cookiecutter.Node}}.py)
+add_launch_test(${CMAKE_CURRENT_SOURCE_DIR}/run_test_{{cookiecutter.Node}}.py)

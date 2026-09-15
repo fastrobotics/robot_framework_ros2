@@ -12,4 +12,4 @@ target_include_directories(
 register_framework_rpath(test_example_node logger)
 
 install(TARGETS test_example_node DESTINATION lib/${PROJECT_NAME})
-add_launch_test(run_test_ExampleNode.py)
+add_launch_test(${CMAKE_CURRENT_SOURCE_DIR}/run_test_ExampleNode.py)

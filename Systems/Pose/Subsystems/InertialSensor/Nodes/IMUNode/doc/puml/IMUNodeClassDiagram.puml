@@ -1,0 +1,39 @@
+' @compare_tag Node-ClassDiagram v0.1
+@startuml
+title IMUNode Node Class Diagram
+namespace fast::rf {
+    namespace PoseSystem {
+        namespace PoseSubsystem {
+            namespace IMU {
+                class IMUProcess
+            }
+        }
+    }
+}
+package fast::rf_ros2 #LightYellow;line:blue { 
+    abstract BaseNode {
+
+    }
+    class IMUNodeNode #Yellow {
+        #void run100Hz()
+        #void run10Hz()
+        #void run1Hz()
+        #void run01Hz()
+        #void run001Hz()
+        #void runLoop1()
+        #void runLoop2()
+        #void runLoop3()
+
+        #bool loadConfig()
+        #bool initPubSubs()
+        #bool initServices()
+        #bool initDiagnostics()
+        #bool initData()
+        -IMUProcess process
+    }
+    IMUNodeNode -up-|> BaseNode
+    IMUNodeNode *-right-> IMUProcess: <<use>>
+
+}
+
+@enduml

@@ -19,25 +19,25 @@ def generate_launch_description():
     print(f"\n[ORCHESTRATOR DIAGNOSTIC]: Host machine identified as: '{current_host}'")
     
     # Define paths to our separate repository configuration files
-    registry_path = os.path.join(bringup_dir, 'config', 'device_registry.yaml')
-    assignments_path = os.path.join(bringup_dir, 'config', 'host_assignments.yaml')
+    node_registry_path = os.path.join(bringup_dir, 'config', 'node_registry.yaml')
+    deployment_map_path = os.path.join(bringup_dir, 'config', 'deployment_map.yaml')
     
     # Initialize our launch queue with the scenario argument
     launch_actions = [scenario_arg]
     
     # Error checking to ensure both config files exist
-    if not os.path.exists(registry_path) or not os.path.exists(assignments_path):
-        print("[ORCHESTRATOR ERROR]: Missing 'device_registry.yaml' or 'host_assignments.yaml'!")
+    if not os.path.exists(node_registry_path) or not os.path.exists(deployment_map_path):
+        print("[ORCHESTRATOR ERROR]: Missing 'node_registry.yaml' or 'deployment_map.yaml'!")
         return LaunchDescription(launch_actions)
         
     # Read and parse both files
-    with open(registry_path, 'r') as f:
-        registry_data = yaml.safe_load(f)
-    with open(assignments_path, 'r') as f:
-        assignments_data = yaml.safe_load(f)
+    with open(node_registry_path, 'r') as f:
+        node_registry_data = yaml.safe_load(f)
+    with open(deployment_map_path, 'r') as f:
+        deployed_data = yaml.safe_load(f)
         
-    registry = registry_data.get('node_registry', {})
-    all_host_assignments = assignments_data.get('host_assignments', {})
+    node_registry = node_registry_data.get('node_registry', {})
+    all_host_assignments = deployed_data.get('host_assignments', {})
     
     # Extract deployment data specifically configured for THIS host computer
     this_host_config = all_host_assignments.get(current_host, {})
@@ -49,11 +49,11 @@ def generate_launch_description():
     for node_item in active_nodes:
         target_name = node_item.get('name')
         
-        if target_name not in registry:
-            print(f"[ORCHESTRATOR WARNING]: Node '{target_name}' is missing from the device registry!")
+        if target_name not in node_registry:
+            print(f"[ORCHESTRATOR WARNING]: Node '{target_name}' is missing from the node registry!")
             continue
             
-        node_def = registry[target_name]
+        node_def = node_registry[target_name]
         custom_node_params = node_item.get('parameters', {})
         
         # --- PATH A: THE REGISTRY DIRECTS THE ITEM TO AN XML LAUNCH BLUEPRINT ---

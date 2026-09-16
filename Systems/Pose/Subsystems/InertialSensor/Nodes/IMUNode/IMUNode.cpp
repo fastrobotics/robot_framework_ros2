@@ -25,7 +25,7 @@ namespace fast::rf_ros2 {
     bool IMUNode::initServices() { return true; }
     bool IMUNode::initDiagnostics() { return true; }
     bool IMUNode::initData() {
-                fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUProcess::IMUConfig imu_config;
+        fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUProcess::IMUConfig imu_config;
         // imu_config.highPacketDroppedRateThreshold = highPacketDroppedRateThreshold;
         // imu_config.lowPacketRxRateThreshold = lowPacketRxRateThreshold;
         std::string imuName = this->declare_parameter<std::string>("sensor", "");

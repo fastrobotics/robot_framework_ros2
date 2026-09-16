@@ -1,0 +1,12 @@
+node_registry:
+  example_node1:
+    package: "robot_framework_ros2"
+    executable: "example_node"
+
+  example_node2:
+    package: "robot_framework_ros2"
+    executable: "example_node"
+
+  imu_node:
+    package: "robot_framework_ros2"
+    launch_file: "Systems/Pose/Subsystems/InertialSensor/Nodes/IMUNode/launch/imu_node.launch.xml"

@@ -1,0 +1,20 @@
+host_assignments:
+  DevComputer2:
+    sensors:
+      - name: "Fake_IMU_Device"
+    nodes:
+      #- name: "example_node1"
+      #- name: "example_node2"
+      - name: "imu_node"
+        parameters:
+          sensor_config_package: "robot_framework_ros2"
+          sensor_config_relative_path: "config/hardware/Fake_IMU_Device.yaml"
+  ControlModule1:
+    sensors:
+      - name: "IMU_RobotshopTM151_3435"
+    
+    nodes:
+      - name: "imu_node"
+        parameters:
+          sensor: "IMU_RobotshopTM151_3435"
+          sensor_config_file: "$(find-pkg-share robot_framework_ros2)/config/hardware/IMU_RobotshopTM151_3435.yaml"  

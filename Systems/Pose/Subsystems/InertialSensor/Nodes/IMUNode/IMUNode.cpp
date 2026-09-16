@@ -13,13 +13,7 @@
 
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 namespace fast::rf_ros2 {
-    bool IMUNode::loadConfig() {
-        std::string paramExampleParameter = "example_parameter";
-        this->declare_parameter<double>(paramExampleParameter, -1.0);
-        double exampleParameter = this->get_parameter(paramExampleParameter).as_double();
-        fast::rf::Logger::logNotice("Example Parameter: " + std::to_string(exampleParameter));
-        return true;
-    }
+    bool IMUNode::loadConfig() { return true; }
     bool IMUNode::initPubSubs() {
         m_imuAccelPub = this->create_publisher<geometry_msgs::msg::AccelStamped>(
             "~/accel", 10);                                                     // fix, should be under a pose namespace
@@ -31,17 +25,20 @@ namespace fast::rf_ros2 {
     bool IMUNode::initServices() { return true; }
     bool IMUNode::initDiagnostics() { return true; }
     bool IMUNode::initData() {
-        fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUProcess::IMUConfig imu_config;
+                fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUProcess::IMUConfig imu_config;
         // imu_config.highPacketDroppedRateThreshold = highPacketDroppedRateThreshold;
         // imu_config.lowPacketRxRateThreshold = lowPacketRxRateThreshold;
-        std::string imuType = "SYDTM151";
-        std::string imuDeviceName = "/dev/imu_STMicroelectronics_3435";
+        std::string imuName = this->declare_parameter<std::string>("sensor", "");
+        std::string imuType = this->declare_parameter<std::string>("info.type", "");
         imu_config.imu_type = fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUDriver::convert_name(imuType);
-        imu_config.imu_device_name = imuDeviceName;
-        // imu_config.linear_accelerometer_covariance = linear_acc_covariance_matrix;
-        // imu_config.gyro_covariance = gyro_covariance_matrix;
-        // imu_config.magnetometer_covariance = magnetometer_covariance_matrix;
-        // imu_config.orientation_covariance = orientation_covariance_matrix;
+        imu_config.imu_device_name = this->declare_parameter<std::string>("info.device_name", "");
+        imu_config.linear_accelerometer_covariance.covariance =
+            this->declare_parameter<std::vector<double>>("linear_accel_covariance_matrix");
+        imu_config.gyro_covariance.covariance = this->declare_parameter<std::vector<double>>("gyro_covariance_matrix");
+        imu_config.magnetometer_covariance.covariance =
+            this->declare_parameter<std::vector<double>>("magnetic_covariance_matrix");
+        imu_config.orientation_covariance.covariance =
+            this->declare_parameter<std::vector<double>>("orientation_covariance_matrix");
         bool status = m_process.init(imu_config);
         if (status == false) {
             fast::rf::Logger::logError("Unable to initialize Process with IMU: " + imuType);

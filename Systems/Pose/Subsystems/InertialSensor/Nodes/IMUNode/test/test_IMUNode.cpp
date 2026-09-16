@@ -1,13 +1,13 @@
 /**
  * @file test_IMUNode.cpp
  * @author your name (you@domain.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2026-09-13
- * 
+ *
  * @copyright Copyright (c) 2026
  * @compare_tag Node-Test v0.1
- * 
+ *
  */
 #include <gtest/gtest.h>
 
@@ -23,8 +23,7 @@ class Ros2TestEnvironment : public ::testing::Environment {
 };
 testing::Environment* const ros2_env = testing::AddGlobalTestEnvironment(new Ros2TestEnvironment);
 std::string robotNamespace = "test";
-std::string nodeNamespace =
-    "pose/inertialsensor/imu";
+std::string nodeNamespace = "pose/inertialsensor/imu";
 std::string nodeUnderTest = "imu_node";
 class IMUNodeTestFixture : public ::testing::Test {
    protected:
@@ -65,8 +64,7 @@ class IMUNodeTestFixture : public ::testing::Test {
     uint64_t m_receivedReadyToArmRxCount = 0;
     robot_framework_ros2::msg::ReadyToArm m_latestReadyToArm;
 };
-TEST_F(IMUNodeTestFixture,
-    VerifyHeartbeatReception) {
+TEST_F(IMUNodeTestFixture, VerifyHeartbeatReception) {
     auto start_time = test_node->get_clock()->now();
     double timeout_seconds = 5.0;
 

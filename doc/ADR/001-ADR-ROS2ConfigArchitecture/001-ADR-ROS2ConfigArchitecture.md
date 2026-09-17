@@ -14,6 +14,7 @@
     - [Hardware Config Files: `config/hardware/<Device>.yaml`](#hardware-config-files-confighardwaredeviceyaml)
     - [Node Launch File `<Node Name>.launch.xml`](#node-launch-file-node-namelaunchxml)
     - [Orchestrator](#orchestrator)
+    - [Scenario Augmentation Proposal](#scenario-augmentation-proposal)
 - [Critical Analysis](#critical-analysis)
   - [1. Configuration Explosion (Maintainability \& Scale Debt)](#1-configuration-explosion-maintainability--scale-debt)
   - [2. Loss of Native ROS 2 Launch Tooling (Orchestration Limitations)](#2-loss-of-native-ros-2-launch-tooling-orchestration-limitations)
@@ -26,6 +27,8 @@
 
 # ADR: ROS2 Config Architecture
 # ToDo List
+- Scenario Management (initial implementation complete)
+- Crawler Sync Config
 - Launch on crawler
 - Linkage to orchestrator
 - Update Node Templates
@@ -302,10 +305,124 @@ Example:
 **Purpose**
 An orchestrator is provided that is intended to be the main application file that spawns off all nodes on the robot hosts.  Note that the intent here is that no matter what host is executed, it's the same orchestrator with the same user space configuration, and the orchestrator's job is to select which nodes and how they run.  For example to run this on any host on your robot:
 ```bash
-ros2 launch <application> orchestrator.launch.py
+ros2 launch <application> orchestrator.launch.py robot_namespace:=<robot ID>
 ```
 
 Note the intent is to have the user application have a symbolic link in their repo to this framework orchestrator.
+
+### Scenario Augmentation Proposal
+**Status: Initial implementation complete; schema and validation may evolve.**
+
+**Objective**
+Scenarios provide an application-level way to modify configuration for a specific operating mode without copying the complete base configuration and without placing robot-specific values in framework-owned files. A scenario may change node parameters, launch arguments, infrastructure aliases, enabled nodes, or other application-owned configuration as required by the scenario.
+
+**Configuration Ownership**
+Scenarios are overlays, not replacements for the base configuration. The base files remain the source of defaults and structure. A scenario directory should mirror the baseline application configuration layout so that ownership and relative paths remain predictable:
+
+- `node_registry.yaml` defines the available nodes and their node-owned defaults.
+- `deployment_map.yaml` defines host assignments and device relationships.
+- Infrastructure registries define shared frames, topics, and similar named values.
+- Hardware configuration files define device-specific parameters.
+- A scenario overlay defines only the values that differ for that operating mode.
+
+The overlay should be stored under the application configuration directory, for example:
+
+```text
+config/
+└── scenarios/
+  ├── simulation/
+    │   ├── node_registry.yaml
+    │   ├── deployment_map.yaml
+    │   ├── hardware/
+    │   └── infrastructure/
+    └── field_test/
+        ├── node_registry.yaml
+        ├── deployment_map.yaml
+        ├── hardware/
+        └── infrastructure/
+```
+
+The scenario tree is sparse: a scenario includes only the baseline-relative files it changes. For example, a scenario that changes only topic aliases contains `infrastructure/topics.yaml`; it does not copy `node_registry.yaml`, `deployment_map.yaml`, or hardware files. Scenario-specific launch files may be placed under a matching `launch/` directory when a launch blueprint must change, but changing a launch blueprint is a protected operation described below.
+
+The initial orchestrator implementation loads an explicitly selected scenario at launch time using an `OpaqueFunction`, then merges the sparse overlays before constructing node actions. When `scenario` is omitted, the baseline configuration is used directly; there is no required or implicit default scenario directory.
+
+**Scenario Selection**
+The orchestrator should accept a scenario argument:
+
+```bash
+ros2 launch <application> orchestrator.launch.py \
+  robot_namespace:=robot1 scenario:=field_test
+```
+
+The selected scenario must be resolved before nodes are constructed. An omitted scenario uses the baseline files. A named scenario that is missing, malformed, or contains an invalid reference should stop launch with an actionable error rather than silently falling back to the baseline.
+
+**Overlay Shape**
+Each scenario file should use the same schema as its baseline counterpart. The orchestrator resolves a baseline file and then applies the matching scenario file by relative path. For example:
+
+```yaml
+# scenarios/field_test/node_registry.yaml
+node_registry:
+  imu_node:
+    parameters:
+      loop1_rate: 100.0
+```
+
+A matching deployment overlay uses the deployment schema:
+```yaml
+# scenarios/field_test/deployment_map.yaml
+host_assignments:
+  DevComputer2:
+    nodes:
+      - name: "imu_node"
+        parameters:
+          sensor_config_relative_path: "config/hardware/IMU_RobotshopTM151_3435.yaml"
+```
+
+An infrastructure overlay uses the infrastructure registry schema:
+```yaml
+# scenarios/field_test/infrastructure/topics.yaml
+topics:
+  imu: "imu/field"
+```
+
+The exact merge implementation remains subject to implementation, but the overlay should support these operations:
+
+- Modify an existing node's launch parameters or ROS parameters.
+- Modify an existing host/node hardware relationship.
+- Add or remove a node from a host for the selected scenario.
+- Select alternate hardware profiles and infrastructure registry values.
+- Supply scenario-specific launch arguments while preserving the node launch blueprint.
+
+Scenario files should not use a second scenario-specific schema such as a generic `scenario.yaml` with unrelated nested sections. Mirroring the baseline files makes each override local to the configuration it owns and allows the same validation rules to be applied to baseline and scenario files.
+
+By default, a scenario should not replace the node registry's package, executable, or launch blueprint. Changing executable ownership or launch topology should require an explicit opt-in field so a scenario cannot accidentally replace the implementation it is meant to configure.
+
+**Precedence**
+Configuration should be resolved in a documented order, with later layers overriding earlier layers only where the schema permits it:
+
+1. Framework defaults.
+2. Application node registry and infrastructure registries.
+3. Selected scenario overlay.
+4. Host deployment map and hardware assignment.
+5. Explicit command-line launch arguments.
+
+The merge should be schema-aware. Mapping values may be merged recursively, node parameter maps may be overridden by key, and node lists should be merged by stable node name rather than by list position. An overlay must not silently delete an entire map because one nested value was changed.
+
+The initial implementation merges `nodes` and `sensors` lists by their `name` field. An overlay item with `remove: true` removes the matching named item. Registry package, executable, and launch-file fields are protected for existing nodes unless an explicit implementation override is added in a future revision.
+
+**Validation and Diagnostics**
+Before launching nodes, the orchestrator should validate the fully resolved configuration. At minimum it should check that:
+
+- The selected scenario exists and has a valid schema.
+- Referenced hosts, nodes, hardware profiles, infrastructure keys, packages, and launch files exist.
+- A node is not assigned to a host without a registry entry.
+- Required parameters remain present after all overlays are applied.
+- Protected fields have not changed unless explicitly allowed.
+
+Diagnostics should identify the scenario file, logical configuration path, and final value that caused an error. The resolved configuration should also be printable in a non-launching validation mode for review and testing.
+
+**Security and Reproducibility**
+Scenario files are configuration inputs, not executable launch code. They may select existing launch files and values, but should not execute arbitrary Python or shell content. The selected scenario name and resolved configuration should be logged so a robot run can be reproduced from its scenario and deployment inputs.
 
 # Critical Analysis
 The following list critial concerns with this ADR:

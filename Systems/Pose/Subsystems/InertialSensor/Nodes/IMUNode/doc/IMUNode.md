@@ -1,14 +1,12 @@
 `@compare_tag Node-Document v0.1`
 
-- [IMUNode Node](#cookiecutternode-node)
+- [IMUNode Node](#imunode-node)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
 - [Architecture](#architecture-1)
-- [Configuration](#configuration)
-  - [Launch](#launch)
-  - [Yaml](#yaml)
-    - [1. Yaml Config:](#1-yaml-config)
-    - [2. Fetching Parameters](#2-fetching-parameters)
+- [Integration Guide](#integration-guide)
+  - [Configuration](#configuration)
+    - [Node Registry](#node-registry)
 
 # IMUNode Node
 
@@ -20,13 +18,18 @@
 
 # Architecture
 
-# Configuration
-## Launch
-
-## Yaml
-You can access the Node Configuration by:
-### 1. Yaml Config:
+# Integration Guide
+## Configuration
+### Node Registry
+In your `node_registry.yaml` file, add the following:
 ```yaml
+imu_node: #Instance name of IMU Node, like imu_node1, etc
+    package: "robot_framework_ros2" 
+    launch_file: "Systems/Pose/Subsystems/InertialSensor/Nodes/IMUNode/launch/imu_node.launch.xml" #Path to IMU Launch File
+    parameters: # Any parameter in xml launch file
+      verbosity_level: "DEBUG"
+      target_frame: "body_frame"
+      imu_topic: "robot_imu"
+      accel_topic: "robot_accel"
+      magnetic_topic: "robot_imu_magnetic"
 ```
-
-### 2. Fetching Parameters

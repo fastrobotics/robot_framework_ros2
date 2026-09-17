@@ -15,4 +15,4 @@ host_assignments:
       - name: "imu_node"
         parameters:
           sensor: "IMU_RobotshopTM151_3435"
-          sensor_config_file: "$(find-pkg-share robot_framework_ros2)/config/hardware/IMU_RobotshopTM151_3435.yaml"  
+          sensor_config_relative_path: "config/hardware/IMU_RobotshopTM151_3435.yaml"

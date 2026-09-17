@@ -1,14 +1,85 @@
 import os
 import socket
+from copy import deepcopy
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.actions import Node
 import yaml
 
-def load_named_map(config_name, config_definition):
+def load_yaml_file(config_path, description):
+    if not os.path.exists(config_path):
+        raise RuntimeError(f"{description} does not exist: {config_path}")
+
+    with open(config_path, 'r') as config_file:
+        return yaml.safe_load(config_file) or {}
+
+
+def merge_named_lists(base_values, overlay_values):
+    merged_values = deepcopy(base_values)
+    indexes = {item.get('name'): index for index, item in enumerate(merged_values) if isinstance(item, dict)}
+
+    for overlay_value in overlay_values:
+        if not isinstance(overlay_value, dict) or 'name' not in overlay_value:
+            merged_values.append(deepcopy(overlay_value))
+            continue
+
+        item_name = overlay_value['name']
+        if overlay_value.get('remove') is True:
+            if item_name in indexes:
+                merged_values.pop(indexes[item_name])
+                indexes = {item.get('name'): index for index, item in enumerate(merged_values) if isinstance(item, dict)}
+            continue
+
+        if item_name in indexes:
+            merged_values[indexes[item_name]] = merge_config(
+                merged_values[indexes[item_name]], overlay_value)
+        else:
+            indexes[item_name] = len(merged_values)
+            merged_values.append(deepcopy(overlay_value))
+
+    return merged_values
+
+
+def merge_config(base_config, overlay_config, key=None):
+    if isinstance(base_config, dict) and isinstance(overlay_config, dict):
+        merged_config = deepcopy(base_config)
+        for config_key, overlay_value in overlay_config.items():
+            merged_config[config_key] = merge_config(
+                merged_config.get(config_key), overlay_value, config_key)
+        return merged_config
+
+    if isinstance(base_config, list) and isinstance(overlay_config, list) and key in {'nodes', 'sensors'}:
+        return merge_named_lists(base_config, overlay_config)
+
+    return deepcopy(overlay_config)
+
+
+def validate_registry_overlay(base_registry, overlay_registry):
+    protected_fields = {'package', 'executable', 'launch_file'}
+    base_nodes = base_registry.get('node_registry', {})
+    overlay_nodes = overlay_registry.get('node_registry', {})
+
+    for node_name, overlay_node in overlay_nodes.items():
+        if node_name not in base_nodes or not isinstance(overlay_node, dict):
+            continue
+        for field in protected_fields:
+            if field in overlay_node and overlay_node[field] != base_nodes[node_name].get(field):
+                raise RuntimeError(
+                    f"Scenario cannot change protected node_registry field "
+                    f"'{node_name}.{field}' without explicit implementation override")
+
+
+def scenario_relative_path(scenario_directory, config_relative_path):
+    relative_path = config_relative_path
+    if relative_path.startswith('config/'):
+        relative_path = relative_path[len('config/'):]
+    return os.path.join(scenario_directory, relative_path)
+
+
+def load_named_map(config_name, config_definition, scenario_directory=None):
     config_package = config_definition.get('package', 'robot_framework_ros2')
     config_relative_path = config_definition.get('relative_path')
     if not config_relative_path:
@@ -17,11 +88,13 @@ def load_named_map(config_name, config_definition):
     config_share = get_package_share_directory(config_package)
     config_path = os.path.join(config_share, config_relative_path)
 
-    if not os.path.exists(config_path):
-        raise RuntimeError(f"Configuration file does not exist: {config_path}")
+    config_data = load_yaml_file(config_path, f"Configuration '{config_name}'")
 
-    with open(config_path, 'r') as config_file:
-        config_data = yaml.safe_load(config_file) or {}
+    if scenario_directory:
+        overlay_path = scenario_relative_path(scenario_directory, config_relative_path)
+        if os.path.exists(overlay_path):
+            overlay_data = load_yaml_file(overlay_path, f"Scenario configuration '{config_name}'")
+            config_data = merge_config(config_data, overlay_data)
 
     values = config_data.get(config_name, {})
     if not isinstance(values, dict):
@@ -44,17 +117,21 @@ def resolve_named_parameters(parameters, named_maps):
     return resolved_parameters
 
 
-def generate_launch_description():
-    # 1. Point to the parent package share directory
+def build_launch_actions(context):
     bringup_dir = get_package_share_directory('robot_framework_ros2')
-    
-    # Expose the high-level scenario argument
-    scenario_arg = DeclareLaunchArgument('scenario', default_value='normal')
-    robot_namespace_arg = DeclareLaunchArgument(
-        'robot_namespace',
-        default_value='/',
-        description='Unique root namespace for this robot')
-    
+    scenario_name = context.perform_substitution(LaunchConfiguration('scenario'))
+    scenario_directory = None
+
+    if scenario_name and (os.path.sep in scenario_name or scenario_name in {'.', '..'}):
+        print(f"[ORCHESTRATOR ERROR]: Invalid scenario name '{scenario_name}'")
+        return []
+
+    if scenario_name:
+        scenario_directory = os.path.join(bringup_dir, 'config', 'scenarios', scenario_name)
+        if not os.path.isdir(scenario_directory):
+            print(f"[ORCHESTRATOR ERROR]: Scenario '{scenario_name}' does not exist: {scenario_directory}")
+            return []
+
     # Automatically read the local computer's network name
     current_host = socket.gethostname()
     print(f"\n[ORCHESTRATOR DIAGNOSTIC]: Host machine identified as: '{current_host}'")
@@ -63,19 +140,25 @@ def generate_launch_description():
     node_registry_path = os.path.join(bringup_dir, 'config', 'node_registry.yaml')
     deployment_map_path = os.path.join(bringup_dir, 'config', 'deployment_map.yaml')
     
-    # Initialize our launch queue with the scenario argument
-    launch_actions = [scenario_arg, robot_namespace_arg]
-    
     # Error checking to ensure both config files exist
     if not os.path.exists(node_registry_path) or not os.path.exists(deployment_map_path):
         print("[ORCHESTRATOR ERROR]: Missing 'node_registry.yaml' or 'deployment_map.yaml'!")
-        return LaunchDescription(launch_actions)
+        return []
         
     # Read and parse both files
-    with open(node_registry_path, 'r') as f:
-        node_registry_data = yaml.safe_load(f)
-    with open(deployment_map_path, 'r') as f:
-        deployed_data = yaml.safe_load(f)
+    node_registry_data = load_yaml_file(node_registry_path, 'Node registry')
+    deployed_data = load_yaml_file(deployment_map_path, 'Deployment map')
+
+    if scenario_directory:
+        scenario_registry_path = os.path.join(scenario_directory, 'node_registry.yaml')
+        scenario_deployment_path = os.path.join(scenario_directory, 'deployment_map.yaml')
+        if os.path.exists(scenario_registry_path):
+            scenario_registry_data = load_yaml_file(scenario_registry_path, 'Scenario node registry')
+            validate_registry_overlay(node_registry_data, scenario_registry_data)
+            node_registry_data = merge_config(node_registry_data, scenario_registry_data)
+        if os.path.exists(scenario_deployment_path):
+            scenario_deployment_data = load_yaml_file(scenario_deployment_path, 'Scenario deployment map')
+            deployed_data = merge_config(deployed_data, scenario_deployment_data)
         
     node_registry = node_registry_data.get('node_registry', {})
     all_host_assignments = deployed_data.get('host_assignments', {})
@@ -88,10 +171,12 @@ def generate_launch_description():
     named_maps = {}
     try:
         for config_name, config_definition in infrastructure_configs.items():
-            named_maps[config_name] = load_named_map(config_name, config_definition)
+            named_maps[config_name] = load_named_map(config_name, config_definition, scenario_directory)
     except (KeyError, RuntimeError, yaml.YAMLError) as error:
         print(f"[ORCHESTRATOR ERROR]: Unable to load infrastructure configuration: {error}")
-        return LaunchDescription(launch_actions)
+        return []
+
+    launch_actions = []
     
     print(f"[ORCHESTRATOR DIAGNOSTIC]: Executing computational nodes for '{current_host}': {[n.get('name') for n in active_nodes]}\n")
     
@@ -138,4 +223,21 @@ def generate_launch_description():
             )
             launch_actions.append(ros_node)
             
-    return LaunchDescription(launch_actions)
+    return launch_actions
+
+
+def generate_launch_description():
+    scenario_arg = DeclareLaunchArgument(
+        'scenario',
+        default_value='',
+        description='Optional scenario overlay; baseline configuration is used when omitted')
+    robot_namespace_arg = DeclareLaunchArgument(
+        'robot_namespace',
+        default_value='/',
+        description='Unique root namespace for this robot')
+
+    return LaunchDescription([
+        scenario_arg,
+        robot_namespace_arg,
+        OpaqueFunction(function=build_launch_actions),
+    ])

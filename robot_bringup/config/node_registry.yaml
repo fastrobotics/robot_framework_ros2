@@ -19,7 +19,7 @@ node_registry:
     package: "robot_framework_ros2"
     launch_file: "Systems/Pose/Subsystems/InertialSensor/Nodes/IMUNode/launch/imu_node.launch.xml"
     parameters:
-      node_namespace: "pose/inertial_sensor/imu"
+      verbosity_level: "DEBUG"
       target_frame: "body_frame"
       imu_topic: "robot_imu"
       accel_topic: "robot_accel"

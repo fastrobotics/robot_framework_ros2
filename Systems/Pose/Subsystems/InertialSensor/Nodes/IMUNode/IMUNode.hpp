@@ -46,5 +46,7 @@ namespace fast::rf_ros2 {
         rclcpp::Publisher<geometry_msgs::msg::AccelStamped>::SharedPtr m_imuAccelPub;
         rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr m_imuPub;
         rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr m_imuMagneticPub;
+
+        fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUProcess::IMUConfig m_imuConfig;
     };
 }  // namespace fast::rf_ros2

@@ -3,9 +3,46 @@ import socket
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.substitutions import LaunchConfiguration
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.actions import Node
 import yaml
+
+def load_named_map(config_name, config_definition):
+    config_package = config_definition.get('package', 'robot_framework_ros2')
+    config_relative_path = config_definition.get('relative_path')
+    if not config_relative_path:
+        raise RuntimeError(f"Configuration '{config_name}' has no relative_path")
+
+    config_share = get_package_share_directory(config_package)
+    config_path = os.path.join(config_share, config_relative_path)
+
+    if not os.path.exists(config_path):
+        raise RuntimeError(f"Configuration file does not exist: {config_path}")
+
+    with open(config_path, 'r') as config_file:
+        config_data = yaml.safe_load(config_file) or {}
+
+    values = config_data.get(config_name, {})
+    if not isinstance(values, dict):
+        raise RuntimeError(f"Configuration must define a '{config_name}' mapping")
+    return values
+
+
+def resolve_named_parameters(parameters, named_maps):
+    resolved_parameters = dict(parameters)
+
+    for parameter_name, parameter_value in parameters.items():
+        if '_' not in parameter_name or not isinstance(parameter_value, str):
+            continue
+
+        map_name = f"{parameter_name.rsplit('_', 1)[-1]}s"
+        values = named_maps.get(map_name)
+        if values is not None and parameter_value in values:
+            resolved_parameters[parameter_name] = values[parameter_value]
+
+    return resolved_parameters
+
 
 def generate_launch_description():
     # 1. Point to the parent package share directory
@@ -13,6 +50,10 @@ def generate_launch_description():
     
     # Expose the high-level scenario argument
     scenario_arg = DeclareLaunchArgument('scenario', default_value='normal')
+    robot_namespace_arg = DeclareLaunchArgument(
+        'robot_namespace',
+        default_value='/',
+        description='Unique root namespace for this robot')
     
     # Automatically read the local computer's network name
     current_host = socket.gethostname()
@@ -23,7 +64,7 @@ def generate_launch_description():
     deployment_map_path = os.path.join(bringup_dir, 'config', 'deployment_map.yaml')
     
     # Initialize our launch queue with the scenario argument
-    launch_actions = [scenario_arg]
+    launch_actions = [scenario_arg, robot_namespace_arg]
     
     # Error checking to ensure both config files exist
     if not os.path.exists(node_registry_path) or not os.path.exists(deployment_map_path):
@@ -42,6 +83,15 @@ def generate_launch_description():
     # Extract deployment data specifically configured for THIS host computer
     this_host_config = all_host_assignments.get(current_host, {})
     active_nodes = this_host_config.get('nodes', [])
+
+    infrastructure_configs = node_registry_data.get('infrastructure_configs', {})
+    named_maps = {}
+    try:
+        for config_name, config_definition in infrastructure_configs.items():
+            named_maps[config_name] = load_named_map(config_name, config_definition)
+    except (KeyError, RuntimeError, yaml.YAMLError) as error:
+        print(f"[ORCHESTRATOR ERROR]: Unable to load infrastructure configuration: {error}")
+        return LaunchDescription(launch_actions)
     
     print(f"[ORCHESTRATOR DIAGNOSTIC]: Executing computational nodes for '{current_host}': {[n.get('name') for n in active_nodes]}\n")
     
@@ -54,14 +104,18 @@ def generate_launch_description():
             continue
             
         node_def = node_registry[target_name]
-        custom_node_params = node_item.get('parameters', {})
+        registry_node_params = node_def.get('parameters', {})
+        deployment_node_params = node_item.get('parameters', {})
+        node_params = {**registry_node_params, **deployment_node_params}
+        resolved_node_params = resolve_named_parameters(node_params, named_maps)
         
         # --- PATH A: THE REGISTRY DIRECTS THE ITEM TO AN XML LAUNCH BLUEPRINT ---
         if 'launch_file' in node_def:
             xml_absolute_path = os.path.join(bringup_dir, node_def['launch_file'])
             
             # Pass all dictionary parameters down directly as string launch arguments
-            launch_args = {str(k): str(v) for k, v in custom_node_params.items()}
+            launch_args = {str(k): str(v) for k, v in resolved_node_params.items()}
+            launch_args.setdefault('robot_namespace', LaunchConfiguration('robot_namespace'))
             
             included_xml_launch = IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(xml_absolute_path),
@@ -71,12 +125,13 @@ def generate_launch_description():
             
         # --- PATH B: THE REGISTRY DIRECTS THE ITEM TO A STANDALONE BINARY ---
         elif 'executable' in node_def:
-            node_parameters = [custom_node_params] if custom_node_params else []
+            node_parameters = [resolved_node_params] if resolved_node_params else []
             
             ros_node = Node(
                 package=node_def['package'],
                 executable=node_def['executable'],
                 name=target_name,                         
+                namespace=LaunchConfiguration('robot_namespace'),
                 parameters=node_parameters, 
                 output='screen',      # Stream stdout directly to the console window
                 emulate_tty=True      # Prevent line buffering so logs show in real time

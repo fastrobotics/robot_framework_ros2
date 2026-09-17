@@ -9,6 +9,7 @@
     - [Framework File Layout](#framework-file-layout)
   - [Schema Layouts](#schema-layouts)
     - [Node Registry: `node_registry.yaml`](#node-registry-node_registryyaml)
+    - [Infrastructure Registries: `tf_frames.yaml`, `topics.yaml`](#infrastructure-registries-tf_framesyaml-topicsyaml)
     - [Deployment Map: `deployment_map.yaml`](#deployment-map-deployment_mapyaml)
     - [Hardware Config Files: `config/hardware/<Device>.yaml`](#hardware-config-files-confighardwaredeviceyaml)
     - [Node Launch File `<Node Name>.launch.xml`](#node-launch-file-node-namelaunchxml)
@@ -25,10 +26,8 @@
 
 # ADR: ROS2 Config Architecture
 # ToDo List
-- Robot namespace
 - Launch on crawler
 - Linkage to orchestrator
-- Add topic map config
 - Update Node Templates
 - 
 # Description
@@ -51,9 +50,12 @@ The following lists a typical file layout.  This is broken into 2 sections: Appl
     |  ├── node_registry.yaml      # Master software catalog
     |  ├── deployment_map.yaml   # Machine-specific deployment map
     |  ├── imu_node_config.yaml    # Baseline software update rates/loops
-    |  └── hardware/
-    |      ├── Fake_IMU_Device.yaml          # Universal default fallback calibration
-    |      └── IMU_RobotshopTM151_3435.yaml  # Specific hardware calibration profiles
+    |  ├── hardware/
+    |  |   ├── Fake_IMU_Device.yaml          # Universal default fallback calibration
+    |  |   └── IMU_RobotshopTM151_3435.yaml  # Specific hardware calibration profiles
+    |  └── infrastructure/
+    |      ├── tf_frames.yaml
+    |      └── topics.yaml
     └── launch/
         └── orchestrator.launch.py  # Sym-Link to Framework Orchestrator
 ```
@@ -77,7 +79,8 @@ robot_framework_ros2/
 ## Schema Layouts
 ### Node Registry: `node_registry.yaml`
 **Purpose**
-- Defines all Nodes and what XML file to use to launch them.
+- Defines all Nodes, what XML file to use to launch them, and node-owned launch parameters.
+- Owns shared infrastructure registry locations such as frames and topics.
 
 ```yaml
 node_registry:
@@ -87,6 +90,8 @@ node_registry:
     <node name instance N>:
         package: "<provider package>"
         launch_file: "<path to node launch file>" # Path to launch file, with root of <package> above.
+      parameters:
+        <parameter>: "<node-specific default>"
 ```
 
 Example:
@@ -103,12 +108,60 @@ node_registry:
   imu_node:
     package: "robot_framework_ros2"
     launch_file: "Systems/Pose/Subsystems/InertialSensor/Nodes/IMUNode/launch/imu_node.launch.xml"
+    parameters:
+      node_namespace: "pose/inertial_sensor/imu"
+      target_frame: "body_frame"
+      imu_topic: "imu"
+      accel_topic: "accel"
+      magnetic_topic: "magnetic"
 ```
+
+### Infrastructure Registries: `tf_frames.yaml`, `topics.yaml`
+**Purpose**
+- Defines shared ROS 2 values using stable configuration keys.
+- Allows deployment maps to refer to frames, topics, and future infrastructure values by key instead of repeating concrete names.
+- Keeps the mapping between a registry name and its file in the node registry.
+
+```yaml
+frames:
+  <frame key>: "<ros frame name>"
+
+topics:
+  <topic key>: "<ros topic name>"
+```
+
+Example:
+```yaml
+# config/infrastructure/tf_frames.yaml
+frames:
+  body_frame: "base_link"
+  imu_frame: "imu_link"
+
+# config/infrastructure/topics.yaml
+topics:
+  imu: "imu"
+  accel: "accel"
+  magnetic: "magnetic"
+```
+
+The node registry declares the available registries:
+```yaml
+infrastructure_configs:
+  frames:
+    package: "robot_framework_ros2"
+    relative_path: "config/infrastructure/tf_frames.yaml"
+  topics:
+    package: "robot_framework_ros2"
+    relative_path: "config/infrastructure/topics.yaml"
+```
+
+Before launching a node, the orchestrator derives the registry from the parameter suffix. For example, `target_frame: "body_frame"` uses `frames` and becomes `target_frame: "base_link"`; `imu_topic: "imu"` uses `topics` and resolves to the configured topic value. Values that do not match a key are passed through unchanged. Future registries can be added by supplying another map name and configuration file, without adding another resolver function.
 
 ### Deployment Map: `deployment_map.yaml`
 **Purpose**
-- Defines what nodes are run on what hosts
-- Defines what hardware is connected to what node
+- Defines what nodes are run on what hosts.
+- Defines what hardware is connected to each host and node.
+- Does not own node-wide topics, frames, namespaces, or other shared node defaults.
 
 ```yaml
 host_assignments:
@@ -204,6 +257,7 @@ The Node Launch file is typically provided by the framework and isn't intended t
         <push-ros-namespace namespace="$(var robot_namespace)"/>
         
         <node pkg="<Node Package>" exec="<Node Binary>" name="$(var node_name)" namespace="<Namespace to launch under>" output="screen" emulate_tty="true">
+            <param name="robot_namespace" value="$(var robot_namespace)"/>
             <!-- Dynamically load the targeted sensor profile directly into this namespace block -->
             <param from="$(var hw_config)"/>
             

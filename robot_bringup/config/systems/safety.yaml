@@ -1,8 +1,0 @@
-/**:
-  ros__parameters:
-    max_linear_acceleration: 2.5   # Base fallback profile value (m/s^2)
-    diagnostic_rate: 10.0          # Shared across safety subsystems
-
-/safety/acceleration_monitor:      # Example of localized node overrides within the same file
-  ros__parameters:
-    filter_gain: 0.85

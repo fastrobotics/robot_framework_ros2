@@ -56,6 +56,8 @@ namespace fast::rf_ros2 {
 
        protected:
         std::string getHostName();
+        std::string getRobotNamespace() { return m_robotNamespace; }
+        std::string getNodeConfigNamespace() { return m_nodeConfigNamespace; }
         void setDiagnostics(std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> diagnostics) {
             m_diagnostics = diagnostics;
         }
@@ -139,5 +141,7 @@ namespace fast::rf_ros2 {
 
         // Data
         std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> m_diagnostics;
+        std::string m_robotNamespace;
+        std::string m_nodeConfigNamespace;
     };
 }  // namespace fast::rf_ros2

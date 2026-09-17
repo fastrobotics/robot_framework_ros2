@@ -44,6 +44,19 @@ namespace fast::rf_ros2 {
             fast::rf::Logger::logError("Unable to initialize Logger!");
             return false;
         }
+        m_robotNamespace = this->declare_parameter<std::string>("robot_namespace");
+        if (m_robotNamespace.empty() || m_robotNamespace.front() != '/') {
+            m_robotNamespace.insert(0, "/");
+        }
+        m_nodeConfigNamespace = this->declare_parameter<std::string>("node_namespace");
+        while (!m_nodeConfigNamespace.empty() && m_nodeConfigNamespace.front() == '/') {
+            m_nodeConfigNamespace.erase(0, 1);
+        }
+        for (char& character : m_nodeConfigNamespace) {
+            if (character == '/') {
+                character = '.';
+            }
+        }
         return true;
     }
     bool BaseNode::baseInitPubSubs() {

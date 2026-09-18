@@ -1,16 +1,16 @@
 `@compare_tag Node-Document v0.2`
 
-- [LocalPoseFuserNode Node](#localposefusernode-node)
+- [LocalPoseFuserNode](#localposefusernode)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
 - [Integration Guide](#integration-guide)
   - [Configuration](#configuration)
     - [Node Registry](#node-registry)
 
-# LocalPoseFuserNode Node
+# LocalPoseFuserNode
 
 # Architecture
-![](../../../Legend.png)
+![](../../../../../../../Legend.png)
 
 ## Class Diagram
 ![](puml/LocalPoseFuserNodeClassDiagram.png)

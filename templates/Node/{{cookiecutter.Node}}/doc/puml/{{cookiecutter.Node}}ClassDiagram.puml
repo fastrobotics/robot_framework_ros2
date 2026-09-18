@@ -1,39 +1,44 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title {{cookiecutter.Node}} Node Class Diagram
+title {{cookiecutter.Node}} Class Diagram
 namespace fast::rf {
     namespace {{cookiecutter.System}}System {
-        namespace {{cookiecutter.System}}Subsystem {
+        namespace {{cookiecutter.Subsystem}}Subsystem {
             namespace {{cookiecutter.Process}} {
                 class Basic{{cookiecutter.Process}}Process
             }
         }
     }
 }
-package fast::rf_ros2 #LightYellow;line:blue { 
+namespace fast::rf_ros2 { 
     abstract BaseNode {
 
     }
-    class {{cookiecutter.Node}}Node #Yellow {
-        #void run100Hz()
-        #void run10Hz()
-        #void run1Hz()
-        #void run01Hz()
-        #void run001Hz()
-        #void runLoop1()
-        #void runLoop2()
-        #void runLoop3()
+    namespace {{cookiecutter.System}}System {
+        namespace {{cookiecutter.Subsystem}}Subsystem {
+            package {{cookiecutter.Process}} #LightYellow;line:blue  {
+                class {{cookiecutter.Node}}Node #Yellow {
+                    #void run100Hz()
+                    #void run10Hz()
+                    #void run1Hz()
+                    #void run01Hz()
+                    #void run001Hz()
+                    #void runLoop1()
+                    #void runLoop2()
+                    #void runLoop3()
 
-        #bool loadConfig()
-        #bool initPubSubs()
-        #bool initServices()
-        #bool initDiagnostics()
-        #bool initData()
-        -Basic{{cookiecutter.Process}}Process process
+                    #bool loadConfig()
+                    #bool initPubSubs()
+                    #bool initServices()
+                    #bool initDiagnostics()
+                    #bool initData()
+                    -Basic{{cookiecutter.Process}}Process m_process
+                }
+                {{cookiecutter.Node}}Node -up-|> BaseNode
+                {{cookiecutter.Node}}Node *-right-> Basic{{cookiecutter.Process}}Process: <<use>>
+            }
+        }
     }
-    {{cookiecutter.Node}}Node -up-|> BaseNode
-    {{cookiecutter.Node}}Node *-right-> Basic{{cookiecutter.Process}}Process: <<use>>
-
 }
 
 @enduml

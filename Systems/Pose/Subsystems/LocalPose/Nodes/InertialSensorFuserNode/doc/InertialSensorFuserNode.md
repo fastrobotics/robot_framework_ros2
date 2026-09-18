@@ -1,6 +1,6 @@
 `@compare_tag Node-Document v0.2`
 
-- [InertialSensorFuserNode Node](#inertialsensorfusernode-node)
+- [InertialSensorFuserNode](#inertialsensorfusernode)
   - [Purpose](#purpose)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
@@ -8,7 +8,7 @@
   - [Configuration](#configuration)
     - [Node Registry](#node-registry)
 
-# InertialSensorFuserNode Node
+# InertialSensorFuserNode
 ## Purpose
 The Inertial Sensor Fuser Node's objective is to read multiple IMU data and aggreate all this into one wholistic representation of an IMU.  NOTE: Multiple instances of this node may need to be executed if IMU's are not rigididly mounted to one another.
 

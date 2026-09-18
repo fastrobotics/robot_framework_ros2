@@ -1,6 +1,6 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title IMUNode Node Class Diagram
+title IMUNode Class Diagram
 namespace fast::rf {
     namespace PoseSystem {
         namespace PoseSubsystem {

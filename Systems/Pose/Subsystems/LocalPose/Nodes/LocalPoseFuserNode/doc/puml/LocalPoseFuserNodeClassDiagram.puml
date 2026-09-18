@@ -1,38 +1,52 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title LocalPoseFuserNode Node Class Diagram
+title LocalPoseFuserNode Class Diagram
+namespace sensor_msgs::msg {
+    class Imu <<(M,#FFFF00)>> <<ROS2>>
+}
+namespace nav_msgs::msg {
+    class Odometry <<(M,#FFFF00)>> <<ROS2>>
+}
+namespace geometry_msgs::msg {
+    class AccelWithCovarianceStamped <<(M,#FFFF00)>> <<ROS2>>
+}
 namespace fast::rf {
-    namespace PoseSystem {
-        namespace PoseSubsystem {
-            namespace LocalPoseFuser {
-                class BasicLocalPoseFuserProcess
-            }
-        }
+    namespace PoseSystem::LocaPoseSubsystem::LocalPoseFuser {
+        interface ILocalPoseFuserProcess
+        class BasicLocalPoseFuserProcess
+        BasicLocalPoseFuserProcess -up-|> ILocalPoseFuserProcess
     }
 }
-package fast::rf_ros2 #LightYellow;line:blue { 
+namespace fast::rf_ros2 { 
     abstract BaseNode {
 
     }
-    class LocalPoseFuserNodeNode #Yellow {
-        #void run100Hz()
-        #void run10Hz()
-        #void run1Hz()
-        #void run01Hz()
-        #void run001Hz()
-        #void runLoop1()
-        #void runLoop2()
-        #void runLoop3()
+    package PoseSystem::LocaPoseSubsystem::LocalPoseFuser #LightYellow;line:blue  {
+        class LocalPoseFuserNodeNode #Yellow {
+            #void run100Hz()
+            #void run10Hz()
+            #void run1Hz()
+            #void run01Hz()
+            #void run001Hz()
+            #void runLoop1()
+            #void runLoop2()
+            #void runLoop3()
 
-        #bool loadConfig()
-        #bool initPubSubs()
-        #bool initServices()
-        #bool initDiagnostics()
-        #bool initData()
-        -BasicLocalPoseFuserProcess process
+            #bool loadConfig()
+            #bool initPubSubs()
+            #bool initServices()
+            #bool initDiagnostics()
+            #bool initData()
+            -void machineInertialCallback(const Imu msg)
+            -BasicLocalPoseFuserProcess m_process
+            -Subscriber m_machineInertialSub
+            -Publisher m_localPosePub
+            -Publisher m_localPoseAngularAccelPub
+        }
+        LocalPoseFuserNodeNode -up-|> BaseNode
+        LocalPoseFuserNodeNode *-right-> BasicLocalPoseFuserProcess: <<use>>
+        
     }
-    LocalPoseFuserNodeNode -up-|> BaseNode
-    LocalPoseFuserNodeNode *-right-> BasicLocalPoseFuserProcess: <<use>>
 
 }
 

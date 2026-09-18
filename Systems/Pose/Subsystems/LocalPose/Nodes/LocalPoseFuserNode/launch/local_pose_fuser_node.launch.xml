@@ -5,7 +5,7 @@
     <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
     <arg name="node_name" default="local_pose_fuser_node" description="Name of the node at runtime"/>
     <arg name="node_namespace" default="pose/localpose/localposefuser" description="Runtime namespace for the node"/>
-    <arg name="machine_inertial_input_topic" default="imu" description="Machine Inertial Input Topic"/>
+    <arg name="machine_inertial_input_topic" default="machine_imu" description="Machine Inertial Input Topic"/>
     <arg name="local_pose_output_topic" default="local_pose" description="Local Pose Output Topic"/>
     <arg name="local_pose_angular_accel_output_topic" default="local_pose_angular_accel" description="Local Pose Angular Accel Output Topic"/>
     <group>

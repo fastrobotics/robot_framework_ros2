@@ -1,6 +1,6 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title InertialSensorFuserNode Node Class Diagram
+title InertialSensorFuserNode Class Diagram
 namespace sensor_msgs::msg {
     class Imu <<(M,#FFFF00)>> <<ROS2>>
 }

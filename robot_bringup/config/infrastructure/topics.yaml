@@ -6,3 +6,6 @@ topics:
   robot_imu: "imu/imu"
   robot_accel: "imu/accel"
   robot_imu_magnetic: "imu/magnetic"
+  local_pose: "local_pose"
+  local_pose_angular_accel: "local_pose_angular_accel"
+  

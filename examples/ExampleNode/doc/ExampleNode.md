@@ -1,13 +1,13 @@
 `@compare_tag Node-Document v0.2`
 
-- [ExampleNode Node](#cookiecutternode-node)
+- [ExampleNode](#examplenode)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
 - [Integration Guide](#integration-guide)
   - [Configuration](#configuration)
     - [Node Registry](#node-registry)
 
-# ExampleNode Node
+# ExampleNode
 
 # Architecture
 ![](../../../Legend.png)

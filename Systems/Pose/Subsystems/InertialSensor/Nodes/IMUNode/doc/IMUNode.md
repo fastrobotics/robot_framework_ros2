@@ -1,6 +1,6 @@
 `@compare_tag Node-Document v0.2`
 
-- [IMUNode Node](#imunode-node)
+- [IMUNode](#imunode)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
 - [Architecture](#architecture-1)
@@ -8,7 +8,7 @@
   - [Configuration](#configuration)
     - [Node Registry](#node-registry)
 
-# IMUNode Node
+# IMUNode
 
 # Architecture
 ![](../../../../../../../Legend.png)

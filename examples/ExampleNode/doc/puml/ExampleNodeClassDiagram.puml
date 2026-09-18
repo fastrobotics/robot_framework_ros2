@@ -1,6 +1,6 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title ExampleNode Node Class Diagram
+title ExampleNode Class Diagram
 namespace fast::rf {
     namespace ExampleSystem {
         namespace ExampleSubsystem {

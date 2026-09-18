@@ -28,7 +28,7 @@ namespace fast::rf_ros2 {
     }
     void ExampleNode::run100Hz() { fast::rf::Logger::logDebug("100 Hz"); }
     void ExampleNode::run10Hz() {
-        setReadyToArm(process.get_ready_to_arm());
+        setReadyToArm(m_process.get_ready_to_arm());
         fast::rf::Logger::logDebug("10 Hz");
     }
     void ExampleNode::run1Hz() {
@@ -39,7 +39,7 @@ namespace fast::rf_ros2 {
     void ExampleNode::run01Hz() { fast::rf::Logger::logInfo(pretty()); }
     void ExampleNode::run001Hz() { fast::rf::Logger::logDebug("0.01 Hz"); }
     void ExampleNode::runLoop1() {
-        process.update(this->get_clock()->now().seconds());
+        m_process.update(this->get_clock()->now().seconds());
         fast::rf::Logger::logDebug("Loop1");
     }
     void ExampleNode::runLoop2() { fast::rf::Logger::logDebug("Loop2"); }

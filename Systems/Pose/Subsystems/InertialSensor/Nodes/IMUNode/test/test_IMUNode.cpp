@@ -23,7 +23,7 @@ class Ros2TestEnvironment : public ::testing::Environment {
 };
 testing::Environment* const ros2_env = testing::AddGlobalTestEnvironment(new Ros2TestEnvironment);
 std::string robotNamespace = "test";
-std::string nodeNamespace = "pose/inertialsensor/imu";
+std::string nodeNamespace = "pose/inertial_sensor/imu";
 std::string nodeUnderTest = "imu_node";
 class IMUNodeTestFixture : public ::testing::Test {
    protected:

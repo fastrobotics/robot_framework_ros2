@@ -11,7 +11,7 @@
     <arg name="accel_topic" default="accel" description="Acceleration topic name"/>
     <arg name="magnetic_topic" default="magnetic" description="Magnetic field topic name"/>
     <arg name="sensor_config_package" default="robot_framework_ros2"/>
-    <arg name="sensor_config_relative_path" default="config/Fake_IMU_Device.yaml"/>
+    <arg name="sensor_config_relative_path" default="config/hardware/Fake_IMU_Device.yaml"/>
     <let name="hw_config" value="$(find-pkg-share $(var sensor_config_package))/$(var sensor_config_relative_path)"/>
     
     <group>

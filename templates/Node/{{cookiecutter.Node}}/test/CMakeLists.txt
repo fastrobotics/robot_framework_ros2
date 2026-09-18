@@ -3,7 +3,6 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(launch_testing_ament_cmake REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)
 
-# 1. Compile the C++ Tester Agent binary
 add_executable(test_{{cookiecutter.NodeBinary}} test_{{cookiecutter.Node}}.cpp)
 target_link_libraries(
   test_{{cookiecutter.NodeBinary}} gtest gtest_main rclcpp::rclcpp logger

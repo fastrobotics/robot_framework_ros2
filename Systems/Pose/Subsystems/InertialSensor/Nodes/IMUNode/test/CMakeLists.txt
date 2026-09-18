@@ -1,9 +1,8 @@
-# @compare_tag Node-SourceTestCompile v0.1`
+# @compare_tag Node-SourceTestCompile v0.2`
 find_package(ament_cmake_ros REQUIRED)
 find_package(launch_testing_ament_cmake REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)
 
-# 1. Compile the C++ Tester Agent binary
 add_executable(test_imu_node test_IMUNode.cpp)
 target_link_libraries(
   test_imu_node

@@ -20,6 +20,27 @@ namespace fast::rf_ros2 {
         m_baseNodeName = nodeName;
         m_nodeState.state = robot_framework_ros2::msg::NodeState::STATE_UNKNOWN;
     }
+
+    std::string BaseNode::getNamespacedTopic(const std::string& topic) const {
+        std::string robotNamespace = m_robotNamespace;
+        while (!robotNamespace.empty() && robotNamespace.back() == '/') {
+            robotNamespace.pop_back();
+        }
+
+        const auto topicStart = topic.find_first_not_of('/');
+        const std::string relativeTopic = topicStart == std::string::npos ? std::string{} : topic.substr(topicStart);
+
+        if (relativeTopic.empty()) {
+            return robotNamespace.empty() ? std::string{"/"} : robotNamespace;
+        }
+
+        if (robotNamespace.empty()) {
+            return std::string{"/"} + relativeTopic;
+        }
+
+        return robotNamespace + "/" + relativeTopic;
+    }
+
     bool BaseNode::baseLoadConfig() {
         std::string verbosityLevel = this->declare_parameter<std::string>("verbosity_level", "NOTICE");
         fast::rf::Level level;
@@ -45,7 +66,12 @@ namespace fast::rf_ros2 {
             return false;
         }
         m_robotNamespace = this->declare_parameter<std::string>("robot_namespace");
-        if (m_robotNamespace.empty() || m_robotNamespace.front() != '/') {
+        while (m_robotNamespace.size() > 1 && m_robotNamespace.back() == '/') {
+            m_robotNamespace.pop_back();
+        }
+        if (m_robotNamespace == "/") {
+            m_robotNamespace.clear();
+        } else if (m_robotNamespace.empty() || m_robotNamespace.front() != '/') {
             m_robotNamespace.insert(0, "/");
         }
         m_nodeConfigNamespace = this->declare_parameter<std::string>("node_namespace");

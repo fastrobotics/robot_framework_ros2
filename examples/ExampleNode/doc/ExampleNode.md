@@ -1,14 +1,11 @@
-`@compare_tag Node-Document v0.1`
+`@compare_tag Node-Document v0.2`
 
 - [ExampleNode Node](#cookiecutternode-node)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
-- [Architecture](#architecture-1)
-- [Configuration](#configuration)
-  - [Launch](#launch)
-  - [Yaml](#yaml)
-    - [1. Yaml Config:](#1-yaml-config)
-    - [2. Fetching Parameters](#2-fetching-parameters)
+- [Integration Guide](#integration-guide)
+  - [Configuration](#configuration)
+    - [Node Registry](#node-registry)
 
 # ExampleNode Node
 
@@ -18,15 +15,14 @@
 ## Class Diagram
 ![](puml/ExampleNodeClassDiagram.png)
 
-# Architecture
-
-# Configuration
-## Launch
-
-## Yaml
-You can access the Node Configuration by:
-### 1. Yaml Config:
+# Integration Guide
+## Configuration
+### Node Registry
+In your `node_registry.yaml` file, add the following:
 ```yaml
+example_node: #Instance name of example_node, like example_node1, etc
+    package: "robot_framework_ros2" 
+    launch_file: "Systems/Example/Subsystems/Example/Nodes/ExampleNode/launch/example_node.launch.xml" #Path to Launch File
+    parameters: # Any parameter in xml launch file
+      verbosity_level: "DEBUG"
 ```
-
-### 2. Fetching Parameters

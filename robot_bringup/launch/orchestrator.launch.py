@@ -233,7 +233,7 @@ def generate_launch_description():
         description='Optional scenario overlay; baseline configuration is used when omitted')
     robot_namespace_arg = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='/',
+        default_value='',
         description='Unique root namespace for this robot')
 
     return LaunchDescription([

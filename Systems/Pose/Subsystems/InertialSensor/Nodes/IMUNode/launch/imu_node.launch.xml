@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- @compare_tag Node-Launch v0.1 -->
+<!-- @compare_tag Node-Launch v0.2 -->
 <launch>
     <arg name="robot_namespace" default="/"/> 
     <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
@@ -24,14 +24,14 @@
             emulate_tty="true">
             <param name="robot_namespace" value="$(var robot_namespace)"/>
             <param name="node_namespace" value="$(var node_namespace)"/>
+            <param name="verbosity_level" value="$(var verbosity_level)"/>
             <param name="sensor" value="$(var sensor)"/>
             <param name="target_frame" value="$(var target_frame)"/>
             <param name="imu_topic" value="$(var imu_topic)"/>
             <param name="accel_topic" value="$(var accel_topic)"/>
             <param name="magnetic_topic" value="$(var magnetic_topic)"/>
             <param from="$(find-pkg-share robot_framework_ros2)/Systems/Pose/config/config.yaml"/>
-            <param from="$(var hw_config)"/>
-            <param name="verbosity_level" value="$(var verbosity_level)"/>
+            <param from="$(var hw_config)"/>  
             <param name="loop1_rate" value="200.0"/> <!-- General Update -->
             <param name="loop2_rate" value="200.0"/> <!-- Publish IMU Data -->
         </node>

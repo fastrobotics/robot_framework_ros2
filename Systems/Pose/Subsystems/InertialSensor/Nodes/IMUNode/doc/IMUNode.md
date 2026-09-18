@@ -1,4 +1,4 @@
-`@compare_tag Node-Document v0.1`
+`@compare_tag Node-Document v0.2`
 
 - [IMUNode Node](#imunode-node)
 - [Architecture](#architecture)
@@ -11,7 +11,7 @@
 # IMUNode Node
 
 # Architecture
-![](../../../Legend.png)
+![](../../../../../../../Legend.png)
 
 ## Class Diagram
 ![](puml/IMUNodeClassDiagram.png)

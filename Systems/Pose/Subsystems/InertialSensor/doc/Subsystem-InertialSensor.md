@@ -1,7 +1,7 @@
 `@compare_tag Subsystem-Document v0.1`
 [Pose System](../../../doc/System-Pose.md)
 
-- [Subsystem: InertialSensor](#subsystem-cookiecuttersubsystem)
+- [Subsystem: InertialSensor](#subsystem-inertialsensor)
 - [Overview](#overview)
   - [Purpose](#purpose)
   - [General Requirements](#general-requirements)

@@ -6,7 +6,7 @@
  * @date 2026-09-13
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.1
+ * @compare_tag Node-Source v0.2
  *
  */
 #include "IMUNode.hpp"
@@ -39,11 +39,11 @@ namespace fast::rf_ros2 {
         const auto imuTopic = this->declare_parameter<std::string>("imu_topic");
         const auto accelTopic = this->declare_parameter<std::string>("accel_topic");
         const auto magneticTopic = this->declare_parameter<std::string>("magnetic_topic");
-        m_imuAccelPub =
-            this->create_publisher<geometry_msgs::msg::AccelStamped>(getRobotNamespace() + "/" + accelTopic, 10);
-        m_imuPub = this->create_publisher<sensor_msgs::msg::Imu>(getRobotNamespace() + "/" + imuTopic, 10);
+
+        m_imuAccelPub = this->create_publisher<geometry_msgs::msg::AccelStamped>(getNamespacedTopic(accelTopic), 10);
+        m_imuPub = this->create_publisher<sensor_msgs::msg::Imu>(getNamespacedTopic(imuTopic), 10);
         m_imuMagneticPub =
-            this->create_publisher<sensor_msgs::msg::MagneticField>(getRobotNamespace() + "/" + magneticTopic, 10);
+            this->create_publisher<sensor_msgs::msg::MagneticField>(getNamespacedTopic(magneticTopic), 10);
         return true;
     }
     bool IMUNode::initServices() { return true; }

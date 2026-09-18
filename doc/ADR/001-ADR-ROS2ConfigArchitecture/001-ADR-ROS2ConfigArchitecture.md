@@ -1,7 +1,6 @@
 [Architecture Decision Records](../ADR.md)
 
 - [ADR: ROS2 Config Architecture](#adr-ros2-config-architecture)
-- [ToDo List](#todo-list)
 - [Description](#description)
   - [Objective](#objective)
   - [Workspace File Layout](#workspace-file-layout)
@@ -26,13 +25,7 @@
 - [Deviations](#deviations)
 
 # ADR: ROS2 Config Architecture
-# ToDo List
-- Scenario Management (initial implementation complete)
-- Crawler Sync Config
-- Launch on crawler
-- Linkage to orchestrator
-- Update Node Templates
-- 
+
 # Description
 ## Objective
 ROS2 provides a much larger breadth of how config works.  This ADR aims at codifying how this architecture will work in this robot framework.  Worth noting is that this is being created with the following concerns:

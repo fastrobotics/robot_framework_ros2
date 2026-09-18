@@ -6,7 +6,7 @@
  * @date 2026-09-11
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Header v0.1
+ * @compare_tag Node-Header v0.2
  */
 #pragma once
 #include <BasicExampleProcess.hpp>
@@ -35,6 +35,6 @@ namespace fast::rf_ros2 {
 
        private:
         std::string pretty() override;
-        fast::rf::ExampleSystem::ExampleSubsystem::Example::BasicExampleProcess process;
+        fast::rf::ExampleSystem::ExampleSubsystem::Example::BasicExampleProcess m_process;
     };
 }  // namespace fast::rf_ros2

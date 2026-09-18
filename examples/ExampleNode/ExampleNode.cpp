@@ -6,7 +6,7 @@
  * @date 2026-09-13
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.1
+ * @compare_tag Node-Source v0.2
  *
  */
 #include "ExampleNode.hpp"
@@ -22,8 +22,8 @@ namespace fast::rf_ros2 {
     bool ExampleNode::initServices() { return true; }
     bool ExampleNode::initDiagnostics() { return true; }
     bool ExampleNode::initData() {
-        process.update(this->get_clock()->now().seconds());  // Kick off the Process
-        setReadyToArm(process.get_ready_to_arm());
+        m_process.update(this->get_clock()->now().seconds());  // Kick off the Process
+        setReadyToArm(m_process.get_ready_to_arm());
         return true;
     }
     void ExampleNode::run100Hz() { fast::rf::Logger::logDebug("100 Hz"); }
@@ -32,7 +32,7 @@ namespace fast::rf_ros2 {
         fast::rf::Logger::logDebug("10 Hz");
     }
     void ExampleNode::run1Hz() {
-        auto diagnostics = process.getDiagnostics();
+        auto diagnostics = m_process.getDiagnostics();
         setDiagnostics(diagnostics);
         fast::rf::Logger::logDebug("1 Hz");
     }
@@ -47,7 +47,7 @@ namespace fast::rf_ros2 {
     std::string ExampleNode::pretty() {
         std::string str = "\n--- ExampleNode ---\n";
         str += BaseNode::pretty() + "\n";
-        str += process.pretty();
+        str += m_process.pretty();
         return str;
     }
 

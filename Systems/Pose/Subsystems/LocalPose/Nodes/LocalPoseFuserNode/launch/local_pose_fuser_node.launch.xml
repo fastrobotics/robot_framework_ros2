@@ -2,7 +2,7 @@
 <!-- @compare_tag Node-Launch v0.2 -->
 <launch>
     <arg name="robot_namespace" default="/"/> 
-    <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
+    <arg name="verbosity_level" default="WARN" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
     <arg name="node_name" default="local_pose_fuser_node" description="Name of the node at runtime"/>
     <arg name="node_namespace" default="pose/localpose/localposefuser" description="Runtime namespace for the node"/>
     <arg name="machine_inertial_input_topic" default="machine_imu" description="Machine Inertial Input Topic"/>

@@ -22,6 +22,15 @@ node_registry:
     package: "robot_framework_ros2"
     launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/InertialSensorFuserNode/launch/inertial_sensor_fuser_node.launch.xml"
     parameters:
-      verbosity_level: "DEBUG"
+      verbosity_level: "WARN"
       imu1_input_topic: "imu1"
       fused_imu_output_topic: "fused_imu"
+
+  local_pose_fuser_node:
+    package: "robot_framework_ros2" 
+    launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/LocalPoseFuserNode/launch/local_pose_fuser_node.launch.xml" #Path to Launch File
+    parameters:
+      verbosity_level: "INFO"
+      machine_inertial_input_topic: "fused_imu"
+      local_pose_output_topic: "local_pose"
+      local_pose_angular_accel_output_topic: "local_pose_angular_accel"

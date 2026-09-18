@@ -9,4 +9,5 @@ host_assignments:
           sensor_config_relative_path: "config/hardware/Fake_IMU_Device.yaml"
 
       - name: "inertial_sensor_fuser_node"
+      - name: "local_pose_fuser_node"
 

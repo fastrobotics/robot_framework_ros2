@@ -1,19 +1,20 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title ExampleNode Node Class Diagram
+title LocalPoseFuserNode Node Class Diagram
 namespace fast::rf {
-    namespace ExampleSystem {
-        namespace ExampleSubsystem {
-            namespace Example {
-                class BasicExampleProcess
+    namespace PoseSystem {
+        namespace PoseSubsystem {
+            namespace LocalPoseFuser {
+                class BasicLocalPoseFuserProcess
             }
         }
     }
 }
 package fast::rf_ros2 #LightYellow;line:blue { 
     abstract BaseNode {
+
     }
-    class ExampleNodeNode #Yellow {
+    class LocalPoseFuserNodeNode #Yellow {
         #void run100Hz()
         #void run10Hz()
         #void run1Hz()
@@ -28,10 +29,10 @@ package fast::rf_ros2 #LightYellow;line:blue {
         #bool initServices()
         #bool initDiagnostics()
         #bool initData()
-        -BasicExampleProcess process
+        -BasicLocalPoseFuserProcess process
     }
-    ExampleNodeNode -up-|> BaseNode
-    ExampleNodeNode *-right-> BasicExampleProcess: <<use>>
+    LocalPoseFuserNodeNode -up-|> BaseNode
+    LocalPoseFuserNodeNode *-right-> BasicLocalPoseFuserProcess: <<use>>
 
 }
 

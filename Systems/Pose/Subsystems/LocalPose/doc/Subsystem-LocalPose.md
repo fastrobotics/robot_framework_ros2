@@ -61,7 +61,7 @@ The following outputs are provided by this system.
 | Status | Node                                                                                          |
 | ------ | --------------------------------------------------------------------------------------------- |
 | DRAFT  | [Inertial Sensor Fuser Node](../Nodes/InertialSensorFuserNode/doc/InertialSensorFuserNode.md) |
-| NEW    | [Local Pose Fuser Node]()                                                                     |
+| DRAFT  | [Local Pose Fuser Node](../Nodes/LocalPoseFuserNode/doc/LocalPoseFuserNode.md)                |
 
 ## Package Diagram
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @compare_tag Node-Launch v0.2 -->
+<launch>
+    <arg name="robot_namespace" default="/"/> 
+    <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
+    <arg name="node_name" default="local_pose_fuser_node" description="Name of the node at runtime"/>
+    <arg name="node_namespace" default="pose/localpose/localposefuser" description="Runtime namespace for the node"/>
+    <arg name="machine_inertial_input_topic" default="imu" description="Machine Inertial Input Topic"/>
+    <arg name="local_pose_output_topic" default="local_pose" description="Local Pose Output Topic"/>
+    <arg name="local_pose_angular_accel_output_topic" default="local_pose_angular_accel" description="Local Pose Angular Accel Output Topic"/>
+    <group>
+        <push-ros-namespace namespace="$(var robot_namespace)"/>
+        <node pkg="robot_framework_ros2" 
+            exec="local_pose_fuser_node" 
+            name="$(var node_name)" 
+            namespace="$(var node_namespace)"
+            output="screen"  
+            emulate_tty="true">
+            <param from="$(find-pkg-share robot_framework_ros2)/Systems/Pose/config/config.yaml"/>
+            <param name="robot_namespace" value="$(var robot_namespace)"/>
+            <param name="node_namespace" value="$(var node_namespace)"/>
+            <param name="verbosity_level" value="$(var verbosity_level)"/>
+            <param name="machine_inertial_input_topic" value="$(var machine_inertial_input_topic)"/>
+            <param name="local_pose_output_topic" value="$(var local_pose_output_topic)"/>
+            <param name="local_pose_angular_accel_output_topic" value="$(var local_pose_angular_accel_output_topic)"/>
+            <param name="loop1_rate" value="40.0"/> <!-- General Update -->
+        </node>
+    </group>
+</launch>

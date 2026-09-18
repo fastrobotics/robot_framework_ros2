@@ -1,1 +1,2 @@
 add_subdirectory(InertialSensorFuserNode)
+add_subdirectory(LocalPoseFuserNode)

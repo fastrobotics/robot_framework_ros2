@@ -21,9 +21,7 @@
             <param name="verbosity_level" value="$(var verbosity_level)"/>
             <param name="imu1_input_topic" value="$(var imu1_input_topic)"/>
             <param name="fused_imu_output_topic" value="$(var fused_imu_output_topic)"/>
-            <param name="loop1_rate" value="1.0"/>
-            <param name="loop2_rate" value="2.0"/>
-            <param name="loop3_rate" value="3.0"/>
+            <param name="loop1_rate" value="20.0"/> <!-- General Update -->
         </node>
     </group>
 </launch>

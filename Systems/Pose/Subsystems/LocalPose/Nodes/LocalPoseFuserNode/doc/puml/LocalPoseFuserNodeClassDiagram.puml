@@ -22,7 +22,7 @@ namespace fast::rf_ros2 {
 
     }
     package PoseSystem::LocaPoseSubsystem::LocalPoseFuser #LightYellow;line:blue  {
-        class LocalPoseFuserNodeNode #Yellow {
+        class LocalPoseFuserNodeNode #LimeGreen {
             #void run100Hz()
             #void run10Hz()
             #void run1Hz()

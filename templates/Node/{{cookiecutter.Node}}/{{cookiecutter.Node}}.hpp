@@ -6,7 +6,7 @@
  * @date 2026-09-11
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Header v0.1
+ * @compare_tag Node-Header v0.2
  */
 #pragma once
 #include <Basic{{cookiecutter.Process}}Process.hpp>
@@ -35,6 +35,6 @@ namespace fast::rf_ros2 {
 
        private:
         std::string pretty() override;
-        fast::rf::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}}::Basic{{cookiecutter.Process}}Process process;
+        fast::rf::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}}::Basic{{cookiecutter.Process}}Process m_process;
     };
 }  // namespace fast::rf_ros2

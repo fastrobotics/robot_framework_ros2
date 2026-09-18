@@ -85,8 +85,15 @@ include_directories(include ${robot_framework_SOURCE_DIR}
 set(BUILD_TESTING
     ON
     CACHE BOOL "" FORCE)
+install(DIRECTORY robot_bringup/launch/
+        DESTINATION share/${PROJECT_NAME}/launch)
 
+# Install configurations into the standard top-level config directory
+install(DIRECTORY robot_bringup/config/
+        DESTINATION share/${PROJECT_NAME}/config)
 add_subdirectory(core)
 add_subdirectory(examples)
+add_subdirectory(Systems)
+install(DIRECTORY Systems DESTINATION share/${PROJECT_NAME})
 
 ament_package()

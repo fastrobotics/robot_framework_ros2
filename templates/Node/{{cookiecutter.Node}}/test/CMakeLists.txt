@@ -1,9 +1,8 @@
-# @compare_tag Node-SourceTestCompile v0.1`
+# @compare_tag Node-SourceTestCompile v0.2`
 find_package(ament_cmake_ros REQUIRED)
 find_package(launch_testing_ament_cmake REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)
 
-# 1. Compile the C++ Tester Agent binary
 add_executable(test_{{cookiecutter.NodeBinary}} test_{{cookiecutter.Node}}.cpp)
 target_link_libraries(
   test_{{cookiecutter.NodeBinary}} gtest gtest_main rclcpp::rclcpp logger
@@ -15,4 +14,4 @@ register_framework_rpath(test_{{cookiecutter.NodeBinary}} logger)
 
 install(TARGETS test_{{cookiecutter.NodeBinary}}
         DESTINATION lib/${PROJECT_NAME})
-add_launch_test(run_test_{{cookiecutter.Node}}.py)
+add_launch_test(${CMAKE_CURRENT_SOURCE_DIR}/run_test_{{cookiecutter.Node}}.py)

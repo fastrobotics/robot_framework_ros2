@@ -3,6 +3,7 @@
 # FAST Robotics - Robot Framework: ROS v2 Middleware
 
 - [FAST Robotics - Robot Framework: ROS v2 Middleware](#fast-robotics---robot-framework-ros-v2-middleware)
+- [Architecture Design Records](#architecture-design-records)
 - [Architecture](#architecture)
 - [Interfaces](#interfaces)
 - [Systems](#systems)
@@ -12,6 +13,8 @@
   - [Build and run Unit Tests](#build-and-run-unit-tests)
 - [Templates](#templates)
 
+# Architecture Design Records
+[ADR's](doc/ADR/ADR.md)
 
 
 # Architecture
@@ -22,7 +25,9 @@
 ![](srv/puml/RobotFrameworkROS2ServiceDiagram.png)
 
 # Systems
-
+| Status | System                                         |
+| ------ | ---------------------------------------------- |
+| DRAFT  | [Pose System](Systems/Pose/doc/System-Pose.md) |
 # Features
 | Status | Feature                                          |
 | ------ | ------------------------------------------------ |
@@ -70,9 +75,11 @@ colcon test --event-handlers console_cohesion+
 
 # Templates
 This project makes extensive use of cookiecutter templates.
-| Template | Folder           | Use Case               |
-| -------- | ---------------- | ---------------------- |
-| Node     | `templates/Node` | Used to create a Node. |
+| Template  | Folder                | Use Case                    |
+| --------- | --------------------- | --------------------------- |
+| System    | `templates/System`    | Used to create a System.    |
+| Subsystem | `templates/Subsystem` | Used to create a Subsystem. |
+| Node      | `templates/Node`      | Used to create a Node.      |
 
 To use these templates, run:
 ```bash

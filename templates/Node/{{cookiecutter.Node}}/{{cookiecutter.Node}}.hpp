@@ -12,7 +12,7 @@
 #include <Basic{{cookiecutter.Process}}Process.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
-namespace fast::rf_ros2 {
+namespace fast::rf_ros2::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}} {
     class {{cookiecutter.Node}} : public BaseNode {
        public:
         {{cookiecutter.Node}}() : BaseNode("{{cookiecutter.NodeBinary}}") {}

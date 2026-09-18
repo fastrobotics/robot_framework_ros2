@@ -198,10 +198,13 @@ def build_launch_actions(context):
         if 'launch_file' in node_def:
             xml_absolute_path = os.path.join(bringup_dir, node_def['launch_file'])
             
-            # Pass all dictionary parameters down directly as string launch arguments
+            # Pass all dictionary parameters down directly as string launch arguments.
+            # Do not override an XML default node_namespace with an empty value; that would
+            # collapse the config namespace to "" and make parameters resolve as ".imu_node.*".
             launch_args = {str(k): str(v) for k, v in resolved_node_params.items()}
+            launch_args['node_name'] = target_name
             launch_args.setdefault('robot_namespace', LaunchConfiguration('robot_namespace'))
-            
+
             included_xml_launch = IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(xml_absolute_path),
                 launch_arguments=launch_args.items()

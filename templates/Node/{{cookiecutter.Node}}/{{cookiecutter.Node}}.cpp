@@ -6,11 +6,11 @@
  * @date 2026-09-13
  * 
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.2
+ * @compare_tag Node-Source v0.3
  * 
  */
 #include "{{cookiecutter.Node}}.hpp"
-namespace fast::rf_ros2 {
+namespace fast::rf_ros2::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}} {
     bool {{cookiecutter.Node}}::loadConfig() {
         std::string paramExampleParameter = "example_parameter";
         this->declare_parameter<double>(paramExampleParameter, -1.0);
@@ -47,4 +47,9 @@ namespace fast::rf_ros2 {
     }
 
     std::shared_ptr<BaseNode> BaseNode::createNode() { return std::make_shared<{{cookiecutter.Node}}>(); }
+}  // namespace fast::rf_ros2::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}}
+namespace fast::rf_ros2 {
+    std::shared_ptr<BaseNode> BaseNode::createNode() {
+        return std::make_shared<fast::rf_ros2::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}}::{{cookiecutter.Node}}>();
+    }
 }  // namespace fast::rf_ros2

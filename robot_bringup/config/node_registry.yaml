@@ -7,20 +7,21 @@ infrastructure_configs:
     relative_path: "config/infrastructure/topics.yaml"
 
 node_registry:
-  example_node1:
-    package: "robot_framework_ros2"
-    executable: "example_node"
 
-  example_node2:
-    package: "robot_framework_ros2"
-    executable: "example_node"
-
-  imu_node:
+  imu_node1:
     package: "robot_framework_ros2"
     launch_file: "Systems/Pose/Subsystems/InertialSensor/Nodes/IMUNode/launch/imu_node.launch.xml"
     parameters:
-      verbosity_level: "DEBUG"
+      verbosity_level: "WARN"
       target_frame: "body_frame"
-      imu_topic: "robot_imu"
-      accel_topic: "robot_accel"
-      magnetic_topic: "robot_imu_magnetic"
+      imu_topic: "imu1"
+      accel_topic: "accel1"
+      magnetic_topic: "magnetic1"
+
+  inertial_sensor_fuser_node:
+    package: "robot_framework_ros2"
+    launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/InertialSensorFuserNode/launch/inertial_sensor_fuser_node.launch.xml"
+    parameters:
+      verbosity_level: "DEBUG"
+      imu1_input_topic: "imu1"
+      fused_imu_output_topic: "fused_imu"

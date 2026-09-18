@@ -56,6 +56,7 @@ namespace fast::rf_ros2 {
 
        protected:
         std::string getHostName();
+        std::string getBaseNodeName() const { return m_baseNodeName; }
         std::string getRobotNamespace() { return m_robotNamespace; }
         std::string getNamespacedTopic(const std::string& topic) const;
         std::string getNodeConfigNamespace() { return m_nodeConfigNamespace; }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @compare_tag Node-Launch v0.2 -->
+<launch>
+    <arg name="robot_namespace" default="/"/> 
+    <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
+    <arg name="node_name" default="inertial_sensor_fuser_node" description="Name of the node at runtime"/>
+    <arg name="node_namespace" default="pose/localpose/inertialsensorfuser" description="Runtime namespace for the node"/>
+    <arg name="imu1_input_topic" default="imu1" description="IMU1 Input Topic"/>
+    <arg name="fused_imu_output_topic" default="fused_imu" description="Fused IMU Output Topic"/>
+    <group>
+        <push-ros-namespace namespace="$(var robot_namespace)"/>
+        <node pkg="robot_framework_ros2" 
+            exec="inertial_sensor_fuser_node" 
+            name="$(var node_name)" 
+            namespace="$(var node_namespace)"
+            output="screen"  
+            emulate_tty="true">
+            <param from="$(find-pkg-share robot_framework_ros2)/Systems/Pose/config/config.yaml"/>
+            <param name="robot_namespace" value="$(var robot_namespace)"/>
+            <param name="node_namespace" value="$(var node_namespace)"/>
+            <param name="verbosity_level" value="$(var verbosity_level)"/>
+            <param name="imu1_input_topic" value="$(var imu1_input_topic)"/>
+            <param name="fused_imu_output_topic" value="$(var fused_imu_output_topic)"/>
+            <param name="loop1_rate" value="1.0"/>
+            <param name="loop2_rate" value="2.0"/>
+            <param name="loop3_rate" value="3.0"/>
+        </node>
+    </group>
+</launch>

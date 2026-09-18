@@ -3,16 +3,10 @@ host_assignments:
     sensors:
       - name: "Fake_IMU_Device"
     nodes:
-      - name: "imu_node"
+      - name: "imu_node1"
         parameters:
           sensor_config_package: "robot_framework_ros2"
           sensor_config_relative_path: "config/hardware/Fake_IMU_Device.yaml"
-  ControlModule1:
-    sensors:
-      - name: "IMU_RobotshopTM151_3435"
-    
-    nodes:
-      - name: "imu_node"
-        parameters:
-          sensor: "IMU_RobotshopTM151_3435"
-          sensor_config_relative_path: "config/hardware/IMU_RobotshopTM151_3435.yaml"
+
+      - name: "inertial_sensor_fuser_node"
+

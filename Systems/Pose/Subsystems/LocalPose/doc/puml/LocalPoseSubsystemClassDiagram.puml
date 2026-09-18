@@ -1,16 +1,10 @@
+' @compare_tag Subsystem-ClassDiagram v0.1
 @startuml
-title Pose System Class Diagram
+title LocalPose Subsystem Class Diagram
 
 namespace fast::rf_ros2 {
-    package PoseSystem #LightYellow;line:blue {
-        namespace InertialSensorSubsystem #LimeGreen {
-            namespace IMU {
-                class IMUNode <<ROS2>> #LimeGreen {
-
-                }
-            }
-        }
-        namespace LocalPoseSubsystem #Orange {
+    namespace PoseSystem {
+        package LocalPoseSubsystem #LightYellow;line:blue {
             namespace InertialSensorFuser {
                 class InertialSensorFuserNode <<ROS2>> #Orange {
 

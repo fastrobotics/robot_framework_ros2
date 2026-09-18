@@ -6,11 +6,11 @@
  * @date 2026-09-13
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.2
+ * @compare_tag Node-Source v0.3
  *
  */
 #include "ExampleNode.hpp"
-namespace fast::rf_ros2 {
+namespace fast::rf_ros2::ExampleSystem::ExampleSubsystem::Example {
     bool ExampleNode::loadConfig() {
         std::string paramExampleParameter = "example_parameter";
         this->declare_parameter<double>(paramExampleParameter, -1.0);
@@ -50,6 +50,9 @@ namespace fast::rf_ros2 {
         str += m_process.pretty();
         return str;
     }
-
-    std::shared_ptr<BaseNode> BaseNode::createNode() { return std::make_shared<ExampleNode>(); }
+}  // namespace fast::rf_ros2::ExampleSystem::ExampleSubsystem::Example
+namespace fast::rf_ros2 {
+    std::shared_ptr<BaseNode> BaseNode::createNode() {
+        return std::make_shared<fast::rf_ros2::ExampleSystem::ExampleSubsystem::Example::ExampleNode>();
+    }
 }  // namespace fast::rf_ros2

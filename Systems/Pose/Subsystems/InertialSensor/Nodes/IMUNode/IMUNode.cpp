@@ -6,19 +6,19 @@
  * @date 2026-09-13
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.2
+ * @compare_tag Node-Source v0.3
  *
  */
 #include "IMUNode.hpp"
 
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
-namespace fast::rf_ros2 {
+namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU {
     bool IMUNode::loadConfig() {
         // Get Node Config
         m_imuConfig.highPacketDroppedRateThreshold = this->declare_parameter<double>(
-            getNodeConfigNamespace() + "." + this->get_name() + ".high_packet_dropped_rate_threshold");
+            getNodeConfigNamespace() + "." + getBaseNodeName() + ".high_packet_dropped_rate_threshold");
         m_imuConfig.lowPacketRxRateThreshold = this->declare_parameter<double>(
-            getNodeConfigNamespace() + "." + this->get_name() + ".low_packet_rx_rate_threshold");
+            getNodeConfigNamespace() + "." + getBaseNodeName() + ".low_packet_rx_rate_threshold");
 
         // Get Sensor Config
         std::string imuName = this->declare_parameter<std::string>("sensor");
@@ -105,6 +105,10 @@ namespace fast::rf_ros2 {
         str += m_process.pretty();
         return str;
     }
+}  // namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU
 
-    std::shared_ptr<BaseNode> BaseNode::createNode() { return std::make_shared<IMUNode>(); }
+namespace fast::rf_ros2 {
+    std::shared_ptr<BaseNode> BaseNode::createNode() {
+        return std::make_shared<fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU::IMUNode>();
+    }
 }  // namespace fast::rf_ros2

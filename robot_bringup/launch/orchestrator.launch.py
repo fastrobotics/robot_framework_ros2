@@ -1,4 +1,5 @@
 import os
+import re
 import socket
 from copy import deepcopy
 from ament_index_python.packages import get_package_share_directory
@@ -117,6 +118,27 @@ def resolve_named_parameters(parameters, named_maps):
     return resolved_parameters
 
 
+def to_namespace_component(value):
+    snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', value).lower()
+    return snake_case.replace('-', '_')
+
+
+def namespace_from_launch_file(launch_file):
+    path_parts = launch_file.replace('\\', '/').split('/')
+    try:
+        systems_index = path_parts.index('Systems')
+        system = path_parts[systems_index + 1]
+        subsystems_index = path_parts.index('Subsystems', systems_index + 2)
+        subsystem = path_parts[subsystems_index + 1]
+    except (ValueError, IndexError):
+        return None
+
+    if subsystem != 'LocalPose':
+        return None
+
+    return '/'.join((to_namespace_component(system), to_namespace_component(subsystem)))
+
+
 def build_launch_actions(context):
     bringup_dir = get_package_share_directory('robot_framework_ros2')
     scenario_name = context.perform_substitution(LaunchConfiguration('scenario'))
@@ -198,10 +220,16 @@ def build_launch_actions(context):
         if 'launch_file' in node_def:
             xml_absolute_path = os.path.join(bringup_dir, node_def['launch_file'])
             
-            # Pass all dictionary parameters down directly as string launch arguments
+            # Pass all dictionary parameters down directly as string launch arguments.
+            # Do not override an XML default node_namespace with an empty value; that would
+            # collapse the config namespace to "" and make parameters resolve as ".imu_node.*".
             launch_args = {str(k): str(v) for k, v in resolved_node_params.items()}
+            launch_args['node_name'] = target_name
+            derived_namespace = namespace_from_launch_file(node_def['launch_file'])
+            if derived_namespace:
+                launch_args['node_namespace'] = derived_namespace
             launch_args.setdefault('robot_namespace', LaunchConfiguration('robot_namespace'))
-            
+
             included_xml_launch = IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(xml_absolute_path),
                 launch_arguments=launch_args.items()

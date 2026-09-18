@@ -1,0 +1,21 @@
+' @compare_tag Subsystem-ClassDiagram v0.1
+@startuml
+title LocalPose Subsystem Class Diagram
+
+namespace fast::rf_ros2 {
+    namespace PoseSystem {
+        package LocalPoseSubsystem #LightYellow;line:blue {
+            namespace InertialSensorFuser {
+                class InertialSensorFuserNode <<ROS2>> #LimeGreen {
+
+                }
+            }
+            namespace LocalPoseFuser {
+                class LocalPoseFuserNode <<ROS2>> #LimeGreen {
+                    
+                }
+            }
+        }
+    }
+}
+@enduml

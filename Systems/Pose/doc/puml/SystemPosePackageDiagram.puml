@@ -10,6 +10,18 @@ namespace fast::rf_ros2 {
                 }
             }
         }
+        namespace LocalPoseSubsystem #LimeGreen {
+            namespace InertialSensorFuser {
+                class InertialSensorFuserNode <<ROS2>> #LimeGreen {
+
+                }
+            }
+            namespace LocalPoseFuser {
+                class LocalPoseFuserNode <<ROS2>> #LimeGreen {
+                    
+                }
+            }
+        }
     }
 }
 @enduml

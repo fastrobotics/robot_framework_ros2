@@ -16,7 +16,7 @@
 #include <geometry_msgs/msg/accel_stamped.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
-namespace fast::rf_ros2 {
+namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU {
     class IMUNode : public BaseNode {
        public:
         IMUNode() : BaseNode("imu_node") {}
@@ -49,4 +49,4 @@ namespace fast::rf_ros2 {
 
         fast::rf::PoseSystem::InertialSensorSubsystem::IMU::IIMUProcess::IMUConfig m_imuConfig;
     };
-}  // namespace fast::rf_ros2
+}  // namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU

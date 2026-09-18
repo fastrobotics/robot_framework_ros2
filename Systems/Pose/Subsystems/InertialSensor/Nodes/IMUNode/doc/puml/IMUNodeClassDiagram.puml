@@ -1,6 +1,6 @@
 ' @compare_tag Node-ClassDiagram v0.1
 @startuml
-title IMUNode Node Class Diagram
+title IMUNode Class Diagram
 namespace fast::rf {
     namespace PoseSystem {
         namespace PoseSubsystem {
@@ -14,7 +14,7 @@ package fast::rf_ros2 #LightYellow;line:blue {
     abstract BaseNode {
 
     }
-    class IMUNodeNode #Yellow {
+    class IMUNodeNode #LimeGreen {
         #void run100Hz()
         #void run10Hz()
         #void run1Hz()

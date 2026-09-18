@@ -1,4 +1,11 @@
 topics:
-  robot_imu: imu
-  robot_accel: imu_accel
-  robot_imu_magnetic: imu_magnetic
+  imu1: "imu1/imu"
+  accel1: "imu1/accel"
+  magnetic1: "imu1/magnetic"
+  fused_imu: "fused_imu/imu"
+  robot_imu: "imu/imu"
+  robot_accel: "imu/accel"
+  robot_imu_magnetic: "imu/magnetic"
+  local_pose: "local_pose"
+  local_pose_angular_accel: "local_pose_angular_accel"
+  

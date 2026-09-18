@@ -12,7 +12,7 @@
 #include <BasicExampleProcess.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
-namespace fast::rf_ros2 {
+namespace fast::rf_ros2::ExampleSystem::ExampleSubsystem::Example {
     class ExampleNode : public BaseNode {
        public:
         ExampleNode() : BaseNode("example_node") {}
@@ -37,4 +37,4 @@ namespace fast::rf_ros2 {
         std::string pretty() override;
         fast::rf::ExampleSystem::ExampleSubsystem::Example::BasicExampleProcess m_process;
     };
-}  // namespace fast::rf_ros2
+}  // namespace fast::rf_ros2::ExampleSystem::ExampleSubsystem::Example

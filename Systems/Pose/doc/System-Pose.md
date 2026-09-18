@@ -2,7 +2,7 @@
 [README](../../../README.md)
 
 
-- [System: Pose](#system-cookiecuttersystem)
+- [System: Pose](#system-pose)
 - [Overview](#overview)
   - [Purpose](#purpose)
   - [General Requirements](#general-requirements)
@@ -57,6 +57,7 @@ The following Subsystems are provided in this System:
 | State | Subsystem                                                                       | Purpose |
 | ----- | ------------------------------------------------------------------------------- | ------- |
 | DRAFT | [Inertial Sensor](../Subsystems/InertialSensor/doc/Subsystem-InertialSensor.md) |         |
+| DRAFT | [Local Pose](../Subsystems/LocalPose/doc/Subsystem-LocalPose.md)                |         |
 
 
 ## Package Diagram

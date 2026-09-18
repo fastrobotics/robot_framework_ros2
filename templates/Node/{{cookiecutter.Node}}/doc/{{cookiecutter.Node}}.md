@@ -1,13 +1,13 @@
 `@compare_tag Node-Document v0.2`
 
-- [{{cookiecutter.Node}} Node](#cookiecutternode-node)
+- [{{cookiecutter.Node}}](#cookiecutternode)
 - [Architecture](#architecture)
   - [Class Diagram](#class-diagram)
 - [Integration Guide](#integration-guide)
   - [Configuration](#configuration)
     - [Node Registry](#node-registry)
 
-# {{cookiecutter.Node}} Node
+# {{cookiecutter.Node}}
 
 # Architecture
 ![](../../../Legend.png)

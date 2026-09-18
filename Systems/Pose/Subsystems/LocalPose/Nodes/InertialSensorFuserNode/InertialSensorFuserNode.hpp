@@ -40,7 +40,7 @@ namespace fast::rf_ros2::PoseSystem::LocalPoseSubsystem::InertialSensorFuser {
         bool initData() override;
 
        private:
-        void imuCallback(const std::string& topic_name, const sensor_msgs::msg::Imu::SharedPtr msg) const;
+        void imuCallback(const std::string& topicName, const sensor_msgs::msg::Imu::SharedPtr msg) const;
         std::string pretty() override;
         std::shared_ptr<fast::rf::PoseSystem::LocalPoseSubsystem::InertialSensorFuser::IInertialSensorFuserProcess>
             m_process;

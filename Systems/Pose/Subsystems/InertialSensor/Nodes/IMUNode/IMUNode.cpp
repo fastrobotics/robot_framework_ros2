@@ -6,7 +6,7 @@
  * @date 2026-09-13
  *
  * @copyright Copyright (c) 2026
- * @compare_tag Node-Source v0.2
+ * @compare_tag Node-Source v0.3
  *
  */
 #include "IMUNode.hpp"
@@ -105,7 +105,6 @@ namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU {
         str += m_process.pretty();
         return str;
     }
-
 }  // namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU
 
 namespace fast::rf_ros2 {

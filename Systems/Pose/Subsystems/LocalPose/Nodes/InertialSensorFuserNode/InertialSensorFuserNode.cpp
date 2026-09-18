@@ -13,7 +13,7 @@
 
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 namespace fast::rf_ros2::PoseSystem::LocalPoseSubsystem::InertialSensorFuser {
-    void InertialSensorFuserNode::imuCallback([[maybe_unused]] const std::string& topic_name,
+    void InertialSensorFuserNode::imuCallback([[maybe_unused]] const std::string& topicName,
                                               const sensor_msgs::msg::Imu::SharedPtr msg) const {
         auto localMsg = *msg;
         m_process->new_imu_data(0, fast::rf_ros2::utils::TranslateUtility::convert(localMsg));

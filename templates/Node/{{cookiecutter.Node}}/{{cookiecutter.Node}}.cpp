@@ -45,8 +45,6 @@ namespace fast::rf_ros2::{{cookiecutter.System}}System::{{cookiecutter.Subsystem
         str += BaseNode::pretty() + "\n";
         str += m_process.pretty();return str;
     }
-
-    std::shared_ptr<BaseNode> BaseNode::createNode() { return std::make_shared<{{cookiecutter.Node}}>(); }
 }  // namespace fast::rf_ros2::{{cookiecutter.System}}System::{{cookiecutter.Subsystem}}Subsystem::{{cookiecutter.Process}}
 namespace fast::rf_ros2 {
     std::shared_ptr<BaseNode> BaseNode::createNode() {

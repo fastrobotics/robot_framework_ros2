@@ -1,7 +1,7 @@
 `@compare_tag Subsystem-Document v0.1`
 [BaseMachine System](../../../doc/System-BaseMachine.md)
 
-- [Subsystem: BaseMachine](#subsystem-cookiecuttersubsystem)
+- [Subsystem: BaseMachine](#subsystem-basemachine)
 - [Overview](#overview)
   - [Purpose](#purpose)
   - [General Requirements](#general-requirements)
@@ -58,8 +58,9 @@ The following outputs are provided by this system.
 
 # Nodes
 
-| Status | Node |
-| ------ | ---- |
+| Status | Node                                                        |
+| ------ | ----------------------------------------------------------- |
+| DRAFT  | [Servo Hat Node](../Nodes/ServoHatNode/doc/ServoHatNode.md) |
 
 
 ## Package Diagram

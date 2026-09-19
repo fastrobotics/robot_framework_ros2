@@ -4,7 +4,12 @@ title BaseMachine Subsystem Class Diagram
 
 namespace fast::rf_ros2 {
     namespace BaseMachineSystem {
-        package BaseMachineSubsystem #LightYellow;line:blue {
+        package BaseMachineSubsystem::HatDriver #LightYellow;line:blue {
+            namespace HatDriver {
+                class ServoHatNode <<ROS2>> {
+
+                }
+            }
         }
     }
 }

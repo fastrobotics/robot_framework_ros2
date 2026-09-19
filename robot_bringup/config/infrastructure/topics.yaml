@@ -1,11 +1,11 @@
 topics:
-  imu1: "imu1/imu"
-  accel1: "imu1/accel"
-  magnetic1: "imu1/magnetic"
-  fused_imu: "fused_imu/imu"
+  imu1: "imu1/imu"   # sensor_msgs/Imu
+  accel1: "imu1/accel" # geometry_msgs/AccelStamped
+  magnetic1: "imu1/magnetic" # sensor_msgs/MagneticField
+  fused_imu: "fused_imu/imu"  # sensor_msgs/Imu
   robot_imu: "imu/imu"
   robot_accel: "imu/accel"
   robot_imu_magnetic: "imu/magnetic"
-  local_pose: "local_pose"
-  local_pose_angular_accel: "local_pose_angular_accel"
+  local_pose: "local_pose" # nav_msgs/Odometry
+  local_pose_angular_accel: "local_pose_angular_accel" # geometry_msgs/AccelWithCovarianceStamped
   

@@ -25,7 +25,7 @@ local_pose_fuser_node: #Instance name of local_pose_fuser_node, like local_pose_
     launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/LocalPoseFuserNode/launch/local_pose_fuser_node.launch.xml" #Path to Launch File
     parameters: # Any parameter in xml launch file
       verbosity_level: "DEBUG"
-      machine_inertial_input_topic: "imu" # Multiple IMU's will be supported in AB#1814
-      local_pose_output_topic: "local_pose"
-      local_pose_angular_accel_output_topic: "local_pose_angular_accel"
+      machine_inertial_input_topic: "imu" # sensor_msgs/Imu Multiple IMU's will be supported in AB#1814
+      local_pose_output_topic: "local_pose" # nav_msgs/Odometry
+      local_pose_angular_accel_output_topic: "local_pose_angular_accel" # geometry_msgs/AccelWithCovarianceStamped
 ```

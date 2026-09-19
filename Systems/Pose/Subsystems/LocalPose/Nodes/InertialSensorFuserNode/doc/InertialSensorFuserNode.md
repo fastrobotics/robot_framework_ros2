@@ -29,6 +29,6 @@ inertial_sensor_fuser_node: #Instance name of inertial_sensor_fuser_node, like i
     launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/InertialSensorFuserNode/launch/inertial_sensor_fuser_node.launch.xml" #Path to Launch File
     parameters: # Any parameter in xml launch file
       verbosity_level: "DEBUG"
-      imu1_input_topic: "imu1" # Multiple IMU's will be supported in AB#1814
-      fused_imu_output_topic: "fused_imu"
+      imu1_input_topic: "imu1" # sensor_msgs/Imu Multiple IMU's will be supported in AB#1814 
+      fused_imu_output_topic: "fused_imu" # sensor_msgs/Imu
 ```

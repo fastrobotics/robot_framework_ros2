@@ -1,0 +1,8 @@
+@startuml
+title BaseMachine System Class Diagram
+
+namespace fast::rf_ros2 {
+    package BaseMachineSystem #LightYellow;line:blue {
+    }
+}
+@enduml

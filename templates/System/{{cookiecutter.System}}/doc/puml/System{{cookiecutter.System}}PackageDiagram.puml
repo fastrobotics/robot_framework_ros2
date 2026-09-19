@@ -1,0 +1,8 @@
+@startuml
+title {{cookiecutter.System}} System Class Diagram
+
+namespace fast::rf_ros2 {
+    package {{cookiecutter.System}}System #LightYellow;line:blue {
+    }
+}
+@enduml

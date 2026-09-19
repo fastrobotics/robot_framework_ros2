@@ -1,0 +1,5 @@
+ /**
+ * @namespace fast::rf_ros2::BaseMachineSystem
+ * @brief The BaseMachine System for the ROS2 Robot Framework
+ * @compare_tag System-Dox v0.1
+ */

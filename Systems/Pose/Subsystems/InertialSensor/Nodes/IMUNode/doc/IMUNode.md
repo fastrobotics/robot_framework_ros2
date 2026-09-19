@@ -29,7 +29,7 @@ imu_node: #Instance name of IMU Node, like imu_node1, etc
     parameters: # Any parameter in xml launch file
       verbosity_level: "DEBUG"
       target_frame: "body_frame"
-      imu_topic: "robot_imu"
-      accel_topic: "robot_accel"
-      magnetic_topic: "robot_imu_magnetic"
+      imu_topic: "robot_imu" # sensor_msgs/Imu 
+      accel_topic: "robot_accel" # geometry_msgs/AccelStamped
+      magnetic_topic: "robot_imu_magnetic" # sensor_msgs/MagneticField
 ```

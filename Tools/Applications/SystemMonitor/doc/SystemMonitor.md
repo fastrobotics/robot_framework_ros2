@@ -38,7 +38,7 @@ The System Monitor has the following requirements:
 ## Execution
 To run, do the following:
 ```bash
-rosrun robot_framework_ros system_monitor _robot_namespace:=/robot 
+ros2 run robot_framework_ros system_monitor
 ```
 ## Software Design
 ![](../../../../Legend.png)

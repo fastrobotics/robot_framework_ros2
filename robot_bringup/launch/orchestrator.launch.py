@@ -1,5 +1,4 @@
 import os
-import re
 import socket
 import xml.etree.ElementTree as ElementTree
 from copy import deepcopy
@@ -119,11 +118,6 @@ def resolve_named_parameters(parameters, named_maps):
     return resolved_parameters
 
 
-def to_namespace_component(value):
-    snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', value).lower()
-    return snake_case.replace('-', '_')
-
-
 def launch_argument_defaults(xml_absolute_path):
     launch_root = ElementTree.parse(xml_absolute_path).getroot()
     return {
@@ -131,22 +125,6 @@ def launch_argument_defaults(xml_absolute_path):
         for launch_argument in launch_root.findall('arg')
         if launch_argument.get('name') and launch_argument.get('default') is not None
     }
-
-
-def namespace_from_launch_file(launch_file, xml_absolute_path):
-    path_parts = launch_file.replace('\\', '/').split('/')
-    try:
-        systems_index = path_parts.index('Systems')
-        system = path_parts[systems_index + 1]
-        subsystems_index = path_parts.index('Subsystems', systems_index + 2)
-        subsystem = path_parts[subsystems_index + 1]
-    except (ValueError, IndexError):
-        return None
-
-    if subsystem == 'LocalPose':
-        return '/'.join((to_namespace_component(system), to_namespace_component(subsystem)))
-
-    return launch_argument_defaults(xml_absolute_path).get('node_namespace')
 
 
 def build_launch_actions(context):
@@ -228,7 +206,9 @@ def build_launch_actions(context):
         
         # --- PATH A: THE REGISTRY DIRECTS THE ITEM TO AN XML LAUNCH BLUEPRINT ---
         if 'launch_file' in node_def:
-            xml_absolute_path = os.path.join(bringup_dir, node_def['launch_file'])
+            launch_package = node_def.get('package', 'robot_framework_ros2')
+            launch_package_share = get_package_share_directory(launch_package)
+            xml_absolute_path = os.path.join(launch_package_share, node_def['launch_file'])
             
             # Pass all dictionary parameters down directly as string launch arguments.
             # Do not override an XML default node_namespace with an empty value; that would
@@ -236,10 +216,7 @@ def build_launch_actions(context):
             launch_args = launch_argument_defaults(xml_absolute_path)
             launch_args.update({str(k): str(v) for k, v in resolved_node_params.items()})
             launch_args['node_name'] = target_name
-            derived_namespace = namespace_from_launch_file(node_def['launch_file'], xml_absolute_path)
-            if derived_namespace:
-                launch_args['node_namespace'] = derived_namespace
-            launch_args.setdefault('robot_namespace', LaunchConfiguration('robot_namespace'))
+            launch_args['robot_namespace'] = LaunchConfiguration('robot_namespace')
 
             included_xml_launch = IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(xml_absolute_path),

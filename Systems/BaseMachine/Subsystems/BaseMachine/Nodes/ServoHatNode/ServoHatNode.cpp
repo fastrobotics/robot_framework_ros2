@@ -27,6 +27,10 @@ namespace fast::rf_ros2::BaseMachineSystem::BaseMachineSubsystem::HatDriver {
     }
     bool ServoHatNode::loadConfig() { return true; }
     bool ServoHatNode::initPubSubs() {
+        const auto armCommandTopic = this->declare_parameter<std::string>("topic_arm_command");
+        m_armCommandSub = this->create_subscription<robot_framework_ros2::msg::ArmCommand>(
+            getNamespacedTopic(armCommandTopic), 10,
+            [this](const robot_framework_ros2::msg::ArmCommand::SharedPtr msg) { this->robotArmCommandCallback(msg); });
         const auto leftDriveTopic = this->declare_parameter<std::string>("topic_left_drive");
         m_leftDriveSub = this->create_subscription<std_msgs::msg::Float64>(
             getNamespacedTopic(leftDriveTopic), 10,
@@ -56,9 +60,8 @@ namespace fast::rf_ros2::BaseMachineSystem::BaseMachineSubsystem::HatDriver {
     void ServoHatNode::run1Hz() {
         auto diagnostics = m_process.getDiagnostics();
         setDiagnostics(diagnostics);
-        fast::rf::Logger::logInfo(pretty());
     }
-    void ServoHatNode::run01Hz() { ; }
+    void ServoHatNode::run01Hz() { fast::rf::Logger::logInfo(pretty()); }
     void ServoHatNode::run001Hz() {}
     void ServoHatNode::runLoop1() { m_process.update(this->get_clock()->now().seconds()); }
     void ServoHatNode::runLoop2() {}

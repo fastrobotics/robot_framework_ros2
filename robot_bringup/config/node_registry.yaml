@@ -12,6 +12,7 @@ node_registry:
     package: "robot_framework_ros2" 
     launch_file: "Systems/BaseMachine/Subsystems/BaseMachine/Nodes/ServoHatNode/launch/servo_hat_node.launch.xml" #Path to Launch File
     parameters:
+      topic_arm_command: "arm_command" # robot_framework_ros2/ArmCommand
       topic_left_drive: "left_drive"  # std_msgs/Float64
       topic_right_drive: "right_drive" # std_msgs/Float64
 

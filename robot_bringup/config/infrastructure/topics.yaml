@@ -1,4 +1,5 @@
 topics:
+  arm_command: "arm_command"  # robot_framework_ros2/ArmCommand
   left_drive: "leftdrive" # std_msgs/Float64
   right_drive: "rightdrive" # std_msgs/Float64
   imu1: "imu1/imu"   # sensor_msgs/Imu

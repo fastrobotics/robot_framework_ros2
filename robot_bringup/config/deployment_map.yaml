@@ -1,5 +1,5 @@
 host_assignments:
-  DevComputer2:
+  "*":
     sensors:
       - name: "Fake_IMU_Device"
     nodes:

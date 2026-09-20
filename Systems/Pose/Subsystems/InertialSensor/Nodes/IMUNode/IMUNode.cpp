@@ -59,22 +59,15 @@ namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU {
         setReadyToArm(m_process.get_ready_to_arm());
         return true;
     }
-    void IMUNode::run100Hz() { fast::rf::Logger::logDebug("100 Hz"); }
-    void IMUNode::run10Hz() {
-        setReadyToArm(m_process.get_ready_to_arm());
-        fast::rf::Logger::logDebug("10 Hz");
-    }
+    void IMUNode::run100Hz() {}
+    void IMUNode::run10Hz() { setReadyToArm(m_process.get_ready_to_arm()); }
     void IMUNode::run1Hz() {
         auto diagnostics = m_process.getDiagnostics();
         setDiagnostics(diagnostics);
-        fast::rf::Logger::logDebug("1 Hz");
     }
     void IMUNode::run01Hz() { fast::rf::Logger::logInfo(pretty()); }
-    void IMUNode::run001Hz() { fast::rf::Logger::logDebug("0.01 Hz"); }
-    void IMUNode::runLoop1() {
-        m_process.update(this->get_clock()->now().seconds());
-        fast::rf::Logger::logDebug("Loop1");
-    }
+    void IMUNode::run001Hz() {}
+    void IMUNode::runLoop1() { m_process.update(this->get_clock()->now().seconds()); }
     void IMUNode::runLoop2() {
         {
             fast::rf::messages::SensorMsgs::ImuMsg data;
@@ -98,7 +91,7 @@ namespace fast::rf_ros2::PoseSystem::InertialSensorSubsystem::IMU {
             }
         }
     }
-    void IMUNode::runLoop3() { fast::rf::Logger::logDebug("Loop3"); }
+    void IMUNode::runLoop3() {}
     std::string IMUNode::pretty() {
         std::string str = "\n--- IMUNode ---\n";
         str += BaseNode::pretty() + "\n";

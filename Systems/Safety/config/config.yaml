@@ -1,0 +1,10 @@
+#`@compare_tag Node-YamlConfig v0.1`
+/**:
+  safety: #System
+    modemanager: #Subsystem
+      armedstatemanager: #Generic Process
+        armed_state_manager_node: #Specific Node Name
+          ros__parameters:
+            nodes_to_monitor:
+              - "basemachine/basemachine/hatdriver/servo_hat_node"
+              - "pose/inertial_sensor/imu/imu_node1"

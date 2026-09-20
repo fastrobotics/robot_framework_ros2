@@ -4,10 +4,10 @@ target_include_directories(
   armed_state_manager_node
   PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
           $<BUILD_INTERFACE:${robot_framework_SOURCE_DIR}/include>)
-target_link_libraries(armed_state_manager_node
-                      PRIVATE baseNode basic_ArmedStateManagerProcess)
+target_link_libraries(armed_state_manager_node PRIVATE baseNode
+                                                       armedStateManagerProcess)
 register_framework_rpath(armed_state_manager_node logger
-                         basic_ArmedStateManagerProcess)
+                         armedStateManagerProcess)
 install(TARGETS armed_state_manager_node DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY launch config DESTINATION share/${PROJECT_NAME}/)
 

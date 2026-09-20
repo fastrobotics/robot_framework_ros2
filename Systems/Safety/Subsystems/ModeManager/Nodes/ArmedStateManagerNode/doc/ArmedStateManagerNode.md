@@ -8,6 +8,10 @@
     - [Node Registry](#node-registry)
 
 # ArmedStateManagerNode
+This node's objective is the following:
+- Receive multiple Ready To Arm signals from Nodes.
+- Publish an Arm Command based on the Ready To Arm signals and a user request
+- Provide a service to the user to request an Arm State Change.
 
 # Architecture
 ![](../../../../../../../Legend.png)
@@ -25,4 +29,5 @@ armed_state_manager_node: #Instance name of armed_state_manager_node, like armed
     launch_file: "Systems/Safety/Subsystems/ModeManager/Nodes/ArmedStateManagerNode/launch/armed_state_manager_node.launch.xml" #Path to Launch File
     parameters: # Any parameter in xml launch file
       verbosity_level: "DEBUG"
+      topic_arm_command: "arm_command" # robot_framework_ros2/ArmCommand
 ```

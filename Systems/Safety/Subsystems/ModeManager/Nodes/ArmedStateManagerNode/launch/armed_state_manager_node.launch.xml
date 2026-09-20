@@ -5,6 +5,7 @@
     <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
     <arg name="node_name" default="armed_state_manager_node" description="Name of the node at runtime"/>
     <arg name="node_namespace" default="safety/modemanager/armedstatemanager" description="Runtime namespace for the node"/>
+    <arg name="topic_arm_command" default="arm_command" description="Arm Command Topic"/>
     <group>
         <push-ros-namespace namespace="$(var robot_namespace)"/>
         <node pkg="robot_framework_ros2" 
@@ -17,9 +18,9 @@
             <param name="robot_namespace" value="$(var robot_namespace)"/>
             <param name="node_namespace" value="$(var node_namespace)"/>
             <param name="verbosity_level" value="$(var verbosity_level)"/>
-            <param name="loop1_rate" value="1.0"/>
-            <param name="loop2_rate" value="2.0"/>
-            <param name="loop3_rate" value="3.0"/>
+            <param name="topic_arm_command" value="$(var topic_arm_command)"/>
+            <param name="loop1_rate" value="40.0"/> <!-- General Update -->
+            <param name="loop2_rate" value="20.0"/> <!-- Publish Arm Command State-->
         </node>
     </group>
 </launch>

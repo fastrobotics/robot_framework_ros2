@@ -12,6 +12,9 @@
 - [Build](#build)
   - [Build and run Unit Tests](#build-and-run-unit-tests)
 - [Launch](#launch)
+- [Validation](#validation)
+  - [Integration Tests](#integration-tests)
+    - [Smoke Test](#smoke-test)
 - [Templates](#templates)
 
 # Architecture Design Records
@@ -81,6 +84,19 @@ colcon test --event-handlers console_cohesion+
 While this project isn't intended to typically be used to launch content directly (that's what the application is for), it can be launched for development needs with:
 ```bash
 ros2 launch robot_framework_ros2 orchestrator.launch.py robot_namespace:=robot
+```
+
+# Validation
+## Integration Tests
+### Smoke Test
+NOTE: This is tested automatically with the above Unit Tests.
+
+Purpose:
+- Checks that nodes are running
+- Checks that all nodes heartbeat, diagnostics, and ready to arm are available
+
+```bash
+colcon test --packages-select robot_framework_ros2 --event-handlers console_cohesion+ --pytest-args -k "test_orchestrator.launch.py"
 ```
 # Templates
 This project makes extensive use of cookiecutter templates.

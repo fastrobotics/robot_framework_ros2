@@ -96,5 +96,7 @@ add_subdirectory(core)
 add_subdirectory(examples)
 add_subdirectory(Systems)
 install(DIRECTORY Systems DESTINATION share/${PROJECT_NAME})
-
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()
 ament_package()

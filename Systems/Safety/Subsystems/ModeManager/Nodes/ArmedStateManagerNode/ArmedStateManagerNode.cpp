@@ -31,7 +31,7 @@ namespace fast::rf_ros2::SafetySystem::ModeManagerSubsystem::ArmedStateManager {
         fast::rf::Logger::logWarn("Got Service Request!");
     }
     bool ArmedStateManagerNode::loadConfig() {
-        std::string nodeMonitorListParam = "nodes_to_monitor";
+        std::string nodeMonitorListParam = getNodeConfigNamespace() + "." + getBaseNodeName() + ".nodes_to_monitor";
         this->declare_parameter<std::vector<std::string> >(nodeMonitorListParam);
         m_nodesToMonitor = this->get_parameter(nodeMonitorListParam).as_string_array();
         return true;
@@ -51,8 +51,8 @@ namespace fast::rf_ros2::SafetySystem::ModeManagerSubsystem::ArmedStateManager {
     }
     bool ArmedStateManagerNode::initServices() {
         m_armStateChangeSrvServer = this->create_service<robot_framework_ros2::srv::ArmStateChange>(
-            getRobotNamespace() + "/ready_to_arm", std::bind(&ArmedStateManagerNode::armStateChangeService, this,
-                                                             std::placeholders::_1, std::placeholders::_2));
+            getNamespacedTopic("ready_to_arm"), std::bind(&ArmedStateManagerNode::armStateChangeService, this,
+                                                          std::placeholders::_1, std::placeholders::_2));
         return true;
     }
     bool ArmedStateManagerNode::initDiagnostics() { return true; }

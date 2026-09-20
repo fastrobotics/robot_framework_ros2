@@ -127,6 +127,16 @@ def launch_argument_defaults(xml_absolute_path):
     }
 
 
+def get_host_assignment(host_assignments, current_host):
+    wildcard_assignment = host_assignments.get('*', {})
+    host_assignment = host_assignments.get(current_host, {})
+
+    if not isinstance(wildcard_assignment, dict) or not isinstance(host_assignment, dict):
+        return {}
+
+    return merge_config(wildcard_assignment, host_assignment)
+
+
 def build_launch_actions(context):
     bringup_dir = get_package_share_directory('robot_framework_ros2')
     scenario_name = context.perform_substitution(LaunchConfiguration('scenario'))
@@ -173,8 +183,8 @@ def build_launch_actions(context):
     node_registry = node_registry_data.get('node_registry', {})
     all_host_assignments = deployed_data.get('host_assignments', {})
     
-    # Extract deployment data specifically configured for THIS host computer
-    this_host_config = all_host_assignments.get(current_host, {})
+    # Apply wildcard deployment first, then overlay host-specific deployment.
+    this_host_config = get_host_assignment(all_host_assignments, current_host)
     active_nodes = this_host_config.get('nodes', [])
 
     infrastructure_configs = node_registry_data.get('infrastructure_configs', {})

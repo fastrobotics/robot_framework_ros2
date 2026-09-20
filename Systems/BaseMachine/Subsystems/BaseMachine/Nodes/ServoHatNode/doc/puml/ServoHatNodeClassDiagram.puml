@@ -24,7 +24,7 @@ namespace fast::rf_ros2 {
     }
     namespace BaseMachineSystem::BaseMachineSubsystem {
         package HatDriver #LightYellow;line:blue  {
-            class ServoHatNodeNode #Yellow {
+            class ServoHatNodeNode #LimeGreen {
                 #void run100Hz()
                 #void run10Hz()
                 #void run1Hz()

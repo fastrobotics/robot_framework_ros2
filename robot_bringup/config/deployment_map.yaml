@@ -12,4 +12,5 @@ host_assignments:
 
       - name: "inertial_sensor_fuser_node"
       - name: "local_pose_fuser_node"
+      - name: "armed_state_manager_node"
 

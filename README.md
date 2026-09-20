@@ -11,6 +11,7 @@
 - [Setup](#setup)
 - [Build](#build)
   - [Build and run Unit Tests](#build-and-run-unit-tests)
+- [Launch](#launch)
 - [Templates](#templates)
 
 # Architecture Design Records
@@ -29,6 +30,8 @@
 | ------ | ------------------------------------------------------------- |
 | DRAFT  | [Base Machine](Systems/BaseMachine/doc/System-BaseMachine.md) |
 | DRAFT  | [Pose System](Systems/Pose/doc/System-Pose.md)                |
+| DRAFT  | [Safety System](Systems/Safety/doc/System-Safety.md)          |
+
 # Features
 | Status | Feature                                          |
 | ------ | ------------------------------------------------ |
@@ -74,6 +77,11 @@ source install/setup.bash
 colcon test --event-handlers console_cohesion+
 ```
 
+# Launch
+While this project isn't intended to typically be used to launch content directly (that's what the application is for), it can be launched for development needs with:
+```bash
+ros2 launch robot_framework_ros2 orchestrator.launch.py robot_namespace:=robot
+```
 # Templates
 This project makes extensive use of cookiecutter templates.
 | Template  | Folder                | Use Case                    |

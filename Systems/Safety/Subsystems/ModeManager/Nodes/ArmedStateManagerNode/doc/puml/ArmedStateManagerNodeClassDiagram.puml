@@ -1,0 +1,53 @@
+' @compare_tag Node-ClassDiagram v0.1
+@startuml
+title ArmedStateManagerNode Class Diagram
+namespace robot_framework_ros2 {
+    class ArmStateChange <<ROS2>>
+    class ArmCommand <<ROS2>>
+    class ReadyToArm <<ROS2>>
+}
+namespace fast::rf {
+    namespace SafetySystem::ModeManagerSubsystem {
+        namespace ArmedStateManager {
+            class ArmedStateManagerProcess
+        }
+    }
+}
+namespace fast::rf_ros2 { 
+    abstract BaseNode {
+
+    }
+    namespace SafetySystem {
+        namespace ModeManagerSubsystem {
+            package ArmedStateManager #LightYellow;line:blue  {
+                class ArmedStateManagerNode #LimeGreen {
+                    #void run100Hz()
+                    #void run10Hz()
+                    #void run1Hz()
+                    #void run01Hz()
+                    #void run001Hz()
+                    #void runLoop1()
+                    #void runLoop2()
+                    #void runLoop3()
+
+                    #bool loadConfig()
+                    #bool initPubSubs()
+                    #bool initServices()
+                    #bool initDiagnostics()
+                    #bool initData()
+                    -void armStateChangeService(ArmStateChange::Request request, ArmStateChange::Response response)
+                    -void readyToArmCallback(ReadyToArm msg)
+                    -ArmedStateManagerProcess m_process
+                    -string[] m_nodesToMonitor
+                    -Subscriber[] m_readyToArmSubs;
+                    -Publisher m_armCommandPub;
+                    -ServiceServer m_armStateChangeSrv;
+                }
+                ArmedStateManagerNode -up-|> BaseNode
+                ArmedStateManagerNode *-right-> ArmedStateManagerProcess: <<use>>
+            }
+        }
+    }
+}
+
+@enduml

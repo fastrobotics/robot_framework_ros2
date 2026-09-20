@@ -1,6 +1,7 @@
 import os
 import re
 import socket
+import xml.etree.ElementTree as ElementTree
 from copy import deepcopy
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -123,7 +124,16 @@ def to_namespace_component(value):
     return snake_case.replace('-', '_')
 
 
-def namespace_from_launch_file(launch_file):
+def launch_argument_defaults(xml_absolute_path):
+    launch_root = ElementTree.parse(xml_absolute_path).getroot()
+    return {
+        launch_argument.get('name'): launch_argument.get('default')
+        for launch_argument in launch_root.findall('arg')
+        if launch_argument.get('name') and launch_argument.get('default') is not None
+    }
+
+
+def namespace_from_launch_file(launch_file, xml_absolute_path):
     path_parts = launch_file.replace('\\', '/').split('/')
     try:
         systems_index = path_parts.index('Systems')
@@ -133,10 +143,10 @@ def namespace_from_launch_file(launch_file):
     except (ValueError, IndexError):
         return None
 
-    if subsystem != 'LocalPose':
-        return None
+    if subsystem == 'LocalPose':
+        return '/'.join((to_namespace_component(system), to_namespace_component(subsystem)))
 
-    return '/'.join((to_namespace_component(system), to_namespace_component(subsystem)))
+    return launch_argument_defaults(xml_absolute_path).get('node_namespace')
 
 
 def build_launch_actions(context):
@@ -223,9 +233,10 @@ def build_launch_actions(context):
             # Pass all dictionary parameters down directly as string launch arguments.
             # Do not override an XML default node_namespace with an empty value; that would
             # collapse the config namespace to "" and make parameters resolve as ".imu_node.*".
-            launch_args = {str(k): str(v) for k, v in resolved_node_params.items()}
+            launch_args = launch_argument_defaults(xml_absolute_path)
+            launch_args.update({str(k): str(v) for k, v in resolved_node_params.items()})
             launch_args['node_name'] = target_name
-            derived_namespace = namespace_from_launch_file(node_def['launch_file'])
+            derived_namespace = namespace_from_launch_file(node_def['launch_file'], xml_absolute_path)
             if derived_namespace:
                 launch_args['node_namespace'] = derived_namespace
             launch_args.setdefault('robot_namespace', LaunchConfiguration('robot_namespace'))

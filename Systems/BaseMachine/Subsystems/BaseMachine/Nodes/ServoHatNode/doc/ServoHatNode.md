@@ -25,4 +25,6 @@ servo_hat_node: #Instance name of servo_hat_node, like servo_hat_node1, etc
     launch_file: "Systems/BaseMachine/Subsystems/BaseMachine/Nodes/ServoHatNode/launch/servo_hat_node.launch.xml" #Path to Launch File
     parameters: # Any parameter in xml launch file
       verbosity_level: "DEBUG"
+      topic_left_drive: "left_drive"  # std_msgs/Float64
+      topic_right_drive: "right_drive" # std_msgs/Float64
 ```

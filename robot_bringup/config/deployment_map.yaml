@@ -3,6 +3,8 @@ host_assignments:
     sensors:
       - name: "Fake_IMU_Device"
     nodes:
+      - name: "servo_hat_node"
+      
       - name: "imu_node1"
         parameters:
           sensor_config_package: "robot_framework_ros2"

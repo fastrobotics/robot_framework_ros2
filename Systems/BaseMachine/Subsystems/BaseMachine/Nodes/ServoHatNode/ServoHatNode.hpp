@@ -9,7 +9,11 @@
  * @compare_tag Node-Header v0.2
  */
 #pragma once
-#include <BasicHatDriverProcess.hpp>
+#include <ServoHatDriverProcess.hpp>
+#include <robot_framework_ros2/msg/arm_command.hpp>
+
+// Messages
+#include <std_msgs/msg/float64.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
 namespace fast::rf_ros2::BaseMachineSystem::BaseMachineSubsystem::HatDriver {
@@ -34,7 +38,14 @@ namespace fast::rf_ros2::BaseMachineSystem::BaseMachineSubsystem::HatDriver {
         bool initData() override;
 
        private:
+        void robotArmCommandCallback(const robot_framework_ros2::msg::ArmCommand::SharedPtr msg);
+        void driveCallback(uint16_t channel, const std_msgs::msg::Float64::SharedPtr msg);
         std::string pretty() override;
-        fast::rf::BaseMachineSystem::BaseMachineSubsystem::HatDriver::BasicHatDriverProcess m_process;
+        fast::rf::BaseMachineSystem::BaseMachineSubsystem::HatDriver::ServoHatDriverProcess m_process;
+
+        // Pubs & Subs
+        rclcpp::Subscription<robot_framework_ros2::msg::ArmCommand>::SharedPtr m_armCommandSub;
+        rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr m_leftDriveSub;
+        rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr m_rightDriveSub;
     };
 }  // namespace fast::rf_ros2::BaseMachineSystem::BaseMachineSubsystem::HatDriver

@@ -1,4 +1,6 @@
 topics:
+  left_drive: "leftdrive" # std_msgs/Float64
+  right_drive: "rightdrive" # std_msgs/Float64
   imu1: "imu1/imu"   # sensor_msgs/Imu
   accel1: "imu1/accel" # geometry_msgs/AccelStamped
   magnetic1: "imu1/magnetic" # sensor_msgs/MagneticField

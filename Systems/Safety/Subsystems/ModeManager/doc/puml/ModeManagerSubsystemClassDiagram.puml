@@ -1,0 +1,14 @@
+' @compare_tag Subsystem-ClassDiagram v0.1
+@startuml
+title ModeManager Subsystem Class Diagram
+
+namespace fast::rf_ros2 {
+    namespace SafetySystem {
+        package ModeManagerSubsystem #LightYellow;line:blue {
+            namespace ArmedStateManager #Orange {
+                class ArmedStateManagerNode <<ROS2>> #Orange
+            }
+        }
+    }
+}
+@enduml

@@ -29,6 +29,8 @@
 | ------ | ------------------------------------------------------------- |
 | DRAFT  | [Base Machine](Systems/BaseMachine/doc/System-BaseMachine.md) |
 | DRAFT  | [Pose System](Systems/Pose/doc/System-Pose.md)                |
+| DRAFT  | [Safety System](Systems/Safety/doc/System-Safety.md)          |
+
 # Features
 | Status | Feature                                          |
 | ------ | ------------------------------------------------ |

@@ -3,9 +3,9 @@ title Safety System Class Diagram
 
 namespace fast::rf_ros2 {
     package SafetySystem #LightYellow;line:blue {
-        namespace ModeManagerSubsystem #Orange {
-            namespace ArmedStateManager #Orange {
-                class ArmedStateManagerNode <<ROS2>> #Orange
+        namespace ModeManagerSubsystem #LimeGreen {
+            namespace ArmedStateManager #LimeGreen {
+                class ArmedStateManagerNode <<ROS2>> #LimeGreen
             }
         }
     }

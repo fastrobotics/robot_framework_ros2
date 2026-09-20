@@ -20,7 +20,7 @@ namespace fast::rf_ros2 {
     namespace SafetySystem {
         namespace ModeManagerSubsystem {
             package ArmedStateManager #LightYellow;line:blue  {
-                class ArmedStateManagerNode #Orange {
+                class ArmedStateManagerNode #LimeGreen {
                     #void run100Hz()
                     #void run10Hz()
                     #void run1Hz()

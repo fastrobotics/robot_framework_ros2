@@ -8,29 +8,34 @@ infrastructure_configs:
 
 node_registry:
 
+  servo_hat_node:
+    package: "robot_framework_ros2" 
+    launch_file: "Systems/BaseMachine/Subsystems/BaseMachine/Nodes/ServoHatNode/launch/servo_hat_node.launch.xml" #Path to Launch File
+    parameters:
+      topic_arm_command: "arm_command" # robot_framework_ros2/ArmCommand
+      topic_left_drive: "left_drive"  # std_msgs/Float64
+      topic_right_drive: "right_drive" # std_msgs/Float64
+
   imu_node1:
     package: "robot_framework_ros2"
     launch_file: "Systems/Pose/Subsystems/InertialSensor/Nodes/IMUNode/launch/imu_node.launch.xml"
     parameters:
-      verbosity_level: "WARN"
       target_frame: "body_frame"
-      imu_topic: "imu1"
-      accel_topic: "accel1"
-      magnetic_topic: "magnetic1"
+      imu_topic: "imu1" # sensor_msgs/Imu 
+      accel_topic: "accel1" # geometry_msgs/AccelStamped
+      magnetic_topic: "magnetic1" # sensor_msgs/MagneticField
 
   inertial_sensor_fuser_node:
     package: "robot_framework_ros2"
     launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/InertialSensorFuserNode/launch/inertial_sensor_fuser_node.launch.xml"
     parameters:
-      verbosity_level: "WARN"
-      imu1_input_topic: "imu1"
-      fused_imu_output_topic: "fused_imu"
+      imu1_input_topic: "imu1" # sensor_msgs/Imu
+      fused_imu_output_topic: "fused_imu" # sensor_msgs/Imu
 
   local_pose_fuser_node:
     package: "robot_framework_ros2" 
     launch_file: "Systems/Pose/Subsystems/LocalPose/Nodes/LocalPoseFuserNode/launch/local_pose_fuser_node.launch.xml" #Path to Launch File
     parameters:
-      verbosity_level: "INFO"
-      machine_inertial_input_topic: "fused_imu"
-      local_pose_output_topic: "local_pose"
-      local_pose_angular_accel_output_topic: "local_pose_angular_accel"
+      machine_inertial_input_topic: "fused_imu" # sensor_msgs/Imu
+      local_pose_output_topic: "local_pose" # nav_msgs/Odometry
+      local_pose_angular_accel_output_topic: "local_pose_angular_accel" # geometry_msgs/AccelWithCovarianceStamped

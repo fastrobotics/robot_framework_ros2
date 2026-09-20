@@ -1,0 +1,8 @@
+#`@compare_tag Node-YamlConfig v0.1`
+/**:
+  basemachine: #System
+    basemachine: #Subsystem
+      hatdriver: #Generic Process
+        servo_hat_node: #Specific Node Name
+          ros__parameters:
+            example_parameter: 1.234

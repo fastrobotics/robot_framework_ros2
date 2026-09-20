@@ -25,9 +25,10 @@
 ![](srv/puml/RobotFrameworkROS2ServiceDiagram.png)
 
 # Systems
-| Status | System                                         |
-| ------ | ---------------------------------------------- |
-| DRAFT  | [Pose System](Systems/Pose/doc/System-Pose.md) |
+| Status | System                                                        |
+| ------ | ------------------------------------------------------------- |
+| DRAFT  | [Base Machine](Systems/BaseMachine/doc/System-BaseMachine.md) |
+| DRAFT  | [Pose System](Systems/Pose/doc/System-Pose.md)                |
 # Features
 | Status | Feature                                          |
 | ------ | ------------------------------------------------ |

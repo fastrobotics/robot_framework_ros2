@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @compare_tag Node-Launch v0.2 -->
+<launch>
+    <arg name="robot_namespace" default="/"/> 
+    <arg name="verbosity_level" default="WARN" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
+    <arg name="node_name" default="servo_hat_node" description="Name of the node at runtime"/>
+    <arg name="node_namespace" default="basemachine/basemachine/hatdriver" description="Runtime namespace for the node"/>
+    <arg name="topic_arm_command" default="arm_command" description="Arm Command"/>
+    <arg name="topic_left_drive" default="left" description="Left Drive Topic"/>
+    <arg name="topic_right_drive" default="right" description="Right Drive Topic"/>
+    <group>
+        <push-ros-namespace namespace="$(var robot_namespace)"/>
+        <node pkg="robot_framework_ros2" 
+            exec="servo_hat_node" 
+            name="$(var node_name)" 
+            namespace="$(var node_namespace)"
+            output="screen"  
+            emulate_tty="true">
+            <param from="$(find-pkg-share robot_framework_ros2)/Systems/BaseMachine/config/config.yaml"/>
+            <param name="robot_namespace" value="$(var robot_namespace)"/>
+            <param name="node_namespace" value="$(var node_namespace)"/>
+            <param name="verbosity_level" value="$(var verbosity_level)"/>
+            <param name="topic_arm_command" value="$(var topic_arm_command)"/>
+            <param name="topic_left_drive" value="$(var topic_left_drive)"/>
+            <param name="topic_right_drive" value="$(var topic_right_drive)"/>
+            <param name="loop1_rate" value="40.0"/> <!-- General Update -->
+        </node>
+    </group>
+</launch>

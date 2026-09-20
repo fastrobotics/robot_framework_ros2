@@ -1,0 +1,2 @@
+/**:
+  ros__parameters: {} # Support ServoHatNode user space config during AB#1850

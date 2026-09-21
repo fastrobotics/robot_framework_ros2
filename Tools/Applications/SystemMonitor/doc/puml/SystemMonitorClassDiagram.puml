@@ -1,0 +1,263 @@
+@startuml
+title System Monitor Class Diagram
+namespace fast::rf {
+    namespace messages {
+        namespace InfrastructureMsgs {
+            class ArmCommandMsg <<(M,#FFFF00)>>
+        }
+    }
+}
+namespace robot_framework_ros2 {
+    class ArmCommand <<(M,#FFFF00)>> <<ROS2>>
+    class Heartbeat <<(M,#FFFF00)>> <<ROS2>>
+    class ReadyToArm <<(M,#FFFF00)>> <<ROS2>>
+    class Diagnostic <<(M,#FFFF00)>> <<ROS2>>
+}
+namespace ncurses {
+    class WINDOW
+}
+namespace fast::rf_ros2 {
+    namespace utils {
+        class CoreUtility
+        class TranslateUtility
+    }
+    class BaseNode
+    namespace Tools::Applications {
+        package SystemMonitor #LightYellow;line:blue {
+            namespace Definitions {
+                enum Color #LimeGreen
+                struct ScreenCoordinatePerc #LimeGreen {
+                    +double startXPerc
+                    +double startYPerc
+                    +double widthPerc
+                    +double heightPerc
+                }
+                struct ScreenCoordinatePixel #LimeGreen {
+                    +uint16 startXPix
+                    +uint16 startYPix
+                    +uint16 widthPix
+                    +uint16 heightPix
+
+                }
+                struct Key
+            }
+            interface IWindow #LimeGreen {
+                +{abstract} string getName()
+                +{abstract} bool isInitialized()
+                +{abstract} bool update(double currentTimeSec)
+                +{abstract} string pretty()
+                +{abstract} bool hasFocus()
+                +{abstract} bool setFocus(bool cmdFocus)
+                ---Messages To Implment---
+                +{abstract} void newArmCommandMsg(ArmCommand msg)
+                +{abstract} void newHeartbeatMsg(Heartbeat msg)
+                +{abstract} void newReadyToArmMsg(ReadyToArm msg)
+                +{abstract} void newDiagnosticMsg(Diagnostic msg)
+            }
+            abstract BaseWindow #LimeGreen {
+                +BaseWindow(string name, \n int16 tabOrder, \n double startXPerc, \n double startYPerc)
+                +bool isInitialized()
+                +string getName()
+                +bool hasFocus()
+                +bool setFocus(bool cmdFocus)
+                #bool update(double currentTimeSec)
+                #{abstract} bool updateWindow()
+                #string pretty()
+                #void setWindow(WINDOW win)
+                #WINDOW getWindow()
+                #void set_screen_coordinates(ScreenCoordinatePixel coord)
+                #ScreenCoordinatePerc getScreenCoordinatesPerc()
+                #ScreenCoordinatePixel getScreenCoordinatesPixel()
+                #int16 getTabOrder()
+                #void updateRecordCount(uint16 count)
+                #double getCurrentTimeSec()
+                
+                -WINDOW win
+                -string name
+                -int16 tabOrder
+                -ScreenCoordinatePerc m_screenCoordPerc
+                -ScreenCoordinatePixel getScreenCoordinatesPixel
+                -uint16 mainWindowHeight
+                -uint16_t mainWindowWidth
+                -bool focused
+                -int[] supportedKeys
+                -double m_currentTimeSec
+                -uint16 record_count
+            }
+            BaseWindow .up.|> IWindow
+            BaseWindow --> ScreenCoordinatePerc: <<use>>
+            BaseWindow --> ScreenCoordinatePixel: <<use>>
+
+            class HeaderWindow #LimeGreen {
+                +{static} double START_X_PERC
+                +{static} double START_Y_PERC
+                +{static} double WIDTH_PERC
+                +{static} double HEIGHT_PERC
+                +string pretty()
+                +bool update(double currentTimeSec)
+                +void newArmCommandMsg(ArmCommand msg)
+                +void newHeartbeatMsg(heartbeat msg)
+                +void newReadyToArmMsg(ReadyToArm msg)
+                +void newDiagnosticMsg(Diagnostic msg)
+                #bool updateWindow()
+                -ArmCommandMsg latest_ArmCommand
+            }
+            HeaderWindow -up-|> BaseWindow
+            enum NodeType #LimeGreen {
+                UNKNOWN = 0,
+                FAST = 1,
+                NON_FAST = 2
+            }
+            enum NodeFieldColumn #LimeGreen {
+                MARKER = 0,
+                ID = 1,
+                HOSTNAME = 2,
+                NODENAME = 3,
+                STATUS = 4,
+                READY_TO_ARM = 5,
+                RESTARTS = 6,
+                PID = 7,
+                CPU = 8,
+                RAM = 9,
+                RX = 10
+
+            }
+            struct NodeData #LimeGreen {
+                +bool initialized
+                +uint16 id
+                +nodestate state
+                +NodeType type
+                +uint16 pid
+                +string host_device
+                +string base_node_name
+                +string node_name
+                +double cpu_used_perc
+                +double mem_used_perc
+                +double last_heartbeat
+                +double last_heartbeat_delta
+                +uint64 restart_count
+            }
+            NodeData --> NodeType: <<use>>
+            class NodeInfoWindow #LimeGreen {
+                +{static} double START_X_PERC
+                +{static} double START_Y_PERC
+                +{static} double WIDTH_PERC
+                +{static} double HEIGHT_PERC
+                +string pretty()
+                +bool update(double currentTimeSec)
+                +void newArmCommandMsg(ArmCommand msg)
+                +void newHeartbeatMsg(Heartbeat msg)
+                +void newReadyToArmMsg(ReadyToArm msg)
+                +void newDiagnosticMsg(Diagnostic msg)
+                #bool updateWindow()
+                -bool insertNode(NodeType node_type,string device, string base_node_name, string node_name)
+                -string getWindowHeader()
+
+            }
+            NodeInfoWindow +-- NodeType
+            NodeInfoWindow +-- NodeFieldColumn
+            NodeInfoWindow +-- NodeData
+            NodeInfoWindow -up-|> BaseWindow
+            class DeviceInfoWindow  {
+                +{static} double START_X_PERC
+                +{static} double START_Y_PERC
+                +{static} double WIDTH_PERC
+                +{static} double HEIGHT_PERC
+                +string pretty()
+                +bool update(double currentTimeSec)
+                +void newArmCommandMsg(ArmCommand msg)
+                +void newHeartbeatMsg(Heartbeat msg)
+                +void newReadyToArmMsg(ReadyToArm msg)
+                +void newDiagnosticMsg(Diagnostic msg)
+                #bool updateWindow()
+            }
+            DeviceInfoWindow -up-|> BaseWindow
+            class NodeDiagnosticMonitor #LimeGreen {
+                +Diagnostic nodeDiagnostic
+                +double lastUpdateSec
+                +double lastUpdateDeltaSec
+            }
+            enum DiagnosticWindowMode #LimeGreen {
+                UNKNOWN=0,
+                NODE=1,
+                DIAGNOSTIC_TYPE=2,
+                SYSTEM = 3
+            }
+            class DiagnosticWindow #LimeGreen {
+                +{static} double START_X_PERC
+                +{static} double START_Y_PERC
+                +{static} double WIDTH_PERC
+                +{static} double HEIGHT_PERC
+                +string pretty()
+                +bool update(double currentTimeSec)
+                +void setNodeToMonitor(string node_to_monitor)
+                +void newArmCommandMsg(ArmCommand msg)
+                +void newHeartbeatMsg(Heartbeat msg)
+                +void newReadyToArmMsg(ReadyToArm msg)
+                +void newDiagnosticMsg(Diagnostic msg)
+                #bool updateWindow()
+                -DiagnosticWindowMode window_mode
+                -NodeDiagnosticMonitor[] nodeDiagnostic_monitors
+                -string node_to_monitor
+            }
+            DiagnosticWindow +-- NodeDiagnosticMonitor
+            DiagnosticWindow -up-|> BaseWindow
+
+            class StatusWindow #LimeGreen {
+                +{static} double START_X_PERC
+                +{static} double START_Y_PERC
+                +{static} double WIDTH_PERC
+                +{static} double HEIGHT_PERC
+                +string pretty()
+                +bool update(double currentTimeSec)
+                +void newArmCommandMsg(ArmCommand msg)
+                +void newHeartbeatMsg(Heartbeat msg)
+                +void newDiagnosticMsg(Diagnostic msg)
+                #bool updateWindow()
+            }
+            StatusWindow -up-|> BaseWindow
+
+            class MenuWindow {
+                +{static} double START_X_PERC
+                +{static} double START_Y_PERC
+                +{static} double WIDTH_PERC
+                +{static} double HEIGHT_PERC
+                +string pretty()
+                +bool update(double currentTimeSec)
+                +void newArmCommandMsg(ArmCommand msg)
+                +void newHeartbeatMsg(Heartbeat msg)
+                +void newDiagnosticMsg(Diagnostic msg)
+                #bool updateWindow()
+            }
+            MenuWindow -up-|> BaseWindow
+
+            class SystemMonitorNode #LimeGreen {
+                -bool rescanROSNetwork();
+                -void armCommandCallback(ArmCommand msg)
+                -void heartbeatCallback(Heartbeat msg)
+                -void diagnosticCallback(robot_Diagnostic msg)
+                -void readyToArmCallback(ReadyToArm msg)
+                -void subscribeToTopic(string name, string type)
+                -bool initScreen()
+                -bool initWindows()
+                -std::string pretty() override
+                -map<string, IWindow> m_windows
+                -string m_selectedNode
+
+                -string[] m_autoScanTopicTypes
+                -<string, SubscriptionBase> m_autoSubs
+                -Subscriber m_armCommandSub
+
+            }
+            SystemMonitorNode -up-|> BaseNode
+            SystemMonitorNode *-up-> HeaderWindow
+            SystemMonitorNode *-up-> NodeInfoWindow
+            SystemMonitorNode *-up-> DeviceInfoWindow
+            SystemMonitorNode *-up-> DiagnosticWindow
+            SystemMonitorNode *-up-> StatusWindow
+            SystemMonitorNode *-up-> MenuWindow
+
+        }
+    }
+}
+@enduml

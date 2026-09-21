@@ -28,6 +28,7 @@ find_package(nav_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(Curses REQUIRED)
 rosidl_generate_interfaces(
   ${PROJECT_NAME}
   "msg/ArmCommand.msg"
@@ -95,7 +96,11 @@ install(DIRECTORY robot_bringup/config/
 add_subdirectory(core)
 add_subdirectory(examples)
 add_subdirectory(Systems)
+add_subdirectory(Tools)
+
 install(DIRECTORY Systems DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY Tools DESTINATION share/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()

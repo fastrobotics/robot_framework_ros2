@@ -39,6 +39,7 @@
 | Status | Feature                                          |
 | ------ | ------------------------------------------------ |
 | DRAFT  | [Core](include/robot_framework_ros2/doc/Core.md) |
+| DRAFT  | [Tools](Tools/doc/Tools.md)                      |
 
 # Setup
 

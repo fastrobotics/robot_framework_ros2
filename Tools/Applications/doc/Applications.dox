@@ -1,0 +1,4 @@
+ /**
+ * @namespace fast::rf_ros2::Tools::Applications
+ * @brief The Applications Package for the ROS2 Robot Framework
+ */

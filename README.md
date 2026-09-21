@@ -62,6 +62,11 @@ cd <repo>
 ```
 
 # Build
+| Build Flags         | Description                                 | Usage                                         |
+| ------------------- | ------------------------------------------- | --------------------------------------------- |
+| `BUILD_TESTING`     | Enable(Default)/Disable Testing             | `colcon ... --cmake-args -DBUILD_TESTING=OFF` |
+| `CMAKE CLEAN CACHE` | Clean Cache (Default=Off) and repull repo's | `colcon ... -cmake-clean-cache`               |
+
 To build, run the following:
 ```
 cd <workspace>

@@ -15,6 +15,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 option(BUILD_TESTING "Build the testing tree." ON)
+set(ORIGINAL_BUILD_TESTING ${BUILD_TESTING})
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Export compilationcommands." ON)
 
 # find dependencies
@@ -85,7 +86,7 @@ endif()
 include_directories(include ${robot_framework_SOURCE_DIR}
                     ${RECURSIVE_INCLUDE_DIRS})
 set(BUILD_TESTING
-    ON
+    ${ORIGINAL_BUILD_TESTING}
     CACHE BOOL "" FORCE)
 install(DIRECTORY robot_bringup/launch/
         DESTINATION share/${PROJECT_NAME}/launch)

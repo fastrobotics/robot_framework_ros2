@@ -22,21 +22,21 @@ TEST(DiagnosticWindow, NodeDiagnosticTests) {
         robot_framework_ros2::msg::Diagnostic nodeDiagnostic;
         nodeDiagnostic.NodeName = "node1";
         nodeDiagnostic.DiagnosticType = 1;
-        nodeDiagnostic.Level = 2;
+        nodeDiagnostic.level = 2;
         sut.newDiagnosticMsg(nodeDiagnostic);
     }
     {
         robot_framework_ros2::msg::Diagnostic nodeDiagnostic;
         nodeDiagnostic.NodeName = "node1";
         nodeDiagnostic.DiagnosticType = 2;
-        nodeDiagnostic.Level = 2;
+        nodeDiagnostic.level = 2;
         sut.newDiagnosticMsg(nodeDiagnostic);
     }
     {
         robot_framework_ros2::msg::Diagnostic nodeDiagnostic;
         nodeDiagnostic.NodeName = "node2";
         nodeDiagnostic.DiagnosticType = 2;
-        nodeDiagnostic.Level = 2;
+        nodeDiagnostic.level = 2;
         sut.newDiagnosticMsg(nodeDiagnostic);
     }
 

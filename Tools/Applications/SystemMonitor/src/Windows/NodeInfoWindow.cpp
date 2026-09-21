@@ -1,28 +1,28 @@
-#include <Windows/NodeInfoWindow.hpp>
+#include "Windows/NodeInfoWindow.hpp"
 
-namespace fast::rf_ros::Tools::Applications::SystemMonitor {
+namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     std::string NodeInfoWindow::pretty() {
         std::string str = "---Node Info Window---\n";
         str += BaseWindow::pretty();
         return str;
     }
     void NodeInfoWindow::newHeartbeatMsg(robot_framework_ros2::msg::Heartbeat msg) {
-        auto it = nodes.find(msg.NodeName);
+        auto it = nodes.find(msg.nodename);
         if (it != nodes.end()) {
-            it->second.host_device = msg.HostName;
-            it->second.base_node_name = msg.BaseNodeName;
-            it->second.state = msg.NodeState;
+            it->second.host_device = msg.hostname;
+            it->second.base_node_name = msg.base_nodename;
+            it->second.state = msg.node_state;
             it->second.last_heartbeat_delta = 0.0;
             it->second.last_heartbeat = getCurrentTimeSec();
 
         } else {
-            insertNode(NodeType::FAST, msg.HostName, msg.BaseNodeName, msg.NodeName);
+            insertNode(NodeType::FAST, msg.hostname, msg.base_nodename, msg.nodename);
         }
     }
     void NodeInfoWindow::newReadyToArmMsg(robot_framework_ros2::msg::ReadyToArm msg) {
-        auto it = nodes.find(msg.NodeName);
+        auto it = nodes.find(msg.nodename);
         if (it != nodes.end()) {
-            if ((msg.SystemID == 0) || (msg.SubsystemID == 0) || (msg.ProcessID == 0)) {
+            if ((msg.system_id == 0) || (msg.subsystem_id == 0) || (msg.process_id == 0)) {
                 it->second.ready_to_arm = "INVALID";
             } else if (msg.ready_to_arm == true) {
                 it->second.ready_to_arm = "TRUE";
@@ -33,7 +33,7 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
             it->second.last_heartbeat = getCurrentTimeSec();
 
         } else {
-            insertNode(NodeType::FAST, "", "", msg.NodeName);
+            insertNode(NodeType::FAST, "", "", msg.nodename);
         }
     }
     bool NodeInfoWindow::insertNode(NodeType node_type, std::string device, std::string base_node_name,
@@ -78,7 +78,7 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
         for (auto& pair : nodes) {
             pair.second.last_heartbeat_delta = currentTimeSec - pair.second.last_heartbeat;
             if (pair.second.last_heartbeat_delta > COMMTIMEOUT_THRESHOLD) {
-                pair.second.state.state = robot_framework_ros::nodestate::STATE_UNKNOWN;
+                pair.second.state.state = robot_framework_ros2::msg::NodeState::STATE_UNKNOWN;
                 pair.second.ready_to_arm = "UNKNOWN";
             }
         }
@@ -100,25 +100,25 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
         for (const auto& pair : sortedNodes) {
             Color color = Color::UNKNOWN;
             switch (pair.second.state.state) {
-                case robot_framework_ros::nodestate::STATE_UNKNOWN:
+                case robot_framework_ros2::msg::NodeState::STATE_UNKNOWN:
                     color = Color::RED_COLOR;
                     break;
-                case robot_framework_ros::nodestate::STATE_INITIALIZING:
+                case robot_framework_ros2::msg::NodeState::STATE_INITIALIZING:
                     color = Color::YELLOW_COLOR;
                     break;
-                case robot_framework_ros::nodestate::STATE_STARTING:
+                case robot_framework_ros2::msg::NodeState::STATE_STARTING:
                     color = Color::YELLOW_COLOR;
                     break;
-                case robot_framework_ros::nodestate::STATE_RUNNING:
+                case robot_framework_ros2::msg::NodeState::STATE_RUNNING:
                     color = Color::BLUE_COLOR;
                     break;
-                case robot_framework_ros::nodestate::STATE_PAUSED:
+                case robot_framework_ros2::msg::NodeState::STATE_PAUSED:
                     color = Color::GREEN_COLOR;
                     break;
-                case robot_framework_ros::nodestate::STATE_RESTART:
+                case robot_framework_ros2::msg::NodeState::STATE_RESTART:
                     color = Color::YELLOW_COLOR;
                     break;
-                case robot_framework_ros::nodestate::STATE_FINISHED:
+                case robot_framework_ros2::msg::NodeState::STATE_FINISHED:
                     color = Color::YELLOW_COLOR;
                     break;
                 default:
@@ -131,7 +131,7 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
 
             wattron(getWindow(), COLOR_PAIR(color));
             std::string str = get_node_info(pair.second, index == getSelectedRecord());
-            mvwprintw(getWindow(), TASKSTART_COORD_Y + 2 + (int)index, TASKSTART_COORD_X + 1, str.c_str());
+            mvwprintw(getWindow(), TASKSTART_COORD_Y + 2 + (int)index, TASKSTART_COORD_X + 1, "%s", str.c_str());
             wclrtoeol(getWindow());
             wattroff(getWindow(), COLOR_PAIR(color));
             index++;
@@ -231,7 +231,7 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
         it = node_window_fields.find(NodeFieldColumn::STATUS);
         if (it != node_window_fields.end()) {
             width = it->second.width;
-            std::string tempstr = fast::rf_ros::utils::CoreUtility::pretty(node.state);
+            std::string tempstr = fast::rf_ros2::utils::CoreUtility::pretty(node.state);
             std::size_t spaces = width - tempstr.size();
             if (spaces > 0) {
                 tempstr += std::string(spaces, ' ');
@@ -300,16 +300,15 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
             if (node.last_heartbeat_delta > max_num) {
                 node.last_heartbeat_delta = max_num;
             }
-            char tempstr[2 * width];
-            sprintf(tempstr, "%2.2f", node.last_heartbeat_delta);
-            std::string tempstr_str = std::string(tempstr);
-            std::size_t spaces = width - tempstr_str.size();
-            if (spaces > 0) {
-                tempstr_str += std::string(spaces, ' ');
+            char tempstr[64];
+            std::snprintf(tempstr, sizeof(tempstr), "%2.2f", node.last_heartbeat_delta);
+            std::string tempstr_str(tempstr);
+            if (width > tempstr_str.size()) {
+                tempstr_str.append(width - tempstr_str.size(), ' ');
             }
             str += tempstr_str;
         }
 
         return str;
     }
-}  // namespace fast::rf_ros::Tools::Applications::SystemMonitor
+}  // namespace fast::rf_ros2::Tools::Applications::SystemMonitor

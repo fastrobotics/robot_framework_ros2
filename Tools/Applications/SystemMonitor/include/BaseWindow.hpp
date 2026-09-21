@@ -36,17 +36,17 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
          * @param startYPerc
          * @param widthPerc
          * @param heightPerc
-         * @param mainwindowHeight
-         * @param mainwindowWidth
+         * @param mainWindowHeight
+         * @param mainWindowWidth
          */
         BaseWindow(const std::string name, int16_t tabOrder, double startXPerc, double startYPerc, double widthPerc,
-                   double heightPerc, uint16_t mainwindowHeight, uint16_t mainwindowWidth)
+                   double heightPerc, uint16_t mainWindowHeight, uint16_t mainWindowWidth)
             : m_name(name),
               m_tabOrder(tabOrder),
               m_screenCoordPerc(startXPerc, startYPerc, widthPerc, heightPerc),
               m_screenCoordPixel(0, 0, 0, 0),
-              m_mainwindowHeight(mainwindowHeight),
-              m_mainwindowWidth(mainwindowWidth) {}
+              m_mainWindowHeight(mainWindowHeight),
+              m_mainWindowWidth(mainWindowWidth) {}
         virtual ~BaseWindow() {}
         /**
          * @brief Check if initialized
@@ -146,8 +146,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         int16_t getSelectedRecord() { return m_recordSelected; }
 
         void updateRecordCount(uint16_t count);
-        uint16_t getMainWindowHeight() { return m_mainwindowHeight; }
-        uint16_t getMainWindowWidth() { return m_mainwindowWidth; }
+        uint16_t getMainWindowHeight() { return m_mainWindowHeight; }
+        uint16_t getMainWindowWidth() { return m_mainWindowWidth; }
         void decrementSelectedRecord();
         void incrementSelectedRecord();
         bool getFocused() { return m_focused; }
@@ -159,8 +159,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         int16_t m_tabOrder;
         ScreenCoordinatePerc m_screenCoordPerc;
         ScreenCoordinatePixel m_screenCoordPixel;
-        uint16_t m_mainwindowHeight;
-        uint16_t m_mainwindowWidth;
+        uint16_t m_mainWindowHeight;
+        uint16_t m_mainWindowWidth;
         bool m_focused{false};
 
         double m_currentTimeSec;

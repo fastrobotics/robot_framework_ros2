@@ -1,13 +1,13 @@
-#include <Windows/DiagnosticWindow.hpp>
-namespace fast::rf_ros::Tools::Applications::SystemMonitor {
+#include "Windows/DiagnosticWindow.hpp"
+namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     std::string DiagnosticWindow::pretty() {
         std::string str = "---Diagnostic Window---\n";
         str += BaseWindow::pretty();
         return str;
     }
     void DiagnosticWindow::newDiagnosticMsg(robot_framework_ros2::msg::Diagnostic msg) {
-        m_nodeDiagnosticMonitors[msg.NodeName][msg.DiagnosticType].nodeDiagnostic = msg;
-        m_nodeDiagnosticMonitors[msg.NodeName][msg.DiagnosticType].last_update_sec = getCurrentTimeSec();
+        m_nodeDiagnosticMonitors[msg.node_name][msg.diagnostic_type].nodeDiagnostic = msg;
+        m_nodeDiagnosticMonitors[msg.node_name][msg.diagnostic_type].lastUpdateSec = getCurrentTimeSec();
     }
     bool DiagnosticWindow::update(double currentTimeSec) {
         bool status = BaseWindow::update(currentTimeSec);
@@ -16,9 +16,9 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
         }
         for (auto& nodeDiagnostics : m_nodeDiagnosticMonitors) {
             for (auto& diagnostic : nodeDiagnostics.second) {
-                diagnostic.second.last_update_delta_sec = (getCurrentTimeSec() - diagnostic.second.last_update_sec);
-                if (diagnostic.second.last_update_delta_sec > COMMTIMEOUT_THRESHOLD) {
-                    diagnostic.second.nodeDiagnostic.Level = (uint8_t)fast::rf::Level::UNKNOWN;
+                diagnostic.second.lastUpdateDeltaSec = (getCurrentTimeSec() - diagnostic.second.lastUpdateSec);
+                if (diagnostic.second.lastUpdateDeltaSec > COMMTIMEOUT_THRESHOLD) {
+                    diagnostic.second.nodeDiagnostic.level = (uint8_t)fast::rf::Level::UNKNOWN;
                 }
             }
         }
@@ -57,10 +57,10 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
                 auto diagnosticTypeIt = nodeDiagnosticMap.find(i);
 
                 if (diagnosticTypeIt != nodeDiagnosticMap.end()) {
-                    fast::rf::Level level = (fast::rf::Level)diagnosticTypeIt->second.nodeDiagnostic.Level;
+                    fast::rf::Level level = (fast::rf::Level)diagnosticTypeIt->second.nodeDiagnostic.level;
                     fast::rf::DiagnosticDefinition::DiagnosticMessage diag_message =
                         (fast::rf::DiagnosticDefinition::DiagnosticMessage)
-                            diagnosticTypeIt->second.nodeDiagnostic.DiagnosticMessage;
+                            diagnosticTypeIt->second.nodeDiagnostic.diagnostic_message;
                     Color color = Color::UNKNOWN;
                     switch (level) {
                         case fast::rf::Level::UNKNOWN:
@@ -93,15 +93,20 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
                     }
 
                     wattron(getWindow(), COLOR_PAIR(color));
-                    std::string str = fast::rf::DiagnosticDefinition::pretty(diagnosticType) + ":" +
-                                      fast::rf::DiagnosticDefinition::pretty(diag_message) + "(" +
-                                      std::to_string(diagnosticTypeIt->second.nodeDiagnostic.stamp.toSec()) + ") - " +
-                                      diagnosticTypeIt->second.nodeDiagnostic.Description;
+                    std::string str =
+                        fast::rf::DiagnosticDefinition::pretty(diagnosticType) + ":" +
+                        fast::rf::DiagnosticDefinition::pretty(diag_message) + "(" +
+
+                        std::to_string(static_cast<double>(diagnosticTypeIt->second.nodeDiagnostic.timestamp.sec) +
+                                       static_cast<double>(diagnosticTypeIt->second.nodeDiagnostic.timestamp.nanosec) *
+                                           1e-9) +
+                        ") - " + diagnosticTypeIt->second.nodeDiagnostic.description;
                     int windowWidth = getmaxx(getWindow());
                     if (str.size() >= (std::size_t)windowWidth) {
                         str.erase(windowWidth - 3);
                     }
-                    mvwprintw(getWindow(), DIAGSTART_COORD_Y + 2 + (int)index, DIAGSTART_COORD_X + 1, str.c_str());
+                    mvwprintw(getWindow(), DIAGSTART_COORD_Y + 2 + (int)index, DIAGSTART_COORD_X + 1, "%s",
+                              str.c_str());
                     wclrtoeol(getWindow());
                     wattroff(getWindow(), COLOR_PAIR(color));
 
@@ -109,7 +114,8 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
                     Color color = Color::NO_COLOR;
                     wattron(getWindow(), COLOR_PAIR(color));
                     std::string str = fast::rf::DiagnosticDefinition::pretty(diagnosticType);
-                    mvwprintw(getWindow(), DIAGSTART_COORD_Y + 2 + (int)index, DIAGSTART_COORD_X + 1, str.c_str());
+                    mvwprintw(getWindow(), DIAGSTART_COORD_Y + 2 + (int)index, DIAGSTART_COORD_X + 1, "%s",
+                              str.c_str());
                     wclrtoeol(getWindow());
                     wattroff(getWindow(), COLOR_PAIR(color));
                 }
@@ -124,4 +130,4 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
         return true;
         // GCOVR_EXCL_STOP
     }
-}  // namespace fast::rf_ros::Tools::Applications::SystemMonitor
+}  // namespace fast::rf_ros2::Tools::Applications::SystemMonitor

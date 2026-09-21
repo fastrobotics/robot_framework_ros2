@@ -7,10 +7,10 @@
 using namespace fast::rf_ros::Tools::Applications::SystemMonitor;
 class TestBaseWindow : public BaseWindow {
    public:
-    TestBaseWindow(int16_t tabOrder, int16_t mainwindowHeight, uint16_t mainwindowWidth)
-        : BaseWindow("test_window", tabOrder, 0.0, 0.0, 100.0, 100.0, mainwindowHeight, mainwindowWidth) {
+    TestBaseWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
+        : BaseWindow("test_window", tabOrder, 0.0, 0.0, 100.0, 100.0, mainWindowHeight, mainWindowWidth) {
         ScreenCoordinatePixel coord_pix =
-            convertCoordinate(getScreenCoordinatesPerc(), mainwindowWidth, mainwindowHeight);
+            convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
         WINDOW* win = createNewWin(coord_pix.heightPix, coord_pix.widthPix, coord_pix.startYPix, coord_pix.startXPix);
         setScreenCoordinatesPix(coord_pix);
         setWindow(win);

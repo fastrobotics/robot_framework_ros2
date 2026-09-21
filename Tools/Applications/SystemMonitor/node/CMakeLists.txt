@@ -4,6 +4,8 @@ target_include_directories(
   system_monitor
   PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
           $<BUILD_INTERFACE:${robot_framework_SOURCE_DIR}/include>)
-target_link_libraries(system_monitor PRIVATE baseNode headerWindow)
+target_link_libraries(
+  system_monitor PRIVATE baseNode headerWindow diagnosticWindow nodeInfoWindow
+                         statusWindow)
 register_framework_rpath(system_monitor logger)
 install(TARGETS system_monitor DESTINATION lib/${PROJECT_NAME})

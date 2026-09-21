@@ -1,5 +1,5 @@
 /**
- * @file HeaderWindow.hpp
+ * @file StatusWindow.hpp
  * @author David Gitz (davidgitz@gmail.com)
  * @brief
  * @version 0.1
@@ -9,8 +9,8 @@
  *
  */
 #pragma once
-#include <BaseWindow.hpp>
-namespace fast::rf_ros::Tools::Applications::SystemMonitor {
+#include "BaseWindow.hpp"
+namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     /**
      * @brief Status Window
      *
@@ -23,11 +23,11 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
             80.0; /*!< What percentage of the screen to put top left corner (Y) of window. */
         static constexpr double WIDTH_PERC = 30.0;  /*!< What percentage of the screen (Width) to draw the window. */
         static constexpr double HEIGHT_PERC = 20.0; /*!< What percentage of the screen (Height) to draw the window. */
-        StatusWindow(int16_t tabOrder, int16_t mainwindowHeight, uint16_t mainwindowWidth)
+        StatusWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
             : BaseWindow("status_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
-                         mainwindowHeight, mainwindowWidth) {
+                         mainWindowHeight, mainWindowWidth) {
             ScreenCoordinatePixel coord_pix =
-                convertCoordinate(getScreenCoordinatesPerc(), mainwindowWidth, mainwindowHeight);
+                convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
             WINDOW* win =
                 createNewWin(coord_pix.heightPix, coord_pix.widthPix, coord_pix.startYPix, coord_pix.startXPix);
             setScreenCoordinatesPix(coord_pix);
@@ -64,4 +64,4 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
        protected:
         bool updateWindow();
     };
-}  // namespace fast::rf_ros::Tools::Applications::SystemMonitor
+}  // namespace fast::rf_ros2::Tools::Applications::SystemMonitor

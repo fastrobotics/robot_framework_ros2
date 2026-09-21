@@ -30,14 +30,14 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
          * @brief Construct a new Header Window object
          *
          * @param tabOrder
-         * @param mainwindowHeight
-         * @param mainwindowWidth
+         * @param mainWindowHeight
+         * @param mainWindowWidth
          */
-        HeaderWindow(int16_t tabOrder, int16_t mainwindowHeight, uint16_t mainwindowWidth)
+        HeaderWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
             : BaseWindow("header_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
-                         mainwindowHeight, mainwindowWidth) {
+                         mainWindowHeight, mainWindowWidth) {
             ScreenCoordinatePixel coord_pix =
-                convertCoordinate(getScreenCoordinatesPerc(), mainwindowWidth, mainwindowHeight);
+                convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
             WINDOW* win =
                 createNewWin(coord_pix.heightPix, coord_pix.widthPix, coord_pix.startYPix, coord_pix.startXPix);
             setScreenCoordinatesPix(coord_pix);

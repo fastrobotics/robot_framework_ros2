@@ -77,8 +77,8 @@ namespace fast::rf_ros2 {
                 -int16 tabOrder
                 -ScreenCoordinatePerc m_screenCoordPerc
                 -ScreenCoordinatePixel getScreenCoordinatesPixel
-                -uint16 mainwindowHeight
-                -uint16_t mainwindowWidth
+                -uint16 mainWindowHeight
+                -uint16_t mainWindowWidth
                 -bool focused
                 -int[] supportedKeys
                 -double m_currentTimeSec
@@ -88,7 +88,7 @@ namespace fast::rf_ros2 {
             BaseWindow --> ScreenCoordinatePerc: <<use>>
             BaseWindow --> ScreenCoordinatePixel: <<use>>
 
-            class HeaderWindow #Orange {
+            class HeaderWindow #LimeGreen {
                 +{static} double START_X_PERC
                 +{static} double START_Y_PERC
                 +{static} double WIDTH_PERC
@@ -166,7 +166,7 @@ namespace fast::rf_ros2 {
                 +string pretty()
                 +bool update(double currentTimeSec)
                 +void newArmCommandMsg(ArmCommand msg)
-                +void newHeartbeatMsg(heartbeat msg)
+                +void newHeartbeatMsg(Heartbeat msg)
                 +void newReadyToArmMsg(ReadyToArm msg)
                 +void newDiagnosticMsg(Diagnostic msg)
                 #bool updateWindow()
@@ -174,8 +174,8 @@ namespace fast::rf_ros2 {
             DeviceInfoWindow -up-|> BaseWindow
             class NodeDiagnosticMonitor #LimeGreen {
                 +Diagnostic nodeDiagnostic
-                +double last_update_sec
-                +double last_update_delta_sec
+                +double lastUpdateSec
+                +double lastUpdateDeltaSec
             }
             enum DiagnosticWindowMode #LimeGreen {
                 UNKNOWN=0,
@@ -192,7 +192,7 @@ namespace fast::rf_ros2 {
                 +bool update(double currentTimeSec)
                 +void setNodeToMonitor(string node_to_monitor)
                 +void newArmCommandMsg(ArmCommand msg)
-                +void newHeartbeatMsg(heartbeat msg)
+                +void newHeartbeatMsg(Heartbeat msg)
                 +void newReadyToArmMsg(ReadyToArm msg)
                 +void newDiagnosticMsg(Diagnostic msg)
                 #bool updateWindow()
@@ -203,7 +203,7 @@ namespace fast::rf_ros2 {
             DiagnosticWindow +-- NodeDiagnosticMonitor
             DiagnosticWindow -up-|> BaseWindow
 
-            class StatusWindow #Orange {
+            class StatusWindow #LimeGreen {
                 +{static} double START_X_PERC
                 +{static} double START_Y_PERC
                 +{static} double WIDTH_PERC
@@ -211,7 +211,7 @@ namespace fast::rf_ros2 {
                 +string pretty()
                 +bool update(double currentTimeSec)
                 +void newArmCommandMsg(ArmCommand msg)
-                +void newHeartbeatMsg(heartbeat msg)
+                +void newHeartbeatMsg(Heartbeat msg)
                 +void newDiagnosticMsg(Diagnostic msg)
                 #bool updateWindow()
             }
@@ -225,27 +225,29 @@ namespace fast::rf_ros2 {
                 +string pretty()
                 +bool update(double currentTimeSec)
                 +void newArmCommandMsg(ArmCommand msg)
-                +void newHeartbeatMsg(heartbeat msg)
+                +void newHeartbeatMsg(Heartbeat msg)
                 +void newDiagnosticMsg(Diagnostic msg)
                 #bool updateWindow()
             }
             MenuWindow -up-|> BaseWindow
 
-            class SystemMonitorNode #Orange {
-                -bool rescanROSNetwork()
-                -void ArmCommand_callback(ArmCommand msg)
-                -void heartbeat_Callback(heartbeat msg)
-                -void ready_to_arm_Callback(heartbeat msg)
-                -void Diagnostic_Callback(Diagnostic msg)
-                -bool updateMonitorList(string[] heartbeat_list, \nstring[] new_heartbeat_topics_to_subscribe, \nstring[] readytoarm_list, \nstring[] new_readytoarm_topics_to_subscribe, \n Diagnostic_list, \n new_Diagnostic_topics_to_subscribe)
-                -IWindow[] windows
-                -ros::Subscriber armCommandSub
-                -string[] monitoredHeartbeatTopics
-                -ros::Subscriber[] heartbeatSubs
-                -string[] m_monitoredReadyToArmTopics
-                -ros::Subscriber[] m_readyToArmSubs
-                -string[] m_monitoredDiagnosticTopics
-                -ros::Subscriber[] m_DiagnosticSubs
+            class SystemMonitorNode #LimeGreen {
+                -bool rescanROSNetwork();
+                -void armCommandCallback(ArmCommand msg)
+                -void heartbeatCallback(Heartbeat msg)
+                -void diagnosticCallback(robot_Diagnostic msg)
+                -void readyToArmCallback(ReadyToArm msg)
+                -void subscribeToTopic(string name, string type)
+                -bool initScreen()
+                -bool initWindows()
+                -std::string pretty() override
+                -map<string, IWindow> m_windows
+                -string m_selectedNode
+
+                -string[] m_autoScanTopicTypes
+                -<string, SubscriptionBase> m_autoSubs
+                -Subscriber m_armCommandSub
+
             }
             SystemMonitorNode -up-|> BaseNode
             SystemMonitorNode *-up-> HeaderWindow

@@ -10,11 +10,12 @@
  */
 #pragma once
 
-#include <robot_framework_ros/nodestate.h>
-
-#include <BaseWindow.hpp>
+#include <map>
 #include <mutex>
-namespace fast::rf_ros::Tools::Applications::SystemMonitor {
+
+#include "BaseWindow.hpp"
+#include "robot_framework_ros2/msg/node_state.hpp"
+namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
 
     /**
      * @brief A Header Window
@@ -46,14 +47,14 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
          * @brief Construct a new Header Window object
          *
          * @param tabOrder
-         * @param mainwindowHeight
-         * @param mainwindowWidth
+         * @param mainWindowHeight
+         * @param mainWindowWidth
          */
-        NodeInfoWindow(int16_t tabOrder, int16_t mainwindowHeight, uint16_t mainwindowWidth)
+        NodeInfoWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
             : BaseWindow("node_info_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
-                         mainwindowHeight, mainwindowWidth) {
+                         mainWindowHeight, mainWindowWidth) {
             ScreenCoordinatePixel coord_pix =
-                convertCoordinate(getScreenCoordinatesPerc(), mainwindowWidth, mainwindowHeight);
+                convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
             supportedKeys.push_back(KEY_UP);
             supportedKeys.push_back(KEY_DOWN);
             node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::MARKER, Field("", 3)));
@@ -79,9 +80,9 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
             setWindow(win);
 
             std::string header = getWindowHeader();
-            mvwprintw(win, 1, 1, header.c_str());
+            mvwprintw(win, 1, 1, "%s", header.c_str());
             std::string dashed(getScreenCoordinatesPixel().widthPix - 2, '-');
-            mvwprintw(win, 2, 1, dashed.c_str());
+            mvwprintw(win, 2, 1, "%s", dashed.c_str());
             wrefresh(win);
         }
         KeyEventContainer newKeyEvent(int key) override;
@@ -129,11 +130,11 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
                   last_heartbeat(0.0),
                   last_heartbeat_delta(0.0),
                   restart_count(0) {
-                state.state = robot_framework_ros::nodestate::STATE_STARTING;
+                state.state = robot_framework_ros2::msg::NodeState::STATE_STARTING;
             }
             bool initialized;
             uint16_t id;
-            robot_framework_ros::nodestate state;
+            robot_framework_ros2::msg::NodeState state;
             NodeType type;
             uint16_t pid;
             std::string host_device;
@@ -156,4 +157,4 @@ namespace fast::rf_ros::Tools::Applications::SystemMonitor {
         std::string m_selectedNode{""};
         std::map<std::string, NodeData> nodes;
     };
-}  // namespace fast::rf_ros::Tools::Applications::SystemMonitor
+}  // namespace fast::rf_ros2::Tools::Applications::SystemMonitor

@@ -114,6 +114,9 @@ This is a generic Window that provides details like:
 
 ### Menu Options
 This window displays to the user what options are available.  Note that this window is dynamic as the operations available can change over time.
+The following options are currently supported:
+- Changing Node Verbosity Level
+
 
 ### Device Info
 This window displays device health information.  This will be implemented during AB#1837.

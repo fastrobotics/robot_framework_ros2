@@ -23,6 +23,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
                                     "robot_framework_ros2/msg/ReadyToArm"};
         }
         ~SystemMonitorNode() {
+            fast::rf::Logger::logError("Cleaning up");
             m_windows.clear();
             endwin();
         }
@@ -46,9 +47,11 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
        private:
         bool rescanROSNetwork();
         void armCommandCallback(const robot_framework_ros2::msg::ArmCommand::SharedPtr msg);
-        void heartbeatCallback(const robot_framework_ros2::msg::Heartbeat::SharedPtr msg);
-        void diagnosticCallback(const robot_framework_ros2::msg::Diagnostic::SharedPtr msg);
-        void readyToArmCallback(const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg);
+        void heartbeatCallback(const robot_framework_ros2::msg::Heartbeat::SharedPtr msg, const std::string& topicName);
+        void diagnosticCallback(const robot_framework_ros2::msg::Diagnostic::SharedPtr msg,
+                                const std::string& topicName);
+        void readyToArmCallback(const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg,
+                                const std::string& topicName);
         void subscribeToTopic(const std::string& name, const std::string& type);
         bool initScreen();
         bool initWindows();

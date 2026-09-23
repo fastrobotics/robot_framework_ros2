@@ -20,7 +20,15 @@ namespace fast::rf_ros2 {
         m_baseNodeName = nodeName;
         m_nodeState.state = robot_framework_ros2::msg::NodeState::STATE_UNKNOWN;
     }
-
+    void BaseNode::changeLoggerLevelService(
+        const std::shared_ptr<robot_framework_ros2::srv::ChangeLoggerLevel::Request> request,
+        std::shared_ptr<robot_framework_ros2::srv::ChangeLoggerLevel::Response> response) {
+        if (fast::rf::Logger::changeLoggerLevel((fast::rf::Level)request->verbosity_level) == true) {
+            response->request_approved = true;
+        } else {
+            response->request_approved = false;
+        }
+    }
     std::string BaseNode::getNamespacedTopic(const std::string& topic) const {
         std::string robotNamespace = m_robotNamespace;
         while (!robotNamespace.empty() && robotNamespace.back() == '/') {
@@ -94,7 +102,12 @@ namespace fast::rf_ros2 {
             this->create_publisher<robot_framework_ros2::msg::Diagnostic>("~/diagnostic", 10);  // Under node name
         return true;
     }
-    bool BaseNode::baseInitServices() { return true; }
+    bool BaseNode::baseInitServices() {
+        m_changeLoggerLevelSrvServer = this->create_service<robot_framework_ros2::srv::ChangeLoggerLevel>(
+            "~/change_logger_level",
+            std::bind(&BaseNode::changeLoggerLevelService, this, std::placeholders::_1, std::placeholders::_2));
+        return true;
+    }
     bool BaseNode::baseInitDiagnostics() { return true; }
     bool BaseNode::baseInitData() {
         m_heartbeat.hostname = getHostName();

@@ -1,0 +1,5 @@
+# ChangeLoggerLevel Service
+uint8 verbosity_level
+
+---
+bool request_approved

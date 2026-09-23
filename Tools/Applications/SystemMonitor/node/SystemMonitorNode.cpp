@@ -13,6 +13,8 @@
 
 #include "Windows/DiagnosticWindow.hpp"
 #include "Windows/HeaderWindow.hpp"
+#include "Windows/MenuWindow.hpp"
+#include "Windows/MessageWindow.hpp"
 #include "Windows/NodeInfoWindow.hpp"
 #include "Windows/StatusWindow.hpp"
 namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
@@ -22,20 +24,29 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             window.second->newArmCommandMsg(localMsg);
         }
     }
-    void SystemMonitorNode::heartbeatCallback(const robot_framework_ros2::msg::Heartbeat::SharedPtr msg) {
+    void SystemMonitorNode::heartbeatCallback(const robot_framework_ros2::msg::Heartbeat::SharedPtr msg,
+                                              const std::string& topicName) {
         robot_framework_ros2::msg::Heartbeat localMsg = *msg;
+        std::string fullNodeName = topicName.substr(0, topicName.length() - 10);
+        localMsg.nodename = fullNodeName;
         for (const auto& window : m_windows) {
             window.second->newHeartbeatMsg(localMsg);
         }
     }
-    void SystemMonitorNode::diagnosticCallback(const robot_framework_ros2::msg::Diagnostic::SharedPtr msg) {
+    void SystemMonitorNode::diagnosticCallback(const robot_framework_ros2::msg::Diagnostic::SharedPtr msg,
+                                               const std::string& topicName) {
         robot_framework_ros2::msg::Diagnostic localMsg = *msg;
+        std::string fullNodeName = topicName.substr(0, topicName.length() - 11);
+        localMsg.node_name = fullNodeName;
         for (const auto& window : m_windows) {
             window.second->newDiagnosticMsg(localMsg);
         }
     }
-    void SystemMonitorNode::readyToArmCallback(const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg) {
+    void SystemMonitorNode::readyToArmCallback(const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg,
+                                               const std::string& topicName) {
         robot_framework_ros2::msg::ReadyToArm localMsg = *msg;
+        std::string fullNodeName = topicName.substr(0, topicName.length() - 13);
+        localMsg.nodename = fullNodeName;
         for (const auto& window : m_windows) {
             window.second->newReadyToArmMsg(localMsg);
         }
@@ -50,6 +61,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     bool SystemMonitorNode::initServices() { return true; }
     bool SystemMonitorNode::initDiagnostics() { return true; }
     bool SystemMonitorNode::initData() {
+        fast::rf::Logger::disableConsolePrint();
         if (initScreen() == false) {
             fast::rf::Logger::logError("Unable to initialize Screen!");
             return false;
@@ -58,6 +70,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     }
     void SystemMonitorNode::run100Hz() {}
     void SystemMonitorNode::run10Hz() {
+        std::vector<MessageText> messages;
         int keyPressed = getch();
         if ((keyPressed == Key::KEY_q) || (keyPressed == Key::KEY_Q)) {
             rclcpp::shutdown();
@@ -69,8 +82,10 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
                 if (output.message.level > fast::rf::Level::NOTICE) {
                     fast::rf::Logger::logWarn(output.message.text);
                 }
+                if (output.message.text != "") {
+                    messages.push_back(output.message);
+                }
             }
-            window.second->update(this->get_clock()->now().seconds());
 
             if (window.second->getName() == "node_info_window") {
                 auto node_info_window = std::dynamic_pointer_cast<NodeInfoWindow>(window.second);
@@ -80,6 +95,16 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
                 auto diagnostic_window = std::dynamic_pointer_cast<DiagnosticWindow>(window.second);
                 diagnostic_window->setNodeToMonitor(m_selectedNode);
             }
+        }
+        if (messages.size() > 0) {
+            for (auto window : m_windows) {
+                if (auto p = std::dynamic_pointer_cast<MessageWindow>(window.second)) {
+                    p->new_MessageTextList(messages);
+                }
+            }
+        }
+        for (const auto& window : m_windows) {
+            window.second->update(this->get_clock()->now().seconds());
         }
         flushinp();
     }
@@ -137,21 +162,32 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     bool SystemMonitorNode::initWindows() {
         uint16_t mainWindowWidth, mainWindowHeight;
         getmaxyx(stdscr, mainWindowHeight, mainWindowWidth);
+        auto sharedNode = shared_from_this();
+
         {
-            auto window = std::make_shared<HeaderWindow>(-1, mainWindowHeight, mainWindowWidth);
+            auto window = std::make_shared<HeaderWindow>(sharedNode, -1, mainWindowHeight, mainWindowWidth);
             m_windows[window->getName()] = window;
         }
+
         {
-            auto window = std::make_shared<NodeInfoWindow>(-1, mainWindowHeight, mainWindowWidth);
+            auto window = std::make_shared<NodeInfoWindow>(sharedNode, -1, mainWindowHeight, mainWindowWidth);
             window->setFocus(true);
             m_windows[window->getName()] = window;
         }
         {
-            auto window = std::make_shared<StatusWindow>(-1, mainWindowHeight, mainWindowWidth);
+            auto window = std::make_shared<StatusWindow>(sharedNode, -1, mainWindowHeight, mainWindowWidth);
             m_windows[window->getName()] = window;
         }
         {
-            auto window = std::make_shared<DiagnosticWindow>(-1, mainWindowHeight, mainWindowWidth);
+            auto window = std::make_shared<DiagnosticWindow>(sharedNode, -1, mainWindowHeight, mainWindowWidth);
+            m_windows[window->getName()] = window;
+        }
+        {
+            auto window = std::make_shared<MessageWindow>(sharedNode, -1, mainWindowHeight, mainWindowWidth);
+            m_windows[window->getName()] = window;
+        }
+        {
+            auto window = std::make_shared<MenuWindow>(sharedNode, -1, mainWindowHeight, mainWindowWidth);
             m_windows[window->getName()] = window;
         }
 
@@ -204,13 +240,19 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     void SystemMonitorNode::subscribeToTopic(const std::string& name, const std::string& type) {
         if (type == "robot_framework_ros2/msg/Heartbeat") {
             m_autoSubs[name] = this->create_subscription<robot_framework_ros2::msg::Heartbeat>(
-                name, 10, std::bind(&SystemMonitorNode::heartbeatCallback, this, std::placeholders::_1));
+                name, 10, [this, name](const robot_framework_ros2::msg::Heartbeat::SharedPtr msg) {
+                    this->heartbeatCallback(msg, name);
+                });
         } else if (type == "robot_framework_ros2/msg/Diagnostic") {
             m_autoSubs[name] = this->create_subscription<robot_framework_ros2::msg::Diagnostic>(
-                name, 10, std::bind(&SystemMonitorNode::diagnosticCallback, this, std::placeholders::_1));
+                name, 10, [this, name](const robot_framework_ros2::msg::Diagnostic::SharedPtr msg) {
+                    this->diagnosticCallback(msg, name);
+                });
         } else if (type == "robot_framework_ros2/msg/ReadyToArm") {
             m_autoSubs[name] = this->create_subscription<robot_framework_ros2::msg::ReadyToArm>(
-                name, 10, std::bind(&SystemMonitorNode::readyToArmCallback, this, std::placeholders::_1));
+                name, 10, [this, name](const robot_framework_ros2::msg::ReadyToArm::SharedPtr msg) {
+                    this->readyToArmCallback(msg, name);
+                });
         }
     }
 }  // namespace fast::rf_ros2::Tools::Applications::SystemMonitor

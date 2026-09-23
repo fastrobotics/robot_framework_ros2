@@ -1,5 +1,6 @@
 #include "Windows/NodeInfoWindow.hpp"
 
+#include "robot_framework_ros2/srv/change_logger_level.hpp"
 namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     std::string NodeInfoWindow::pretty() {
         std::string str = "---Node Info Window---\n";
@@ -7,8 +8,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         return str;
     }
     void NodeInfoWindow::newHeartbeatMsg(robot_framework_ros2::msg::Heartbeat msg) {
-        auto it = nodes.find(msg.nodename);
-        if (it != nodes.end()) {
+        auto it = m_nodes.find(msg.nodename);
+        if (it != m_nodes.end()) {
             it->second.host_device = msg.hostname;
             it->second.base_node_name = msg.base_nodename;
             it->second.state = msg.node_state;
@@ -20,8 +21,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         }
     }
     void NodeInfoWindow::newReadyToArmMsg(robot_framework_ros2::msg::ReadyToArm msg) {
-        auto it = nodes.find(msg.nodename);
-        if (it != nodes.end()) {
+        auto it = m_nodes.find(msg.nodename);
+        if (it != m_nodes.end()) {
             if ((msg.system_id == 0) || (msg.subsystem_id == 0) || (msg.process_id == 0)) {
                 it->second.ready_to_arm = "INVALID";
             } else if (msg.ready_to_arm == true) {
@@ -38,18 +39,18 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     }
     bool NodeInfoWindow::insertNode(NodeType node_type, std::string device, std::string base_node_name,
                                     std::string node_name) {
-        std::lock_guard<std::mutex> guard(node_list_mutex);
-        std::size_t before = nodes.size();
-        NodeData newNode(nodes.size(), node_type, device, base_node_name, node_name);
-        nodes[newNode.node_name] = newNode;
-        std::size_t after = nodes.size();
+        std::lock_guard<std::mutex> guard(m_nodeListMutex);
+        std::size_t before = m_nodes.size();
+        NodeData newNode(m_nodes.size(), node_type, device, base_node_name, node_name);
+        m_nodes[newNode.node_name] = newNode;
+        std::size_t after = m_nodes.size();
         updateRecordCount((uint16_t)after);
         return after > before;
     }
     std::string NodeInfoWindow::getWindowHeader() {
         std::string str = "";
-        std::map<NodeFieldColumn, Field>::iterator it = node_window_fields.begin();
-        while (it != node_window_fields.end()) {
+        std::map<NodeFieldColumn, Field>::iterator it = m_nodeWindowFields.begin();
+        while (it != m_nodeWindowFields.end()) {
             // Check if field name is too long:
             if (it->second.text.size() > it->second.width) {
                 str += it->second.text.substr(0, it->second.width);
@@ -75,7 +76,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         if (status == false) {
             return false;
         }
-        for (auto& pair : nodes) {
+        for (auto& pair : m_nodes) {
             pair.second.last_heartbeat_delta = currentTimeSec - pair.second.last_heartbeat;
             if (pair.second.last_heartbeat_delta > COMMTIMEOUT_THRESHOLD) {
                 pair.second.state.state = robot_framework_ros2::msg::NodeState::STATE_UNKNOWN;
@@ -92,7 +93,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         // GCOVR_EXCL_START
         const uint16_t TASKSTART_COORD_Y = 1;
         const uint16_t TASKSTART_COORD_X = 1;
-        std::vector<std::pair<std::string, NodeData>> sortedNodes(nodes.begin(), nodes.end());
+        std::vector<std::pair<std::string, NodeData>> sortedNodes(m_nodes.begin(), m_nodes.end());
         std::sort(sortedNodes.begin(), sortedNodes.end(), [](const auto& a, const auto& b) {
             return a.second.id < b.second.id;  // Accesses the struct 'id' via pair.second
         });
@@ -130,7 +131,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
 
             wattron(getWindow(), COLOR_PAIR(color));
-            std::string str = get_node_info(pair.second, index == getSelectedRecord());
+            std::string str = getNodeInfo(pair.second, index == getSelectedRecord());
             mvwprintw(getWindow(), TASKSTART_COORD_Y + 2 + (int)index, TASKSTART_COORD_X + 1, "%s", str.c_str());
             wclrtoeol(getWindow());
             wattroff(getWindow(), COLOR_PAIR(color));
@@ -160,18 +161,74 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
                 decrementSelectedRecord();
             } else if (key == KEY_DOWN) {
                 incrementSelectedRecord();
+            } else if ((key == 'l') || (key == 'L')) {
+                std::string str = "Enter new Log Level ";
+                for (uint8_t i = (uint8_t)fast::rf::Level::UNKNOWN; i < (uint8_t)fast::rf::Level::END_OF_LIST; ++i) {
+                    if (i == (uint8_t)fast::rf::Level::UNKNOWN) {
+                        // Do nothing
+                    } else {
+                        str += std::to_string(i) + ":" + fast::rf::pretty((fast::rf::Level)i) + " ";
+                    }
+                }
+                message = MessageText(str, fast::rf::Level::NOTICE);
+            } else if ((key == '0') || (key == '1') || (key == '2') || (key == '3') || (key == '4') || (key == '5') ||
+                       (key == '6') || (key == '7') || (key == '8') || (key == '9')) {
+                if (m_nodes.size() == 0) {
+                    return output;
+                }
+                if ((m_previousKey == 'l') || (m_previousKey == 'L')) {
+                    uint8_t verbosityValue = key - '0';
+                    auto verbosity = fast::rf::pretty((fast::rf::Level)verbosityValue);
+                    if (verbosity == "UNKNOWN") {
+                        std::string str = "Requested Log Level Not Supported.";
+                        message = MessageText(str, fast::rf::Level::WARN);
+                    } else {
+                        auto selectedNodeInfoIt = m_nodes.find(m_selectedNode);
+                        if (selectedNodeInfoIt != m_nodes.end()) {
+                        } else {
+                            message = MessageText("Can't lookup Node: " + m_selectedNode, fast::rf::Level::WARN);
+                        }
+                        std::string serviceTopic = m_selectedNode + "/change_logger_level";
+                        auto clientChangeLoggerLevel =
+                            getNode()->create_client<robot_framework_ros2::srv::ChangeLoggerLevel>(serviceTopic);
+                        if (!clientChangeLoggerLevel->wait_for_service(std::chrono::milliseconds(500))) {
+                            message =
+                                MessageText("Service: " + serviceTopic + " Not available!", fast::rf::Level::WARN);
+                        }
+                        auto request = std::make_shared<robot_framework_ros2::srv::ChangeLoggerLevel::Request>();
+                        request->verbosity_level = verbosityValue;
+                        clientChangeLoggerLevel->async_send_request(
+                            request,
+                            [this, clientChangeLoggerLevel](
+                                rclcpp::Client<robot_framework_ros2::srv::ChangeLoggerLevel>::SharedFuture future) {
+                                try {
+                                    auto response = future.get();
+                                    if (response->request_approved == true) {
+                                        fast::rf::Logger::logNotice("Logger Change Service Approved.");
+
+                                    } else {
+                                        fast::rf::Logger::logError("Logger Change Service Rejected");
+                                    }
+
+                                } catch (const std::exception& e) {
+                                    fast::rf::Logger::logError("Logger Service Change Failed: " +
+                                                               std::string(e.what()));
+                                }
+                            });
+                    }
+                }
             }
         }
-        previous_key = key;
+        m_previousKey = key;
         output.message = message;
         return output;
     }
-    std::string NodeInfoWindow::get_node_info(NodeData node, bool selected) {
+    std::string NodeInfoWindow::getNodeInfo(NodeData node, bool selected) {
         std::string str = "";
         std::size_t width = 0;
         std::map<NodeFieldColumn, Field>::iterator it;
-        it = node_window_fields.find(NodeFieldColumn::MARKER);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::MARKER);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             for (std::size_t i = 0; i < width; ++i) {
                 if (selected == true) {
@@ -181,8 +238,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
                 }
             }
         }
-        it = node_window_fields.find(NodeFieldColumn::ID);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::ID);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string tempstr = std::to_string(node.id);
             std::size_t spaces = width - tempstr.size();
@@ -191,8 +248,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::HOSTNAME);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::HOSTNAME);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string tempstr = node.host_device;
             if (tempstr.size() > width) {
@@ -210,8 +267,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::NODENAME);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::NODENAME);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string tempstr = node.node_name;
             std::size_t found_hostname = node.node_name.find(node.host_device);
@@ -228,8 +285,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::STATUS);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::STATUS);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string tempstr = fast::rf_ros2::utils::CoreUtility::pretty(node.state);
             std::size_t spaces = width - tempstr.size();
@@ -238,8 +295,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::READY_TO_ARM);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::READY_TO_ARM);
+        if (it != m_nodeWindowFields.end()) {
             std::string tempstr = node.ready_to_arm;
             std::size_t spaces = it->second.width - tempstr.size();
             if (spaces > 0) {
@@ -248,8 +305,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             str += tempstr;
         }
 
-        it = node_window_fields.find(NodeFieldColumn::RESTARTS);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::RESTARTS);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string tempstr = std::to_string(node.restart_count);
             std::size_t spaces = width - tempstr.size();
@@ -258,8 +315,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::PID);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::PID);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string tempstr = std::to_string(node.pid);
             std::size_t spaces = width - tempstr.size();
@@ -268,8 +325,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::CPU);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::CPU);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             char c_tempstr[8];
             sprintf(c_tempstr, "%3.2f", node.cpu_used_perc);
@@ -280,8 +337,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::RAM);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::RAM);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             char c_tempstr[8];
             sprintf(c_tempstr, "%3.2f", node.mem_used_perc);
@@ -292,8 +349,8 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
             }
             str += tempstr;
         }
-        it = node_window_fields.find(NodeFieldColumn::RX);
-        if (it != node_window_fields.end()) {
+        it = m_nodeWindowFields.find(NodeFieldColumn::RX);
+        if (it != m_nodeWindowFields.end()) {
             width = it->second.width;
             std::string max_number_str(width - 4, '9');
             double max_num = std::atof(max_number_str.c_str()) + 0.99;

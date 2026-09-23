@@ -20,17 +20,17 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         static constexpr double START_X_PERC =
             0.0; /*!< What percentage of the screen to put top left corner (X) of window. */
         static constexpr double START_Y_PERC =
-            80.0; /*!< What percentage of the screen to put top left corner (Y) of window. */
+            75.0; /*!< What percentage of the screen to put top left corner (Y) of window. */
         static constexpr double WIDTH_PERC = 30.0;  /*!< What percentage of the screen (Width) to draw the window. */
-        static constexpr double HEIGHT_PERC = 20.0; /*!< What percentage of the screen (Height) to draw the window. */
-        StatusWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
-            : BaseWindow("status_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
+        static constexpr double HEIGHT_PERC = 25.0; /*!< What percentage of the screen (Height) to draw the window. */
+        StatusWindow(std::shared_ptr<rclcpp::Node> node, int16_t tabOrder, int16_t mainWindowHeight,
+                     uint16_t mainWindowWidth)
+            : BaseWindow(node, "status_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
                          mainWindowHeight, mainWindowWidth) {
-            ScreenCoordinatePixel coord_pix =
+            ScreenCoordinatePixel coordPix =
                 convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
-            WINDOW* win =
-                createNewWin(coord_pix.heightPix, coord_pix.widthPix, coord_pix.startYPix, coord_pix.startXPix);
-            setScreenCoordinatesPix(coord_pix);
+            WINDOW* win = createNewWin(coordPix.heightPix, coordPix.widthPix, coordPix.startYPix, coordPix.startXPix);
+            setScreenCoordinatesPix(coordPix);
             setWindow(win);
             wrefresh(win);
         }

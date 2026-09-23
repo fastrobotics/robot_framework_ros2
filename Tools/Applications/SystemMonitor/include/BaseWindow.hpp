@@ -17,6 +17,7 @@
 #include "CommonWindowUtility.hpp"
 #include "Definitions.hpp"
 #include "IWindow.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "robot_framework_ros2/utils/CoreUtility.hpp"
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 
@@ -39,9 +40,11 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
          * @param mainWindowHeight
          * @param mainWindowWidth
          */
-        BaseWindow(const std::string name, int16_t tabOrder, double startXPerc, double startYPerc, double widthPerc,
-                   double heightPerc, uint16_t mainWindowHeight, uint16_t mainWindowWidth)
-            : m_name(name),
+        BaseWindow(std::shared_ptr<rclcpp::Node> node, const std::string name, int16_t tabOrder, double startXPerc,
+                   double startYPerc, double widthPerc, double heightPerc, uint16_t mainWindowHeight,
+                   uint16_t mainWindowWidth)
+            : m_node(node),
+              m_name(name),
               m_tabOrder(tabOrder),
               m_screenCoordPerc(startXPerc, startYPerc, widthPerc, heightPerc),
               m_screenCoordPixel(0, 0, 0, 0),
@@ -83,6 +86,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         }
 
        protected:
+        std::shared_ptr<rclcpp::Node> getNode() const { return m_node.lock(); }
         /**
          * @brief Abstract Periodic Update
          *
@@ -154,6 +158,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         std::vector<int> supportedKeys;
 
        private:
+        std::weak_ptr<rclcpp::Node> m_node;
         WINDOW* m_win{nullptr};
         std::string m_name{""};
         int16_t m_tabOrder;

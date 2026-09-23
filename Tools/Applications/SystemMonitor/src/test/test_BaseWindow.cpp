@@ -9,10 +9,10 @@ class TestBaseWindow : public BaseWindow {
    public:
     TestBaseWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
         : BaseWindow("test_window", tabOrder, 0.0, 0.0, 100.0, 100.0, mainWindowHeight, mainWindowWidth) {
-        ScreenCoordinatePixel coord_pix =
+        ScreenCoordinatePixel coordPix =
             convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
-        WINDOW* win = createNewWin(coord_pix.heightPix, coord_pix.widthPix, coord_pix.startYPix, coord_pix.startXPix);
-        setScreenCoordinatesPix(coord_pix);
+        WINDOW* win = createNewWin(coordPix.heightPix, coordPix.widthPix, coordPix.startYPix, coordPix.startXPix);
+        setScreenCoordinatesPix(coordPix);
         setWindow(win);
         wrefresh(win);
     }

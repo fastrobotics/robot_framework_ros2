@@ -28,7 +28,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         static constexpr double START_Y_PERC =
             15.0; /*!< What percentage of the screen to put top left corner (Y) of window. */
         static constexpr double WIDTH_PERC = 66.0;  /*!< What percentage of the screen (Width) to draw the window. */
-        static constexpr double HEIGHT_PERC = 60.0; /*!< What percentage of the screen (Height) to draw the window. */
+        static constexpr double HEIGHT_PERC = 55.0; /*!< What percentage of the screen (Height) to draw the window. */
         enum class NodeType { UNKNOWN = 0, FAST = 1, NON_FAST = 2 };
         enum class NodeFieldColumn {
             MARKER = 0,
@@ -50,33 +50,45 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
          * @param mainWindowHeight
          * @param mainWindowWidth
          */
-        NodeInfoWindow(int16_t tabOrder, int16_t mainWindowHeight, uint16_t mainWindowWidth)
-            : BaseWindow("node_info_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
+        NodeInfoWindow(std::shared_ptr<rclcpp::Node> node, int16_t tabOrder, int16_t mainWindowHeight,
+                       uint16_t mainWindowWidth)
+            : BaseWindow(node, "node_info_window", tabOrder, START_X_PERC, START_Y_PERC, WIDTH_PERC, HEIGHT_PERC,
                          mainWindowHeight, mainWindowWidth) {
-            ScreenCoordinatePixel coord_pix =
+            ScreenCoordinatePixel coordPix =
                 convertCoordinate(getScreenCoordinatesPerc(), mainWindowWidth, mainWindowHeight);
             supportedKeys.push_back(KEY_UP);
             supportedKeys.push_back(KEY_DOWN);
-            node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::MARKER, Field("", 3)));
-            node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::ID, Field("ID", 4)));
-            // node_window_fields.insert(
+            supportedKeys.push_back('l');
+            supportedKeys.push_back('L');
+            supportedKeys.push_back('0');
+            supportedKeys.push_back('1');
+            supportedKeys.push_back('2');
+            supportedKeys.push_back('3');
+            supportedKeys.push_back('4');
+            supportedKeys.push_back('5');
+            supportedKeys.push_back('6');
+            supportedKeys.push_back('7');
+            supportedKeys.push_back('8');
+            supportedKeys.push_back('9');
+            m_nodeWindowFields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::MARKER, Field("", 3)));
+            m_nodeWindowFields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::ID, Field("ID", 4)));
+            // m_nodeWindowFields.insert(
             //     std::pair<NodeFieldColumn, Field>(NodeFieldColumn::HOSTNAME, Field(" Host ", 20)));
-            node_window_fields.insert(
+            m_nodeWindowFields.insert(
                 std::pair<NodeFieldColumn, Field>(NodeFieldColumn::NODENAME, Field(" NodeName ", 70)));
-            node_window_fields.insert(
+            m_nodeWindowFields.insert(
                 std::pair<NodeFieldColumn, Field>(NodeFieldColumn::STATUS, Field(" Status ", 14)));
-            node_window_fields.insert(
+            m_nodeWindowFields.insert(
                 std::pair<NodeFieldColumn, Field>(NodeFieldColumn::READY_TO_ARM, Field(" Ready To Arm ", 15)));
-            // node_window_fields.insert(
+            // m_nodeWindowFields.insert(
             //    std::pair<NodeFieldColumn, Field>(NodeFieldColumn::RESTARTS, Field(" Restarts ", 10)));
-            // node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::PID, Field(" PID ", 8)));
-            // node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::CPU, Field(" CPU(%) ",
-            // 10))); node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::RAM, Field(" RAM(%)",
+            // m_nodeWindowFields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::PID, Field(" PID ", 8)));
+            // m_nodeWindowFields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::CPU, Field(" CPU(%) ",
+            // 10))); m_nodeWindowFields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::RAM, Field(" RAM(%)",
             // 10)));
-            node_window_fields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::RX, Field(" Rx ", 6)));
-            WINDOW* win =
-                createNewWin(coord_pix.heightPix, coord_pix.widthPix, coord_pix.startYPix, coord_pix.startXPix);
-            setScreenCoordinatesPix(coord_pix);
+            m_nodeWindowFields.insert(std::pair<NodeFieldColumn, Field>(NodeFieldColumn::RX, Field(" Rx ", 6)));
+            WINDOW* win = createNewWin(coordPix.heightPix, coordPix.widthPix, coordPix.startYPix, coordPix.startXPix);
+            setScreenCoordinatesPix(coordPix);
             setWindow(win);
 
             std::string header = getWindowHeader();
@@ -149,12 +161,12 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
         };
         bool insertNode(NodeType node_type, std::string device, std::string base_node_name, std::string node_name);
         std::string getWindowHeader();
-        std::string get_node_info(NodeData node, bool selected);
+        std::string getNodeInfo(NodeData node, bool selected);
 
-        int previous_key{-1};
-        std::mutex node_list_mutex;
-        std::map<NodeFieldColumn, Field> node_window_fields;
+        int m_previousKey{-1};
+        std::mutex m_nodeListMutex;
+        std::map<NodeFieldColumn, Field> m_nodeWindowFields;
         std::string m_selectedNode{""};
-        std::map<std::string, NodeData> nodes;
+        std::map<std::string, NodeData> m_nodes;
     };
 }  // namespace fast::rf_ros2::Tools::Applications::SystemMonitor

@@ -8,6 +8,11 @@ package robot_framework_ros2 #LightYellow;line:blue {
         +bool request_approved
     }
     ArmStateChange --> ArmedState: <<use>>
+    class ChangeLoggerLevel <<(M,#FFFF00)<< <<ROS2>> #Orange {
+        +uint8 verbosity_level
+        ---
+        +bool request_approved
+    }
 
 }
 @enduml

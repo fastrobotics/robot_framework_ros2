@@ -39,6 +39,7 @@ rosidl_generate_interfaces(
   "msg/NodeState.msg"
   "msg/ReadyToArm.msg"
   "srv/ArmStateChange.srv"
+  "srv/ChangeLoggerLevel.srv"
   DEPENDENCIES
   builtin_interfaces)
 

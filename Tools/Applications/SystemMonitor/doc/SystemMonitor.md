@@ -77,16 +77,16 @@ Next in the code, update the following:
 ```
 1. In the header Constructor, add the following:
 ```code
-node_window_fields.insert(
+m_nodeWindowFields.insert(
                 std::pair<NodeFieldColumn, Field>(NodeFieldColumn::<Existing Field>,<blah>);
-node_window_fields.insert(
+m_nodeWindowFields.insert(
                 std::pair<NodeFieldColumn, Field>(NodeFieldColumn::<New Field>, Field(<Field Header Text>, <Width of Field.  This should be at a minimum of the max of (the Header name,any data that will be populated)>)));  If the text to be displayed may exceed this, make sure to limit the size displayed in the implementation.
 ```
-1. In the cpp function `get_node_info`, add the following:
+1. In the cpp function `getNodeInfo`, add the following:
 ```code
 <existing field lookups>
-it = node_window_fields.find(NodeFieldColumn::<New Field>);
-if (it != node_window_fields.end()) {
+it = m_nodeWindowFields.find(NodeFieldColumn::<New Field>);
+if (it != m_nodeWindowFields.end()) {
     std::string tempstr =  <Some String>
     std::size_t spaces = it->second.width - tempstr.size();
     if (spaces > 0) {
@@ -114,6 +114,9 @@ This is a generic Window that provides details like:
 
 ### Menu Options
 This window displays to the user what options are available.  Note that this window is dynamic as the operations available can change over time.
+The following options are currently supported:
+- Changing Node Verbosity Level
+
 
 ### Device Info
 This window displays device health information.  This will be implemented during AB#1837.

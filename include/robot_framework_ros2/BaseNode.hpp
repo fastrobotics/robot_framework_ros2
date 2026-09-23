@@ -20,6 +20,7 @@
 #include <robot_framework_ros2/msg/heartbeat.hpp>
 #include <robot_framework_ros2/msg/node_state.hpp>
 #include <robot_framework_ros2/msg/ready_to_arm.hpp>
+#include <robot_framework_ros2/srv/change_logger_level.hpp>
 
 namespace fast::rf_ros2 {
     class BaseNode : public rclcpp::Node {
@@ -140,6 +141,12 @@ namespace fast::rf_ros2 {
         rclcpp::Publisher<robot_framework_ros2::msg::Heartbeat>::SharedPtr m_heartbeatPub;
         rclcpp::Publisher<robot_framework_ros2::msg::Diagnostic>::SharedPtr m_diagnosticPub;
         rclcpp::Publisher<robot_framework_ros2::msg::ReadyToArm>::SharedPtr m_readyToArmPub;
+
+        // Services
+        void changeLoggerLevelService(
+            const std::shared_ptr<robot_framework_ros2::srv::ChangeLoggerLevel::Request> request,
+            std::shared_ptr<robot_framework_ros2::srv::ChangeLoggerLevel::Response> response);
+        rclcpp::Service<robot_framework_ros2::srv::ChangeLoggerLevel>::SharedPtr m_changeLoggerLevelSrvServer;
 
         // Data
         std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> m_diagnostics;

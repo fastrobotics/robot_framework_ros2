@@ -6,11 +6,17 @@ set(CMAKE_CXX_FLAGS
 if(EXISTS "/etc/nv_tegra_release")
   if(EXISTS "/proc/device-tree/model")
     file(READ "/proc/device-tree/model" DEVICE_MODEL)
-    if(DEVICE_MODEL MATCHES "Jetson Nano")
+    if(DEVICE_MODEL MATCHES "Jetson Orin Nano")
       set(ARCHITECTURE_JETSONNANO TRUE)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARCHITECTURE_JETSONNANO")
       message(STATUS "ARCHITECTURE: ARCHITECTURE_JETSONNANO")
       add_compile_options(-Wno-psabi)
+      add_definitions(-Wall -Wextra -Wno-switch)
+      set(CMAKE_CUDA_ARCHITECTURES 87)
+      set(CMAKE_CUDA_STANDARD 17)
+      set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+      enable_language(CUDA)
+      find_package(CUDAToolkit REQUIRED)
     endif()
   endif()
 elseif(EXISTS "/sys/firmware/devicetree/base/model"
@@ -19,12 +25,14 @@ elseif(EXISTS "/sys/firmware/devicetree/base/model"
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARCHITECTURE_RASPBERRY_PI")
   message(STATUS "ARCHITECTURE: ARCHITECTURE_RASPBERRY_PI")
   add_compile_options(-Wno-psabi)
+  add_definitions(-Wall -Wextra -Wno-switch -Werror)
 else()
   set(ARCHITECTURE_X8664 TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARCHITECTURE_X8664")
   message(STATUS "ARCHITECTURE: ARCHITECTURE_X8664")
+  add_definitions(-Wall -Wextra -Wno-switch -Werror)
 endif()
-add_definitions(-Wall -Wextra -Wno-switch -Werror)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -84,7 +92,7 @@ FetchContent_Declare(
   robot_framework
   GIT_REPOSITORY https://github.com/fastrobotics/robot_framework.git
   GIT_SHALLOW ON
-  GIT_TAG master)
+  GIT_TAG devops5743/CreateSimpleGPUTestProgram)
 set(BUILD_TESTING
     OFF
     CACHE BOOL "" FORCE)

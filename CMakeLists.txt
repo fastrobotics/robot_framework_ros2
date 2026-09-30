@@ -37,7 +37,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options("$<$<COMPILE_LANGUAGE:C,CXX>:-Wall;-Wextra;-Wpedantic>")
 endif()
 option(BUILD_TESTING "Build the testing tree." ON)
 set(ORIGINAL_BUILD_TESTING ${BUILD_TESTING})
@@ -92,7 +92,7 @@ FetchContent_Declare(
   robot_framework
   GIT_REPOSITORY https://github.com/fastrobotics/robot_framework.git
   GIT_SHALLOW ON
-  GIT_TAG devops5743/CreateSimpleGPUTestProgram)
+  GIT_TAG master)
 set(BUILD_TESTING
     OFF
     CACHE BOOL "" FORCE)

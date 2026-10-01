@@ -23,6 +23,8 @@
 #include <MagneticFieldMsg.hpp>
 #include <OdomMsg.hpp>
 #include <OrientationMsg.hpp>
+#include <PointCloudMsg.hpp>
+#include <PointFieldMsg.hpp>
 #include <ReadyToArmStatusMsg.hpp>
 #include <TwistMsg.hpp>
 #include <Vector3DMsg.hpp>
@@ -43,6 +45,8 @@
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/joy.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/msg/point_field.hpp>
 
 // General Dependencies
 #include <array>
@@ -332,5 +336,37 @@ namespace fast::rf_ros2::utils {
          * @return sensor_msgs::msg::MagneticField
          */
         static sensor_msgs::msg::MagneticField convert(fast::rf::messages::SensorMsgs::MagneticFieldMsg data);
+
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type PointField
+         *
+         * @param data
+         * @return fast::rf::messages::SensorMsgs::PointFieldMsg
+         */
+        static fast::rf::messages::SensorMsgs::PointFieldMsg convert(sensor_msgs::msg::PointField data);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type PointField
+         *
+         * @param data
+         * @return sensor_msgs::msg::PointField
+         */
+        static sensor_msgs::msg::PointField convert(fast::rf::messages::SensorMsgs::PointFieldMsg data);
+
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type PointCloud
+         *
+         * @param data
+         * @return fast::rf::messages::SensorMsgs::PointCloudMsg
+         */
+        static fast::rf::messages::SensorMsgs::PointCloudMsg convert(sensor_msgs::msg::PointCloud2 data);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type PointCloud
+         *
+         * @param data
+         * @return sensor_msgs::msg::PointCloud2
+         */
+        static sensor_msgs::msg::PointCloud2 convert(fast::rf::messages::SensorMsgs::PointCloudMsg data);
     };
 }  // namespace fast::rf_ros2::utils

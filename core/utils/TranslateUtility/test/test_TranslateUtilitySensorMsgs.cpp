@@ -66,3 +66,102 @@ TEST(TestConversion, SensorMsgsConvertMagneticField) {
         ASSERT_FLOAT_EQ(msg.magnetic_field.z, data.magnetic_field.z);
     }
 }
+TEST(TestConversion, SensorMsgsConvertPointField) {
+    {  // Convert to ROS Message
+        fast::rf::messages::SensorMsgs::PointFieldMsg data;
+        data.count = 1;
+        data.datatype = fast::rf::messages::SensorMsgs::PointFieldMsg::PointFieldDataType::INT8;
+        data.name = "test";
+        data.offset = 2;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_EQ(msg.name, data.name);
+        ASSERT_EQ(msg.offset, data.offset);
+        ASSERT_EQ(msg.datatype, (uint8_t)data.datatype);
+        ASSERT_EQ(msg.count, data.count);
+    }
+    {  // Convert from ROS Message
+        sensor_msgs::msg::PointField data;
+        data.count = 1;
+        data.datatype = sensor_msgs::msg::PointField::INT8;
+        data.name = "test";
+        data.offset = 2;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_EQ(msg.name, data.name);
+        ASSERT_EQ(msg.offset, data.offset);
+        ASSERT_EQ(msg.datatype, (fast::rf::messages::SensorMsgs::PointFieldMsg::PointFieldDataType)data.datatype);
+        ASSERT_EQ(msg.count, data.count);
+    }
+}
+TEST(TestConversion, SensorMsgsConvertPointCloud) {
+    {  // Convert to ROS Message
+        fast::rf::messages::SensorMsgs::PointCloudMsg data;
+        data.time_stamp = 1.0;
+        data.height = 1;
+        data.width = 2;
+        {
+            fast::rf::messages::SensorMsgs::PointFieldMsg field;
+            field.count = 1;
+            field.datatype = fast::rf::messages::SensorMsgs::PointFieldMsg::PointFieldDataType::INT8;
+            field.name = "test";
+            field.offset = 2;
+            data.fields.push_back(field);
+        }
+        data.is_bigendian = true;
+        data.point_step = 3;
+        data.row_step = 4;
+        {
+            data.data.push_back(5);
+            data.data.push_back(6);
+            data.data.push_back(7);
+        }
+        data.is_dense = false;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_EQ(msg.height, data.height);
+        ASSERT_EQ(msg.width, data.width);
+        ASSERT_EQ(msg.fields.size(), data.fields.size());
+        ASSERT_GT(msg.fields.size(), 0);
+        ASSERT_EQ(msg.fields[0].name, data.fields[0].name);
+        ASSERT_EQ(msg.is_bigendian, data.is_bigendian);
+        ASSERT_EQ(msg.point_step, data.point_step);
+        ASSERT_EQ(msg.row_step, data.row_step);
+        ASSERT_EQ(msg.data.size(), data.data.size());
+        ASSERT_GT(msg.data.size(), 0);
+        ASSERT_EQ(msg.data[0], data.data[0]);
+        ASSERT_EQ(msg.is_dense, data.is_dense);
+    }
+    {  // Convert from ROS Message
+        sensor_msgs::msg::PointCloud2 data;
+        data.height = 1;
+        data.width = 2;
+        {
+            sensor_msgs::msg::PointField field;
+            field.count = 1;
+            field.datatype = sensor_msgs::msg::PointField::INT8;
+            field.name = "test";
+            field.offset = 2;
+            data.fields.push_back(field);
+        }
+        data.is_bigendian = true;
+        data.point_step = 3;
+        data.row_step = 4;
+        {
+            data.data.push_back(5);
+            data.data.push_back(6);
+            data.data.push_back(7);
+        }
+        data.is_dense = false;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_EQ(msg.height, data.height);
+        ASSERT_EQ(msg.width, data.width);
+        ASSERT_EQ(msg.fields.size(), data.fields.size());
+        ASSERT_GT(msg.fields.size(), 0);
+        ASSERT_EQ(msg.fields[0].name, data.fields[0].name);
+        ASSERT_EQ(msg.is_bigendian, data.is_bigendian);
+        ASSERT_EQ(msg.point_step, data.point_step);
+        ASSERT_EQ(msg.row_step, data.row_step);
+        ASSERT_EQ(msg.data.size(), data.data.size());
+        ASSERT_GT(msg.data.size(), 0);
+        ASSERT_EQ(msg.data[0], data.data[0]);
+        ASSERT_EQ(msg.is_dense, data.is_dense);
+    }
+}

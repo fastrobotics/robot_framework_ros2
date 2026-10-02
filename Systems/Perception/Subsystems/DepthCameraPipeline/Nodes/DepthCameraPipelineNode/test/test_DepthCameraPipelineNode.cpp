@@ -23,7 +23,7 @@ class Ros2TestEnvironment : public ::testing::Environment {
 };
 testing::Environment* const ros2_env = testing::AddGlobalTestEnvironment(new Ros2TestEnvironment);
 std::string robotNamespace = "test";
-std::string nodeNamespace = "perception/depthcamerapipeline/example";
+std::string nodeNamespace = "perception/depthcamerapipeline";
 std::string nodeUnderTest = "depthcamera_pipeline_node";
 class DepthCameraPipelineNodeTestFixture : public ::testing::Test {
    protected:
@@ -72,17 +72,17 @@ TEST_F(DepthCameraPipelineNodeTestFixture, VerifyHeartbeatReception) {
         rclcpp::spin_some(test_node);
         rclcpp::sleep_for(std::chrono::milliseconds(100));
     }
+
     ASSERT_TRUE(m_receivedHeartbeatRxCount > 0) << "ERROR: Failed to receive a message on /heartbeat within timeout.";
     ASSERT_EQ(m_latestHeartbeat.node_state.state, robot_framework_ros2::msg::NodeState::STATE_RUNNING);
 
-    // ASSERT_TRUE(m_receivedDiagnosticRxCount > 0)
-    //    << "ERROR: Failed to receive a message on /diagnostic within
-    //       timeout.";
+    // ASSERT_TRUE(m_receivedDiagnosticRxCount > 0) << "ERROR: Failed to receive a message on /diagnostic within
+    // timeout.";
 
     ASSERT_TRUE(m_receivedReadyToArmRxCount > 0)
         << "ERROR: Failed to receive a message on /ready_to_arm within timeout.";
     ASSERT_GT(m_latestReadyToArm.system_id, 0);
     ASSERT_GT(m_latestReadyToArm.subsystem_id, 0);
-    ASSERT_EQ(m_latestReadyToArm.process_id, 0);
-    // ASSERT_NE(m_latestReadyToArm.ready_to_arm, false) << "ERROR: Node is not able to Arm.";
+    ASSERT_GT(m_latestReadyToArm.process_id, 0);
+    // ASSERT_EQ(m_latestReadyToArm.ready_to_arm, true) << "ERROR: Node is not able to Arm.";
 }

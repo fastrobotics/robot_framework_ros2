@@ -16,13 +16,32 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
     bool DepthCameraPipelineNode::initServices() { return true; }
     bool DepthCameraPipelineNode::initDiagnostics() { return true; }
     bool DepthCameraPipelineNode::initData() {
-        // m_process.update(this->get_clock()->now().seconds());  // Kick off the Process
-        // setReadyToArm(m_process.get_ready_to_arm());
+        bool readyToArmFlag = true;
+        fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg readyToArm;
+        for (auto process : m_pipeline) {
+            process.second->update(this->get_clock()->now().seconds());
+            readyToArm = process.second->get_ready_to_arm();
+            if (readyToArm.ready_to_arm == false) {
+                readyToArmFlag = false;
+            }
+        }
+        readyToArm.processID = 0;  // Entire Subsystem
+        readyToArm.ready_to_arm = readyToArmFlag;
+        setReadyToArm(readyToArm);
         return true;
     }
     void DepthCameraPipelineNode::run100Hz() {}
     void DepthCameraPipelineNode::run10Hz() {
-        // setReadyToArm(m_process.get_ready_to_arm());
+        bool readyToArmFlag = true;
+        fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg readyToArm;
+        for (auto process : m_pipeline) {
+            readyToArm = process.second->get_ready_to_arm();
+            if (readyToArm.ready_to_arm == false) {
+                readyToArmFlag = false;
+            }
+        }
+        readyToArm.ready_to_arm = readyToArmFlag;
+        setReadyToArm(readyToArm);
     }
     void DepthCameraPipelineNode::run1Hz() {
         //  auto diagnostics = m_process.getDiagnostics();

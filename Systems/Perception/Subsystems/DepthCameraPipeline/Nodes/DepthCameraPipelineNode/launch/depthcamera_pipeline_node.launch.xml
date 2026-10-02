@@ -4,7 +4,7 @@
     <arg name="robot_namespace" default="/"/> 
     <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
     <arg name="node_name" default="depthcamera_pipeline_node" description="Name of the node at runtime"/>
-    <arg name="node_namespace" default="perception/depthcamerapipeline/example" description="Runtime namespace for the node"/>
+    <arg name="node_namespace" default="perception/depthcamerapipeline" description="Runtime namespace for the node"/>
     <group>
         <push-ros-namespace namespace="$(var robot_namespace)"/>
         <node pkg="robot_framework_ros2" 

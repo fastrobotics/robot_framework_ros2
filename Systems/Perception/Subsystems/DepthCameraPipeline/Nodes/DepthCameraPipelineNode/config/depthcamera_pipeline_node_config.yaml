@@ -2,7 +2,6 @@
 /**:
   perception: #System
     depthcamerapipeline: #Subsystem
-      example: #Generic Process
-        depthcamera_pipeline_node: #Specific Node Name
-          ros__parameters:
-            example_parameter: 1.234
+      depthcamera_pipeline_node: #Specific Node Name
+        ros__parameters:
+          example_parameter: 1.234

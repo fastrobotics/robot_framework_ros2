@@ -1,0 +1,8 @@
+@startuml
+title Perception System Class Diagram
+
+namespace fast::rf_ros2 {
+    package PerceptionSystem #LightYellow;line:blue {
+    }
+}
+@enduml

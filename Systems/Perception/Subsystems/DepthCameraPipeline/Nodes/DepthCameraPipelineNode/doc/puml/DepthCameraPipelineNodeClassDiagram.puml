@@ -1,0 +1,37 @@
+' @compare_tag Node-ClassDiagram v0.1
+@startuml
+title DepthCameraPipelineNode Class Diagram
+namespace fast::rf {
+    namespace PerceptionSystem {
+        namespace DepthCameraPipelineSubsystem {
+        }
+    }
+}
+namespace fast::rf_ros2 { 
+    abstract BaseNode {
+
+    }
+    namespace PerceptionSystem {
+        package DepthCameraPipelineSubsystem #LightYellow;line:blue  {
+            class DepthCameraPipelineNode #Yellow {
+                #void run100Hz()
+                #void run10Hz()
+                #void run1Hz()
+                #void run01Hz()
+                #void run001Hz()
+                #void runLoop1()
+                #void runLoop2()
+                #void runLoop3()
+
+                #bool loadConfig()
+                #bool initPubSubs()
+                #bool initServices()
+                #bool initDiagnostics()
+                #bool initData()
+            }
+            DepthCameraPipelineNode -up-|> BaseNode
+        }
+    }
+}
+
+@enduml

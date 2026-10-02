@@ -1,0 +1,11 @@
+' @compare_tag Subsystem-ClassDiagram v0.1
+@startuml
+title DepthCameraPipeline Subsystem Class Diagram
+
+namespace fast::rf_ros2 {
+    namespace PerceptionSystem {
+        package DepthCameraPipelineSubsystem #LightYellow;line:blue {
+        }
+    }
+}
+@enduml

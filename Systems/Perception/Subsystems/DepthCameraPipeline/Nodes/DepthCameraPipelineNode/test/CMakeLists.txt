@@ -5,7 +5,13 @@ find_package(ament_cmake_gtest REQUIRED)
 
 add_executable(test_depthcamera_pipeline_node test_DepthCameraPipelineNode.cpp)
 target_link_libraries(
-  test_depthcamera_pipeline_node gtest gtest_main rclcpp::rclcpp logger
+  test_depthcamera_pipeline_node
+  gtest
+  gtest_main
+  sensor_msgs
+  ${sensor_msgs_TARGETS}
+  rclcpp::rclcpp
+  logger
   ${PROJECT_NAME}__rosidl_typesupport_cpp)
 target_include_directories(
   test_depthcamera_pipeline_node

@@ -12,6 +12,8 @@ node_registry:
     launch_file: "Systems/Perception/Subsystems/DepthCameraPipeline/Nodes/DepthCameraPipelineNode/launch/depthcamera_pipeline_node.launch.xml"
     parameters:
       verbosity_level: "DEBUG"
+      sensor1_depthcamera_topic: depthcamera1_topic
+      fused_depthcamera_topic: fused_depthcamera_topic
 
   armed_state_manager_node:
     package: "robot_framework_ros2" 

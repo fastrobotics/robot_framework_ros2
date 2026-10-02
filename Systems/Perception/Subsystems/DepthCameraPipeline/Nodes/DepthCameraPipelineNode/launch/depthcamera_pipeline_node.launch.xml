@@ -5,6 +5,8 @@
     <arg name="verbosity_level" default="INFO" description="Logging level (DEBUG,INFO,NOTICE,WARN,ERROR,FATAL)"/>
     <arg name="node_name" default="depthcamera_pipeline_node" description="Name of the node at runtime"/>
     <arg name="node_namespace" default="perception/depthcamerapipeline" description="Runtime namespace for the node"/>
+    <arg name="sensor1_depthcamera_topic" default="camera/depth" description="Sensor 1 Depth Camera Input Topic"/>
+    <arg name="fused_depthcamera_topic" default="fused_depth" description="Fused Depth Camera Topic"/>
     <group>
         <push-ros-namespace namespace="$(var robot_namespace)"/>
         <node pkg="robot_framework_ros2" 
@@ -17,9 +19,9 @@
             <param name="robot_namespace" value="$(var robot_namespace)"/>
             <param name="node_namespace" value="$(var node_namespace)"/>
             <param name="verbosity_level" value="$(var verbosity_level)"/>
-            <param name="loop1_rate" value="1.0"/>
-            <param name="loop2_rate" value="2.0"/>
-            <param name="loop3_rate" value="3.0"/>
+            <param name="sensor1_depthcamera_topic" value="$(var sensor1_depthcamera_topic)"/>
+            <param name="fused_depthcamera_topic" value="$(var fused_depthcamera_topic)"/>
+            <param name="loop1_rate" value="20.0"/> <!-- General Process Update -->
         </node>
     </group>
 </launch>

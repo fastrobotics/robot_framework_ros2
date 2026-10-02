@@ -13,6 +13,7 @@
 #include <IProcess.hpp>
 #include <SensorHealthMonitorProcess.hpp>
 #include <SensorInputHandlerProcess.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
 namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
@@ -45,7 +46,12 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
         bool initData() override;
 
        private:
+        void pointCloudCallback(const std::string& topicName, const sensor_msgs::msg::PointCloud2::SharedPtr msg) const;
         std::string pretty() override;
+
+        // Pubs & Subs
+        rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr m_sensorPointCloubSub;
+        // Data
         std::shared_ptr<
             fast::rf::PerceptionSystem::DepthCameraPipelineSubsystem::SensorInputHandler::SensorInputHandlerProcess>
             m_sensorInputHandlerProcess;

@@ -1,0 +1,61 @@
+' @compare_tag Node-ClassDiagram v0.1
+@startuml
+title DepthCameraPipelineNode Class Diagram
+namespace fast::rf {
+    interface IProcess
+    namespace PerceptionSystem {
+        namespace DepthCameraPipelineSubsystem {
+            namespace SensorInputHandler {
+                class SensorInputHandlerProcess
+                SensorInputHandlerProcess -up-|> IProcess
+            }
+            namespace FeatureDetector {
+
+            }
+            namespace FOVExtractor {
+
+            }
+            namespace SensorFuser {
+                
+            }
+            namespace SensorHealthMonitor {
+                class SensorHealthMonitorProcess
+                SensorHealthMonitorProcess -up-|> IProcess
+            }
+        }
+    }
+}
+namespace fast::rf_ros2 { 
+    abstract BaseNode {
+
+    }
+    namespace PerceptionSystem {
+        package DepthCameraPipelineSubsystem #LightYellow;line:blue  {
+            class DepthCameraPipelineNode #Yellow {
+                #void run100Hz()
+                #void run10Hz()
+                #void run1Hz()
+                #void run01Hz()
+                #void run001Hz()
+                #void runLoop1()
+                #void runLoop2()
+                #void runLoop3()
+
+                #bool loadConfig()
+                #bool initPubSubs()
+                #bool initServices()
+                #bool initDiagnostics()
+                #bool initData()
+                -SensorInputHandlerProcess m_sensorInputHandlerProcess
+                -SensorHealthMonitorProcess m_sensorHealthMonitorProcess
+                -IProcess[] m_pipeline
+            }
+            DepthCameraPipelineNode -up-|> BaseNode
+            DepthCameraPipelineNode --> IProcess: <<use>>
+            DepthCameraPipelineNode *-> SensorInputHandlerProcess: <<use>>
+           
+        }
+    }
+}
+
+@enduml

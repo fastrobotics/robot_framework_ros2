@@ -14,78 +14,41 @@
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
     void DepthCameraPipelineNode::pointCloudCallback(const std::string& topicName,
-                                                     const sensor_msgs::msg::PointCloud2::SharedPtr msg) const {
+                                                     const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
         auto localMsg = *msg;
         auto convertedMsg = fast::rf_ros2::utils::TranslateUtility::convert(localMsg);
-        m_sensorInputHandlerProcess->newPointCloud(convertedMsg);
-        m_sensorHealthMonitorProcess->newPointCloud(topicName, convertedMsg);
+        m_subsystem.newPointCloud(convertedMsg, topicName);
     }
     bool DepthCameraPipelineNode::loadConfig() { return true; }
     bool DepthCameraPipelineNode::initPubSubs() {
         const auto sensor1InputTopic = this->declare_parameter<std::string>("sensor1_depthcamera_topic");
-        m_sensorHealthMonitorProcess->addSignalToMonitor(sensor1InputTopic, "sensor_msgs/msg/PointCloud2", 20.0,
-                                                         50.0);  // TODO: Make these config
+        m_subsystem.addSignalToMonitor(sensor1InputTopic, "sensor_msgs/msg/PointCloud2", 20.0,
+                                       50.0);  // TODO: Make these config
         m_sensorPointCloubSub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
             getNamespacedTopic(sensor1InputTopic), 10,
             [this, sensor1InputTopic](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
                 this->pointCloudCallback(sensor1InputTopic, msg);
             });
-        fast::rf::Logger::logWarn("Sub: " + sensor1InputTopic);
         return true;
     }
     bool DepthCameraPipelineNode::initServices() { return true; }
     bool DepthCameraPipelineNode::initDiagnostics() { return true; }
     bool DepthCameraPipelineNode::initData() {
-        bool readyToArmFlag = true;
-        fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg readyToArm;
-        for (auto& process : m_pipeline) {
-            process.second->update(this->get_clock()->now().seconds());
-            readyToArm = process.second->get_ready_to_arm();
-            if (readyToArm.ready_to_arm == false) {
-                readyToArmFlag = false;
-            }
-        }
-        readyToArm.processID = 0;  // Entire Subsystem
-        readyToArm.ready_to_arm = readyToArmFlag;
-        setReadyToArm(readyToArm);
+        setReadyToArm(m_subsystem.get_ready_to_arm());
         return true;
     }
     void DepthCameraPipelineNode::run100Hz() {}
-    void DepthCameraPipelineNode::run10Hz() {
-        bool readyToArmFlag = true;
-        fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg readyToArm;
-        for (auto& process : m_pipeline) {
-            readyToArm = process.second->get_ready_to_arm();
-            if (readyToArm.ready_to_arm == false) {
-                readyToArmFlag = false;
-            }
-        }
-        readyToArm.ready_to_arm = readyToArmFlag;
-        setReadyToArm(readyToArm);
-    }
-    void DepthCameraPipelineNode::run1Hz() {
-        std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> allDiagnostics;
-        for (auto& process : m_pipeline) {
-            auto diagnostics = process.second->getDiagnostics();
-            allDiagnostics.insert(allDiagnostics.end(), diagnostics.begin(), diagnostics.end());
-        }
-        setDiagnostics(allDiagnostics);
-    }
+    void DepthCameraPipelineNode::run10Hz() { setReadyToArm(m_subsystem.get_ready_to_arm()); }
+    void DepthCameraPipelineNode::run1Hz() { setDiagnostics(m_subsystem.getDiagnostics()); }
     void DepthCameraPipelineNode::run01Hz() { fast::rf::Logger::logInfo(pretty()); }
     void DepthCameraPipelineNode::run001Hz() {}
-    void DepthCameraPipelineNode::runLoop1() {
-        for (auto& process : m_pipeline) {
-            process.second->update(this->get_clock()->now().seconds());
-        }
-    }
+    void DepthCameraPipelineNode::runLoop1() { m_subsystem.update(this->get_clock()->now().seconds()); }
     void DepthCameraPipelineNode::runLoop2() {}
     void DepthCameraPipelineNode::runLoop3() {}
     std::string DepthCameraPipelineNode::pretty() {
         std::string str = "\n--- DepthCameraPipelineNode ---\n";
         str += BaseNode::pretty() + "\n";
-        for (auto& process : m_pipeline) {
-            str += process.second->pretty();
-        }
+        str += m_subsystem.pretty();
         return str;
     }
 }  // namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem

@@ -10,9 +10,7 @@ rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}"
 target_link_libraries(
   depthcamera_pipeline_node
   PUBLIC "${cpp_typesupport_target}" sensor_msgs ${sensor_msgs_TARGETS}
-  PRIVATE baseNode DepthCameraPipeline::sensorInputHandlerProcess
-          DepthCameraPipelineSubsystem::sensorHealthMonitorProcess
-          DepthCameraPipelineSubsystem::basic_SensorFuserProcess)
+  PRIVATE baseNode depthCameraPipelineSubsystem)
 register_framework_rpath(depthcamera_pipeline_node logger)
 install(TARGETS depthcamera_pipeline_node DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY launch config DESTINATION share/${PROJECT_NAME}/)

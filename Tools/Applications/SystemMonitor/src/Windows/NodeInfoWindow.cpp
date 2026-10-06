@@ -23,7 +23,7 @@ namespace fast::rf_ros2::Tools::Applications::SystemMonitor {
     void NodeInfoWindow::newReadyToArmMsg(robot_framework_ros2::msg::ReadyToArm msg) {
         auto it = m_nodes.find(msg.nodename);
         if (it != m_nodes.end()) {
-            if ((msg.system_id == 0) || (msg.subsystem_id == 0) || (msg.process_id == 0)) {
+            if ((msg.system_id == 0) || (msg.subsystem_id == 0)) {
                 it->second.ready_to_arm = "INVALID";
             } else if (msg.ready_to_arm == true) {
                 it->second.ready_to_arm = "TRUE";

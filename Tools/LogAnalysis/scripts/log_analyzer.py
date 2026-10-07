@@ -304,14 +304,21 @@ def generate_metadata_summary(bag_path: str):
 
     topics_and_types = bag_info.get('topics_with_message_count', [])
     output_md_path = os.path.join(bag_path, "rosbag_metadata_summary.md")
-    plugins = [
-        plugin_type(
-            bag_path,
-            ANALYZER_PLUGIN_OPTIONS.get(plugin_type.__name__),
-        )
-        for plugin_type in ANALYZER_PLUGINS
-        if ANALYZER_PLUGIN_CONFIG.get(plugin_type.__name__, False)
-    ]
+    plugins = []
+    for plugin_type in ANALYZER_PLUGINS:
+        if not ANALYZER_PLUGIN_CONFIG.get(plugin_type.__name__, False):
+            continue
+        plugin_options = dict(ANALYZER_PLUGIN_OPTIONS.get(plugin_type.__name__) or {})
+        if plugin_type.__name__ == "TimestampRateAnalyzer":
+            plugin_options.update({
+                "log_start_time_seconds": (
+                    starting_time_nanos / 1e9
+                    if starting_time_nanos is not None
+                    else None
+                ),
+                "log_duration_seconds": duration_secs,
+            })
+        plugins.append(plugin_type(bag_path, plugin_options))
     run_analyzer_plugins(
         bag_path,
         storage_identifier,

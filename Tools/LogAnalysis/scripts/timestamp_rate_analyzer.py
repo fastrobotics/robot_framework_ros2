@@ -59,6 +59,8 @@ class TimestampRateAnalyzer(BagAnalyzerPlugin):
     def __init__(self, bag_path: str, options=None):
         self.bag_path = bag_path
         self.selected_topics = set((options or {}).get("topics", ()))
+        self.log_start_time_seconds = (options or {}).get("log_start_time_seconds")
+        self.log_duration_seconds = (options or {}).get("log_duration_seconds")
         self.csv_dir = os.path.join(bag_path, "csv")
         self.csv_files = {}
         self.csv_writers = {}
@@ -151,10 +153,17 @@ class TimestampRateAnalyzer(BagAnalyzerPlugin):
 
             figure, axes = plt.subplots(figsize=(10, 4), constrained_layout=True)
             timestamps = self.delta_timestamps[topic_name]
-            axes.plot(timestamps, deltas, linewidth=0.8)
+            start_time = self.log_start_time_seconds
+            if start_time is None:
+                start_time = min(timestamps)
+            elapsed_timestamps = [timestamp - start_time for timestamp in timestamps]
+            axes.plot(elapsed_timestamps, deltas, linewidth=0.8)
             axes.set_title(f"Timestamp deltas: {topic_name}")
-            axes.set_xlabel("Message timestamp (seconds)")
+            axes.set_xlabel("Time since log start (seconds)")
             axes.set_ylabel("Timestamp delta (seconds)")
+            axes.ticklabel_format(axis="x", style="plain", useOffset=False)
+            if self.log_duration_seconds is not None and self.log_duration_seconds > 0:
+                axes.set_xlim(0, self.log_duration_seconds)
             axes.grid(True, alpha=0.3)
             try:
                 figure.savefig(output_path, dpi=150)

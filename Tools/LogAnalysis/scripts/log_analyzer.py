@@ -5,7 +5,11 @@ import subprocess
 import re
 import shutil
 import tempfile
+import queue
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime
+from multiprocessing import Manager
 from analyzer_plugins import ANALYZER_PLUGINS
 
 
@@ -14,6 +18,9 @@ ANALYZER_PLUGIN_CONFIG = {
     "RosoutTextAnalyzer": True,
     "TimestampRateAnalyzer": True,
 }
+
+# Number of bag folders to analyze at the same time.
+MAX_PARALLEL_BAGS = 8
 
 # Edit this set to choose which topic names get timestamp CSVs and rate analysis.
 TIMESTAMP_ANALYSIS_TOPICS = {
@@ -435,6 +442,60 @@ def find_bag_directories(root_path: str) -> list[str]:
     return sorted(bag_directories)
 
 
+_WORKER_OUTPUT_QUEUE = None
+
+
+def initialize_worker_output_queue(output_queue):
+    global _WORKER_OUTPUT_QUEUE
+    _WORKER_OUTPUT_QUEUE = output_queue
+
+
+class WorkerOutputStream:
+    """Send complete output lines from a worker to the parent process."""
+
+    def __init__(self, bag_path: str, is_error: bool):
+        self.bag_path = bag_path
+        self.is_error = is_error
+        self.buffer = ""
+
+    def write(self, text: str):
+        self.buffer += text
+        while self.buffer:
+            newline_index = self.buffer.find("\n")
+            carriage_index = self.buffer.find("\r")
+            delimiter_indices = [index for index in (newline_index, carriage_index) if index >= 0]
+            if not delimiter_indices:
+                break
+            delimiter_index = min(delimiter_indices)
+            line = self.buffer[:delimiter_index]
+            self.buffer = self.buffer[delimiter_index + 1:]
+            if line:
+                _WORKER_OUTPUT_QUEUE.put((self.bag_path, self.is_error, line))
+        return len(text)
+
+    def flush(self):
+        if self.buffer:
+            _WORKER_OUTPUT_QUEUE.put((self.bag_path, self.is_error, self.buffer))
+            self.buffer = ""
+
+
+def process_bag_directory(bag_path: str):
+    """Analyze one bag while streaming its output back to the parent process."""
+    stdout_stream = WorkerOutputStream(bag_path, False)
+    stderr_stream = WorkerOutputStream(bag_path, True)
+    try:
+        with redirect_stdout(stdout_stream), redirect_stderr(stderr_stream):
+            print(f"Starting analysis: {bag_path}")
+            generate_metadata_summary(bag_path)
+    except Exception as error:
+        print(f"Unexpected error analyzing '{bag_path}': {error}", file=stderr_stream)
+    finally:
+        stdout_stream.flush()
+        stderr_stream.flush()
+
+    return bag_path
+
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Usage: python log_analyzer.py /path/to/bag_directory_or_parent_folder")
@@ -452,6 +513,52 @@ if __name__ == '__main__':
 
     print(f"Found {len(bag_directories)} bag director(y/ies) under: {root_path}")
     total = len(bag_directories)
-    for index, bag_path in enumerate(bag_directories, start=1):
-        generate_metadata_summary(bag_path)
-        print(f"Progress: {index}/{total} done, {total - index} left")
+    worker_count = max(1, min(MAX_PARALLEL_BAGS, total))
+    print(f"Analyzing with {worker_count} parallel worker(s).")
+    with Manager() as manager:
+        output_queue = manager.Queue()
+        with ProcessPoolExecutor(
+            max_workers=worker_count,
+            initializer=initialize_worker_output_queue,
+            initargs=(output_queue,),
+        ) as executor:
+            pending = {
+                executor.submit(process_bag_directory, bag_path): bag_path
+                for bag_path in bag_directories
+            }
+            completed = 0
+            while pending:
+                try:
+                    bag_path, is_error, line = output_queue.get(timeout=0.1)
+                    relative_path = os.path.relpath(bag_path, root_path)
+                    destination = sys.stderr if is_error else sys.stdout
+                    print(f"[{relative_path}] {line}", file=destination, flush=True)
+                except queue.Empty:
+                    pass
+
+                finished = [future for future in pending if future.done()]
+                for future in finished:
+                    bag_path = pending.pop(future)
+                    try:
+                        future.result()
+                    except Exception as error:
+                        print(
+                            f"[{os.path.relpath(bag_path, root_path)}] "
+                            f"Unexpected worker failure: {error}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                    completed += 1
+                    print(
+                        f"Progress: {completed}/{total} done, {total - completed} left",
+                        flush=True,
+                    )
+
+                while True:
+                    try:
+                        bag_path, is_error, line = output_queue.get_nowait()
+                    except queue.Empty:
+                        break
+                    relative_path = os.path.relpath(bag_path, root_path)
+                    destination = sys.stderr if is_error else sys.stdout
+                    print(f"[{relative_path}] {line}", file=destination, flush=True)

@@ -54,6 +54,7 @@ The following Tool Groups are supported:
 | Tool Group                                          | Brief Description                           |
 | --------------------------------------------------- | ------------------------------------------- |
 | [Applications](../Applications/doc/Applications.md) | Stand-alone tools that can be run directly. |
+| [Log Analysis](../LogAnalysis/doc/LogAnalysis.md)   | Log Analysis Tools                          |
 
 ## Package Diagram
 

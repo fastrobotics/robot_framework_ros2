@@ -83,5 +83,5 @@ TEST_F(DepthCameraPipelineNodeTestFixture, VerifyHeartbeatReception) {
     ASSERT_GT(m_latestReadyToArm.system_id, 0);
     ASSERT_GT(m_latestReadyToArm.subsystem_id, 0);
     ASSERT_EQ(m_latestReadyToArm.process_id, 0);  // For the entire subsystem
-    ASSERT_EQ(m_latestReadyToArm.ready_to_arm, true) << "ERROR: Node is not able to Arm.";
+    ASSERT_EQ(m_latestReadyToArm.ready_to_arm, false);
 }

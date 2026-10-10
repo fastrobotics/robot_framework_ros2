@@ -7,6 +7,7 @@
     <arg name="node_namespace" default="perception/depthcamerapipeline" description="Runtime namespace for the node"/>
     <arg name="sensor1_depthcamera_topic" default="camera/depth" description="Sensor 1 Depth Camera Input Topic"/>
     <arg name="fused_depthcamera_topic" default="fused_depth" description="Fused Depth Camera Topic"/>
+    <arg name="target_frame" default="body" description="Target Frame"/>
     <group>
         <push-ros-namespace namespace="$(var robot_namespace)"/>
         <node pkg="robot_framework_ros2" 
@@ -21,7 +22,9 @@
             <param name="verbosity_level" value="$(var verbosity_level)"/>
             <param name="sensor1_depthcamera_topic" value="$(var sensor1_depthcamera_topic)"/>
             <param name="fused_depthcamera_topic" value="$(var fused_depthcamera_topic)"/>
+            <param name="target_frame" value="$(var target_frame)"/>
             <param name="loop1_rate" value="20.0"/> <!-- General Process Update -->
+            <param name="loop2_rate" value="20.0"/> <!-- Publish -->
         </node>
     </group>
 </launch>

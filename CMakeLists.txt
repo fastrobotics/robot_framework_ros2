@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
+if(POLICY CMP0144)
+  cmake_policy(SET CMP0144 NEW)
+  set(CMAKE_POLICY_DEFAULT_CMP0144 NEW)
+endif()
 project(robot_framework_ros2)
 set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage -fpermissive ${WARNING_FLAGS}"
@@ -56,6 +60,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(Curses REQUIRED)
 find_package(Boost REQUIRED)
+find_package(PCL 1.14 REQUIRED COMPONENTS common filters io visualization)
 rosidl_generate_interfaces(
   ${PROJECT_NAME}
   "msg/ArmCommand.msg"
@@ -112,6 +117,8 @@ if(RECURSIVE_INCLUDE_DIRS)
 endif()
 include_directories(include ${robot_framework_SOURCE_DIR}
                     ${RECURSIVE_INCLUDE_DIRS})
+include_directories(SYSTEM ${PCL_INCLUDE_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 set(BUILD_TESTING
     ${ORIGINAL_BUILD_TESTING}
     CACHE BOOL "" FORCE)

@@ -11,6 +11,8 @@
  */
 #include "DepthCameraPipelineNode.hpp"
 
+#include <rclcpp/qos.hpp>
+
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
     void DepthCameraPipelineNode::pointCloudCallback(const std::string& topicName,
@@ -19,9 +21,16 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
         auto convertedMsg = fast::rf_ros2::utils::TranslateUtility::convert(localMsg);
         m_subsystem.newPointCloud(convertedMsg, topicName);
     }
-    bool DepthCameraPipelineNode::loadConfig() { return true; }
+    bool DepthCameraPipelineNode::loadConfig() {
+        m_targetFrame = this->declare_parameter<std::string>("target_frame");
+        fast::rf::Logger::logWarn("Frame: " + m_targetFrame);
+        return true;
+    }
     bool DepthCameraPipelineNode::initPubSubs() {
+        auto qos_profile = rclcpp::SensorDataQoS();
+        qos_profile.keep_last(1);
         const auto sensor1InputTopic = this->declare_parameter<std::string>("sensor1_depthcamera_topic");
+        const auto fusedSensorTopic = this->declare_parameter<std::string>("fused_depthcamera_topic");
         m_subsystem.addSignalToMonitor(sensor1InputTopic, "sensor_msgs/msg/PointCloud2", 20.0,
                                        50.0);  // TODO: Make these config
         m_sensorPointCloubSub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
@@ -29,11 +38,19 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
             [this, sensor1InputTopic](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
                 this->pointCloudCallback(sensor1InputTopic, msg);
             });
+        // Explicitly pass the SensorDataQoS profile instead of the integer 10
+        m_fusedPointCloudPub = this->create_publisher<sensor_msgs::msg::PointCloud2>(
+            getNamespacedTopic(fusedSensorTopic), rclcpp::SensorDataQoS());
+
         return true;
     }
     bool DepthCameraPipelineNode::initServices() { return true; }
     bool DepthCameraPipelineNode::initDiagnostics() { return true; }
     bool DepthCameraPipelineNode::initData() {
+        if (!m_subsystem.init()) {
+            fast::rf::Logger::logError("Unable to initialize Depth Camera Pipeline Subsystem.");
+            return false;
+        }
         setReadyToArm(m_subsystem.get_ready_to_arm());
         return true;
     }
@@ -43,7 +60,12 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
     void DepthCameraPipelineNode::run01Hz() { fast::rf::Logger::logInfo(pretty()); }
     void DepthCameraPipelineNode::run001Hz() {}
     void DepthCameraPipelineNode::runLoop1() { m_subsystem.update(this->get_clock()->now().seconds()); }
-    void DepthCameraPipelineNode::runLoop2() {}
+    void DepthCameraPipelineNode::runLoop2() {
+        auto fusedCloud = m_subsystem.getFusedPointCloud();
+        auto fusedCloudMsg = fast::rf_ros2::utils::TranslateUtility::convert(fusedCloud);
+        fusedCloudMsg.header.frame_id = m_targetFrame;
+        m_fusedPointCloudPub->publish(fusedCloudMsg);
+    }
     void DepthCameraPipelineNode::runLoop3() {}
     std::string DepthCameraPipelineNode::pretty() {
         std::string str = "\n--- DepthCameraPipelineNode ---\n";

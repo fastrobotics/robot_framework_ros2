@@ -97,10 +97,9 @@ FetchContent_Declare(
   robot_framework
   GIT_REPOSITORY https://github.com/fastrobotics/robot_framework.git
   GIT_SHALLOW ON
-  GIT_TAG devops5747/CreateDepthCameraSensorFuser
+  GIT_TAG master
   PATCH_COMMAND
-    ${CMAKE_COMMAND}
-    -DSOURCE_DIR=<SOURCE_DIR>
+    ${CMAKE_COMMAND} -DSOURCE_DIR=<SOURCE_DIR>
     -DPATCH_FILE=${CMAKE_CURRENT_LIST_DIR}/patches/robot_framework-depth-camera-fuser.patch
     -P ${CMAKE_CURRENT_LIST_DIR}/cmake/apply_framework_patch.cmake)
 set(BUILD_TESTING

@@ -16,19 +16,15 @@
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
     void DepthCameraPipelineNode::pointCloudCallback(const std::string& topicName,
-                                                     const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
-        auto localMsg = *msg;
-        auto convertedMsg = fast::rf_ros2::utils::TranslateUtility::convert(localMsg);
+                                                     const sensor_msgs::msg::PointCloud2& msg) {
+        auto convertedMsg = fast::rf_ros2::utils::TranslateUtility::convert(msg);
         m_subsystem.newPointCloud(convertedMsg, topicName);
     }
     bool DepthCameraPipelineNode::loadConfig() {
         m_targetFrame = this->declare_parameter<std::string>("target_frame");
-        fast::rf::Logger::logWarn("Frame: " + m_targetFrame);
         return true;
     }
     bool DepthCameraPipelineNode::initPubSubs() {
-        auto qos_profile = rclcpp::SensorDataQoS();
-        qos_profile.keep_last(1);
         const auto sensor1InputTopic = this->declare_parameter<std::string>("sensor1_depthcamera_topic");
         const auto fusedSensorTopic = this->declare_parameter<std::string>("fused_depthcamera_topic");
         m_subsystem.addSignalToMonitor(sensor1InputTopic, "sensor_msgs/msg/PointCloud2", 20.0,
@@ -36,7 +32,7 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
         m_sensorPointCloubSub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
             getNamespacedTopic(sensor1InputTopic), 10,
             [this, sensor1InputTopic](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
-                this->pointCloudCallback(sensor1InputTopic, msg);
+                this->pointCloudCallback(sensor1InputTopic, *msg);
             });
         // Explicitly pass the SensorDataQoS profile instead of the integer 10
         m_fusedPointCloudPub = this->create_publisher<sensor_msgs::msg::PointCloud2>(

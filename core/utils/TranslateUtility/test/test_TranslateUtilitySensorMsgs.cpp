@@ -1,6 +1,9 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
+#include <string>
+
 #include "robot_framework_ros2/utils/TranslateUtility.hpp"
 
 using namespace fast::rf_ros2::utils;
@@ -66,102 +69,79 @@ TEST(TestConversion, SensorMsgsConvertMagneticField) {
         ASSERT_FLOAT_EQ(msg.magnetic_field.z, data.magnetic_field.z);
     }
 }
-TEST(TestConversion, SensorMsgsConvertPointField) {
-    {  // Convert to ROS Message
-        fast::rf::messages::SensorMsgs::PointFieldMsg data;
-        data.count = 1;
-        data.datatype = fast::rf::messages::SensorMsgs::PointFieldMsg::PointFieldDataType::INT8;
-        data.name = "test";
-        data.offset = 2;
-        auto msg = TranslateUtility::convert(data);
-        ASSERT_EQ(msg.name, data.name);
-        ASSERT_EQ(msg.offset, data.offset);
-        ASSERT_EQ(msg.datatype, (uint8_t)data.datatype);
-        ASSERT_EQ(msg.count, data.count);
-    }
-    {  // Convert from ROS Message
-        sensor_msgs::msg::PointField data;
-        data.count = 1;
-        data.datatype = sensor_msgs::msg::PointField::INT8;
-        data.name = "test";
-        data.offset = 2;
-        auto msg = TranslateUtility::convert(data);
-        ASSERT_EQ(msg.name, data.name);
-        ASSERT_EQ(msg.offset, data.offset);
-        ASSERT_EQ(msg.datatype, (fast::rf::messages::SensorMsgs::PointFieldMsg::PointFieldDataType)data.datatype);
-        ASSERT_EQ(msg.count, data.count);
-    }
-}
 TEST(TestConversion, SensorMsgsConvertPointCloud) {
-    {  // Convert to ROS Message
-        fast::rf::messages::SensorMsgs::PointCloudMsg data;
-        data.time_stamp = 1.0;
-        data.height = 1;
-        data.width = 2;
-        {
-            fast::rf::messages::SensorMsgs::PointFieldMsg field;
-            field.count = 1;
-            field.datatype = fast::rf::messages::SensorMsgs::PointFieldMsg::PointFieldDataType::INT8;
-            field.name = "test";
-            field.offset = 2;
-            data.fields.push_back(field);
-        }
-        data.is_bigendian = true;
-        data.point_step = 3;
-        data.row_step = 4;
-        {
-            data.data.push_back(5);
-            data.data.push_back(6);
-            data.data.push_back(7);
-        }
-        data.is_dense = false;
-        auto msg = TranslateUtility::convert(data);
-        ASSERT_EQ(msg.height, data.height);
-        ASSERT_EQ(msg.width, data.width);
-        ASSERT_EQ(msg.fields.size(), data.fields.size());
-        ASSERT_GT(msg.fields.size(), 0);
-        ASSERT_EQ(msg.fields[0].name, data.fields[0].name);
-        ASSERT_EQ(msg.is_bigendian, data.is_bigendian);
-        ASSERT_EQ(msg.point_step, data.point_step);
-        ASSERT_EQ(msg.row_step, data.row_step);
-        ASSERT_EQ(msg.data.size(), data.data.size());
-        ASSERT_GT(msg.data.size(), 0);
-        ASSERT_EQ(msg.data[0], data.data[0]);
-        ASSERT_EQ(msg.is_dense, data.is_dense);
+    fast::rf::messages::SensorMsgs::PointCloudMsg data;
+    data.time_stamp = 123.456789;
+    data.point_cloud->header.frame_id = "camera_optical_frame";
+    data.point_cloud->width = 2;
+    data.point_cloud->height = 1;
+    data.point_cloud->is_dense = false;
+    data.point_cloud->points.resize(2);
+
+    auto& first = data.point_cloud->points[0];
+    first.x = 1.25f;
+    first.y = -2.5f;
+    first.z = 3.75f;
+    first.r = 11;
+    first.g = 22;
+    first.b = 33;
+    first.a = 44;
+
+    auto& second = data.point_cloud->points[1];
+    second.x = -4.5f;
+    second.y = 5.25f;
+    second.z = -6.125f;
+    second.r = 101;
+    second.g = 152;
+    second.b = 203;
+    second.a = 254;
+
+    const auto rosMsg = TranslateUtility::convert(data);
+    EXPECT_EQ(rosMsg.header.stamp.sec, 123);
+    EXPECT_EQ(rosMsg.header.stamp.nanosec, 456789000);
+    EXPECT_EQ(rosMsg.header.frame_id, "camera_optical_frame");
+    EXPECT_EQ(rosMsg.height, 1);
+    EXPECT_EQ(rosMsg.width, 2);
+    EXPECT_FALSE(rosMsg.is_bigendian);
+    EXPECT_EQ(rosMsg.row_step, rosMsg.point_step * rosMsg.width);
+    EXPECT_EQ(rosMsg.data.size(), rosMsg.row_step * rosMsg.height);
+    EXPECT_FALSE(rosMsg.is_dense);
+
+    ASSERT_EQ(rosMsg.fields.size(), 4);
+    const std::array<std::string, 4> expectedFieldNames{"x", "y", "z", "rgb"};
+    const std::array<uint32_t, 4> expectedFieldOffsets{0, 4, 8, 16};
+    for (std::size_t i = 0; i < rosMsg.fields.size(); ++i) {
+        EXPECT_EQ(rosMsg.fields[i].name, expectedFieldNames[i]);
+        EXPECT_EQ(rosMsg.fields[i].offset, expectedFieldOffsets[i]);
+        EXPECT_EQ(rosMsg.fields[i].datatype, sensor_msgs::msg::PointField::FLOAT32);
+        EXPECT_EQ(rosMsg.fields[i].count, 1);
     }
-    {  // Convert from ROS Message
-        sensor_msgs::msg::PointCloud2 data;
-        data.height = 1;
-        data.width = 2;
-        {
-            sensor_msgs::msg::PointField field;
-            field.count = 1;
-            field.datatype = sensor_msgs::msg::PointField::INT8;
-            field.name = "test";
-            field.offset = 2;
-            data.fields.push_back(field);
-        }
-        data.is_bigendian = true;
-        data.point_step = 3;
-        data.row_step = 4;
-        {
-            data.data.push_back(5);
-            data.data.push_back(6);
-            data.data.push_back(7);
-        }
-        data.is_dense = false;
-        auto msg = TranslateUtility::convert(data);
-        ASSERT_EQ(msg.height, data.height);
-        ASSERT_EQ(msg.width, data.width);
-        ASSERT_EQ(msg.fields.size(), data.fields.size());
-        ASSERT_GT(msg.fields.size(), 0);
-        ASSERT_EQ(msg.fields[0].name, data.fields[0].name);
-        ASSERT_EQ(msg.is_bigendian, data.is_bigendian);
-        ASSERT_EQ(msg.point_step, data.point_step);
-        ASSERT_EQ(msg.row_step, data.row_step);
-        ASSERT_EQ(msg.data.size(), data.data.size());
-        ASSERT_GT(msg.data.size(), 0);
-        ASSERT_EQ(msg.data[0], data.data[0]);
-        ASSERT_EQ(msg.is_dense, data.is_dense);
-    }
+
+    const auto roundTripped = TranslateUtility::convert(rosMsg);
+    ASSERT_NE(roundTripped.point_cloud, nullptr);
+    EXPECT_DOUBLE_EQ(roundTripped.time_stamp, data.time_stamp);
+    EXPECT_EQ(roundTripped.point_cloud->header.frame_id, "camera_optical_frame");
+    EXPECT_EQ(roundTripped.point_cloud->header.stamp, 123456789);
+    EXPECT_EQ(roundTripped.point_cloud->width, 2);
+    EXPECT_EQ(roundTripped.point_cloud->height, 1);
+    EXPECT_FALSE(roundTripped.point_cloud->is_dense);
+    ASSERT_EQ(roundTripped.point_cloud->points.size(), 2);
+
+    const auto& convertedFirst = roundTripped.point_cloud->points[0];
+    EXPECT_FLOAT_EQ(convertedFirst.x, first.x);
+    EXPECT_FLOAT_EQ(convertedFirst.y, first.y);
+    EXPECT_FLOAT_EQ(convertedFirst.z, first.z);
+    EXPECT_EQ(convertedFirst.r, first.r);
+    EXPECT_EQ(convertedFirst.g, first.g);
+    EXPECT_EQ(convertedFirst.b, first.b);
+    EXPECT_EQ(convertedFirst.a, first.a);
+
+    const auto& convertedSecond = roundTripped.point_cloud->points[1];
+    EXPECT_FLOAT_EQ(convertedSecond.x, second.x);
+    EXPECT_FLOAT_EQ(convertedSecond.y, second.y);
+    EXPECT_FLOAT_EQ(convertedSecond.z, second.z);
+    EXPECT_EQ(convertedSecond.r, second.r);
+    EXPECT_EQ(convertedSecond.g, second.g);
+    EXPECT_EQ(convertedSecond.b, second.b);
+    EXPECT_EQ(convertedSecond.a, second.a);
 }

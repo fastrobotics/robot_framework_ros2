@@ -34,7 +34,6 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
             [this, sensor1InputTopic](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
                 this->pointCloudCallback(sensor1InputTopic, *msg);
             });
-        // Explicitly pass the SensorDataQoS profile instead of the integer 10
         m_fusedPointCloudPub = this->create_publisher<sensor_msgs::msg::PointCloud2>(
             getNamespacedTopic(fusedSensorTopic), rclcpp::SensorDataQoS());
 

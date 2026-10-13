@@ -36,7 +36,7 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
         bool initData() override;
 
        private:
-        void pointCloudCallback(const std::string& topicName, const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+        void pointCloudCallback(const std::string& topicName, const sensor_msgs::msg::PointCloud2& msg);
         std::string pretty() override;
 
         // Pubs & Subs

@@ -1,14 +1,16 @@
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(pcl_conversions REQUIRED)
 
 add_library(
   translateUtility SHARED
   TranslateUtilityStandardMsgs.cpp TranslateUtilityInfrastructureMsgs.cpp
   TranslateUtilityGeometryMsgs.cpp TranslateUtilitySensorMsgs.cpp)
 target_include_directories(
-  translateUtility PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                          $<INSTALL_INTERFACE:include>)
+  translateUtility
+  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+         $<INSTALL_INTERFACE:include> ${pcl_conversions_INCLUDE_DIRS})
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}"
                               "rosidl_typesupport_cpp")
 target_link_libraries(
@@ -21,6 +23,7 @@ target_link_libraries(
          geometry_msgs
          sensor_msgs
          ${sensor_msgs_TARGETS}
+         ${pcl_conversions_LIBRARIES}
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs
          rclcpp::rclcpp)

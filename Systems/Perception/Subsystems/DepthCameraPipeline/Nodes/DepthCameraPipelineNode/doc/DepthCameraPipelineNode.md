@@ -9,6 +9,11 @@
 
 # DepthCameraPipelineNode
 
+The node converts incoming `sensor_msgs/msg/PointCloud2` messages to the framework's
+PCL-backed `PointCloudMsg` representation, preserving XYZ and RGB(A) point values,
+cloud dimensions, density, timestamp, and frame. It converts the fused PCL cloud
+back to `PointCloud2` for publication, using the configured target frame.
+
 # Architecture
 ![](../../../../../../../Legend.png
 

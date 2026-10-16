@@ -13,7 +13,6 @@ node_registry:
     parameters:
       verbosity_level: "DEBUG"
       sensor1_depthcamera_topic: depthcamera1_topic
-      fused_depthcamera_topic: fused_depthcamera_topic
 
   armed_state_manager_node:
     package: "robot_framework_ros2" 

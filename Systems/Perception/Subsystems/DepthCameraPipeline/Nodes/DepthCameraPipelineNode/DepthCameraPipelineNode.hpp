@@ -41,8 +41,6 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
 
         // Pubs & Subs
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr m_sensorPointCloubSub;
-
-        rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr m_fusedPointCloudPub;
         // Data
         fast::rf::PerceptionSystem::DepthCameraPipelineSubsystem::DepthCameraPipelineSubsystem m_subsystem;
         std::string m_targetFrame{""};

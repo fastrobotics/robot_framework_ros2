@@ -31,5 +31,4 @@ depthcamera_pipeline_node: #Instance name of depthcamera_pipeline_node, like dep
     parameters: # Any parameter in xml launch file
       verbosity_level: "DEBUG"
       sensor1_depthcamera_topic: depthcamera1_topic
-      fused_depthcamera_topic: fused_depthcamera_topic
 ```

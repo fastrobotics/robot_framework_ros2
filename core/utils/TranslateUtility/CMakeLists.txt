@@ -6,7 +6,8 @@ find_package(pcl_conversions REQUIRED)
 add_library(
   translateUtility SHARED
   TranslateUtilityStandardMsgs.cpp TranslateUtilityInfrastructureMsgs.cpp
-  TranslateUtilityGeometryMsgs.cpp TranslateUtilitySensorMsgs.cpp)
+  TranslateUtilityGeometryMsgs.cpp TranslateUtilitySensorMsgs.cpp
+  TranslateUtilityVisionMsgs.cpp)
 target_include_directories(
   translateUtility
   PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

@@ -80,4 +80,15 @@ namespace fast::rf_ros2::utils {
         data.twist.twist = convert(msg.twist.twist);
         return data;
     }
+    fast::rf::messages::GeometryMsgs::BoundingBox3DMsg TranslateUtility::convert(
+        [[maybe_unused]] vision_msgs::msg::BoundingBox3D msg) {
+        fast::rf::messages::GeometryMsgs::BoundingBox3DMsg data;
+        return data;
+    }
+
+    vision_msgs::msg::BoundingBox3D TranslateUtility::convert(
+        [[maybe_unused]] fast::rf::messages::GeometryMsgs::BoundingBox3DMsg msg) {
+        vision_msgs::msg::BoundingBox3D data;
+        return data;
+    }
 }  // namespace fast::rf_ros2::utils

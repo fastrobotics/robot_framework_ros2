@@ -15,6 +15,7 @@
 #include <AccelWithCovarianceMsg.hpp>
 #include <ArmCommandMsg.hpp>
 #include <ArmStateChangeSrv.hpp>
+#include <BoundingBox3DMsg.hpp>
 #include <Covariance3DMsg.hpp>
 #include <Covariance6DMsg.hpp>
 #include <DiagnosticMsg.hpp>
@@ -45,6 +46,7 @@
 #include <sensor_msgs/msg/joy.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <vision_msgs/msg/bounding_box3_d.hpp>
 
 // General Dependencies
 #include <array>
@@ -285,6 +287,9 @@ namespace fast::rf_ros2::utils {
          */
         static nav_msgs::msg::Odometry convert(fast::rf::messages::GeometryMsgs::OdomMsg msg);
 
+        static fast::rf::messages::GeometryMsgs::BoundingBox3DMsg convert(vision_msgs::msg::BoundingBox3D msg);
+
+        static vision_msgs::msg::BoundingBox3D convert(fast::rf::messages::GeometryMsgs::BoundingBox3DMsg msg);
         // Sensor Messages
 
         /**

@@ -23,6 +23,8 @@ target_link_libraries(
          geometry_msgs
          sensor_msgs
          ${sensor_msgs_TARGETS}
+         vision_msgs::vision_msgs
+         ${vision_msgs_TARGETS}
          ${pcl_conversions_LIBRARIES}
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs

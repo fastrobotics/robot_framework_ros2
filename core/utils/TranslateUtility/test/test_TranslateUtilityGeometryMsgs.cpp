@@ -139,3 +139,16 @@ TEST(TestConversion, GeometryMessageConvertTwist) {
         ASSERT_FLOAT_EQ(msg.angular.z, twist.angular.z);
     }
 }
+TEST(TestConversion, GeometryMessageConvertBoundaryBox) {
+    {  // Convert to ROS Message
+        fast::rf::messages::GeometryMsgs::BoundingBox3DMsg box;
+        auto msg = TranslateUtility::convert(box);
+        ASSERT_FLOAT_EQ(box.center.position.x, msg.center.position.x);
+    }
+
+    {  // Convert from ROS Message
+        vision_msgs::msg::BoundingBox3D box;
+        auto msg = TranslateUtility::convert(box);
+        ASSERT_FLOAT_EQ(box.center.position.x, msg.center.position.x);
+    }
+}

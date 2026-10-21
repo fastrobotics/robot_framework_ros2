@@ -12,6 +12,7 @@
 #include <DepthCameraPipelineSubsystem.hpp>
 #include <PointCloudMsg.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <vision_msgs/msg/detection3_d_array.hpp>
 
 #include "robot_framework_ros2/BaseNode.hpp"
 namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
@@ -41,6 +42,9 @@ namespace fast::rf_ros2::PerceptionSystem::DepthCameraPipelineSubsystem {
 
         // Pubs & Subs
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr m_sensorPointCloubSub;
+        rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr m_featureCloudPub;
+        rclcpp::Publisher<vision_msgs::msg::Detection3DArray>::SharedPtr m_detectionsPub;
+
         // Data
         fast::rf::PerceptionSystem::DepthCameraPipelineSubsystem::DepthCameraPipelineSubsystem m_subsystem;
         std::string m_targetFrame{""};

@@ -18,6 +18,7 @@
 #include <BoundingBox3DMsg.hpp>
 #include <Covariance3DMsg.hpp>
 #include <Covariance6DMsg.hpp>
+#include <Detection3DMsg.hpp>
 #include <DiagnosticMsg.hpp>
 #include <ImuMsg.hpp>
 #include <JoyMsg.hpp>
@@ -50,6 +51,7 @@
 #include <sensor_msgs/msg/magnetic_field.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <vision_msgs/msg/bounding_box3_d.hpp>
+#include <vision_msgs/msg/detection3_d.hpp>
 #include <vision_msgs/msg/object_hypothesis_with_pose.hpp>
 // General Dependencies
 #include <array>
@@ -422,11 +424,26 @@ namespace fast::rf_ros2::utils {
         static sensor_msgs::msg::PointCloud2 convert(const fast::rf::messages::SensorMsgs::PointCloudMsg& data);
 
         // Vision Messages
-
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type ObjectHypothesisWithPoseMsg
+         *
+         * @param msg
+         * @return fast::rf::messages::VisionMsgs::ObjectHypothesisWithPoseMsg
+         */
         static fast::rf::messages::VisionMsgs::ObjectHypothesisWithPoseMsg convert(
             vision_msgs::msg::ObjectHypothesisWithPose msg);
 
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type ObjectHypothesisWithPose
+         *
+         * @param msg
+         * @return vision_msgs::msg::ObjectHypothesisWithPose
+         */
         static vision_msgs::msg::ObjectHypothesisWithPose convert(
             fast::rf::messages::VisionMsgs::ObjectHypothesisWithPoseMsg msg);
+
+        static fast::rf::messages::VisionMsgs::Detection3DMsg convert(vision_msgs::msg::Detection3D msg);
+
+        static vision_msgs::msg::Detection3D convert(fast::rf::messages::VisionMsgs::Detection3DMsg msg);
     };
 }  // namespace fast::rf_ros2::utils

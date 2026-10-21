@@ -10,6 +10,8 @@ target_link_libraries(
   gtest_main
   sensor_msgs
   ${sensor_msgs_TARGETS}
+  vision_msgs
+  ${vision_msgs_TARGETS}
   rclcpp::rclcpp
   logger
   ${PROJECT_NAME}__rosidl_typesupport_cpp)

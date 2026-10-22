@@ -75,3 +75,6 @@ The Base Node provides 3 Loops that the User Node can set the rate and directly 
 Common convention here is that Loop1 is the "slowest" and Loop3 is the fastest, but that's not required.
 
 To disable any of these User-Defined Loops, don't define a loop rate.
+
+All predefined and user-defined loops are checked for overruns. If a loop's user callback takes longer than its configured
+period, the Base Node logs a timing diagnostic and publishes the failed timing status with its regular 1 Hz diagnostics.

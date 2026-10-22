@@ -13,6 +13,33 @@
 
 using namespace std::chrono_literals;
 namespace fast::rf_ros2 {
+    namespace {
+        class TimerLoopTiming {
+           public:
+            static void run(const std::string& loopName, double rate, const std::function<void()>& callback,
+                            bool& loopOk, fast::rf::messages::InfrastructureMsgs::DiagnosticMsg& diagnostic) {
+                const auto start = std::chrono::steady_clock::now();
+                callback();
+                const double elapsedSeconds =
+                    std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+                const double expectedPeriodSeconds = 1.0 / rate;
+                const double slowDownRate = elapsedSeconds / expectedPeriodSeconds;
+
+                if (slowDownRate > 1.0) {
+                    loopOk = false;
+                    diagnostic.level = fast::rf::Level::WARN;
+                    diagnostic.diagnosticMessage = fast::rf::DiagnosticDefinition::DiagnosticMessage::DIAGNOSTIC_FAILED;
+                    diagnostic.description = loopName + " Slow: Rate: " + std::to_string(slowDownRate) + "X " +
+                                             std::to_string(elapsedSeconds) +
+                                             " (sec) Expected: " + std::to_string(expectedPeriodSeconds);
+                    fast::rf::Logger::logDiagnostic(diagnostic);
+                } else {
+                    loopOk = true;
+                }
+            }
+        };
+    }  // namespace
+
     BaseNode::BaseNode(const std::string& nodeName)
         : Node(nodeName,
                rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(
@@ -186,17 +213,18 @@ namespace fast::rf_ros2 {
             m_timerLoop1 = this->create_wall_timer(std::chrono::duration<double>(1.0 / m_loop1Rate),
                                                    std::bind(&BaseNode::timerLoop1Callback, this));
         }
-        double loop2Rate = this->declare_parameter<double>("loop2_rate", -1.0);
-        if (loop2Rate <= 0.0) {
+        m_loop2Rate = this->declare_parameter<double>("loop2_rate", -1.0);
+        if (m_loop2Rate <= 0.0) {
             fast::rf::Logger::logWarn("Parameter: loop2_rate not present or invalid. Not running User Loop2 Code.");
         } else {
-            m_timerLoop2 = this->create_wall_timer(std::chrono::duration<double>(1.0 / loop2Rate),
+            m_timerLoop2 = this->create_wall_timer(std::chrono::duration<double>(1.0 / m_loop2Rate),
                                                    std::bind(&BaseNode::timerLoop2Callback, this));
         }
         double loop3Rate = this->declare_parameter<double>("loop3_rate", -1.0);
         if (loop3Rate <= 0.0) {
-            fast::rf::Logger::logWarn("Parameter: loop3_rate not present or invalid. Not running User Loop1 Code.");
+            fast::rf::Logger::logWarn("Parameter: loop3_rate not present or invalid. Not running User Loop3 Code.");
         } else {
+            m_loop3Rate = loop3Rate;
             m_timerLoop3 = this->create_wall_timer(std::chrono::duration<double>(1.0 / loop3Rate),
                                                    std::bind(&BaseNode::timerLoop3Callback, this));
         }
@@ -254,46 +282,34 @@ namespace fast::rf_ros2 {
     }
     void BaseNode::timer100HzCallback() {
         baseRun100Hz();
-        this->run100Hz();
+        TimerLoopTiming::run("Loop100Hz", 100.0, [this]() { this->run100Hz(); }, m_loop100HzOk, m_timingDiagnostic);
     }
     void BaseNode::timer10HzCallback() {
         baseRun10Hz();
-        this->run10Hz();
+        TimerLoopTiming::run("Loop10Hz", 10.0, [this]() { this->run10Hz(); }, m_loop10HzOk, m_timingDiagnostic);
     }
 
     void BaseNode::timer1HzCallback() {
         baseRun1Hz();
-        this->run1Hz();
+        TimerLoopTiming::run("Loop1Hz", 1.0, [this]() { this->run1Hz(); }, m_loop1HzOk, m_timingDiagnostic);
     }
     void BaseNode::timer01HzCallback() {
         baseRun01Hz();
-        this->run01Hz();
+        TimerLoopTiming::run("Loop01Hz", 0.1, [this]() { this->run01Hz(); }, m_loop_01HzOk, m_timingDiagnostic);
     }
     void BaseNode::timer001HzCallback() {
         baseRun001Hz();
-        this->run001Hz();
+        TimerLoopTiming::run("Loop001Hz", 0.01, [this]() { this->run001Hz(); }, m_loop001HzOk, m_timingDiagnostic);
     }
     void BaseNode::timerLoop1Callback() {
-        // Refactor this during AB#5773.  Extend this to all timer Loops.
-        const auto start = std::chrono::steady_clock::now();
-        this->runLoop1();
-        const double elapsedSeconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
-        const double expectedPeriodSeconds = 1.0 / m_loop1Rate;
-        double slowDownRate = elapsedSeconds / expectedPeriodSeconds;
-        if (slowDownRate > 1.0) {
-            m_loop1Ok = false;
-            m_timingDiagnostic.level = fast::rf::Level::WARN;
-            m_timingDiagnostic.diagnosticMessage = fast::rf::DiagnosticDefinition::DiagnosticMessage::DIAGNOSTIC_FAILED;
-            m_timingDiagnostic.description = "Loop1 Slow: Rate: " + std::to_string(slowDownRate) + "X " +
-                                             std::to_string(elapsedSeconds) +
-                                             " (sec) Expected: " + std::to_string(expectedPeriodSeconds);
-            fast::rf::Logger::logDiagnostic(m_timingDiagnostic);
-        } else {
-            m_loop1Ok = true;
-        }
+        TimerLoopTiming::run("Loop1", m_loop1Rate, [this]() { this->runLoop1(); }, m_loop1Ok, m_timingDiagnostic);
     }
-    void BaseNode::timerLoop2Callback() { this->runLoop2(); }
-    void BaseNode::timerLoop3Callback() { this->runLoop3(); }
+    void BaseNode::timerLoop2Callback() {
+        TimerLoopTiming::run("Loop2", m_loop2Rate, [this]() { this->runLoop2(); }, m_loop2Ok, m_timingDiagnostic);
+    }
+    void BaseNode::timerLoop3Callback() {
+        TimerLoopTiming::run("Loop3", m_loop3Rate, [this]() { this->runLoop3(); }, m_loop3Ok, m_timingDiagnostic);
+    }
     void BaseNode::baseRun100Hz() {}
     void BaseNode::baseRun10Hz() {
         m_heartbeat.timestamp = this->get_clock()->now();
@@ -315,7 +331,8 @@ namespace fast::rf_ros2 {
         // Other Base Node Diagnostics
         bool timingDiagnosticsOk = true;
         {
-            if ((m_loop1Ok == true) && (m_loop2Ok == true) && (m_loop3Ok == true)) {
+            if (m_loop100HzOk && m_loop10HzOk && m_loop1HzOk && m_loop_01HzOk && m_loop001HzOk && m_loop1Ok &&
+                m_loop2Ok && m_loop3Ok) {
                 m_timingDiagnostic.level = fast::rf::Level::INFO;
                 m_timingDiagnostic.diagnosticMessage = fast::rf::DiagnosticDefinition::DiagnosticMessage::NOERROR;
                 m_timingDiagnostic.description = "No Loop Timing Issues";

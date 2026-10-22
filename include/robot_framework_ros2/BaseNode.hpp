@@ -142,7 +142,9 @@ namespace fast::rf_ros2 {
         rclcpp::TimerBase::SharedPtr m_timerLoop1{nullptr};
         double m_loop1Rate{-1.0};
         rclcpp::TimerBase::SharedPtr m_timerLoop2{nullptr};
+        double m_loop2Rate{-1.0};
         rclcpp::TimerBase::SharedPtr m_timerLoop3{nullptr};
+        double m_loop3Rate{-1.0};
 
         void baseRun100Hz();
         void baseRun10Hz();

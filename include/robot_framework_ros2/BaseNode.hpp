@@ -65,6 +65,9 @@ namespace fast::rf_ros2 {
             m_diagnostics = diagnostics;
         }
         void setReadyToArm(fast::rf::messages::InfrastructureMsgs::ReadyToArmStatusMsg readyToArm) {
+            m_systemID = readyToArm.systemID;
+            m_subsystemID = readyToArm.subsystemID;
+            m_processID = readyToArm.processID;
             m_readyToArm.system_id = readyToArm.systemID;
             m_readyToArm.subsystem_id = readyToArm.subsystemID;
             m_readyToArm.process_id = readyToArm.processID;
@@ -116,13 +119,21 @@ namespace fast::rf_ros2 {
 
         // Loop Callbacks and Timers
         virtual void timer100HzCallback();
+        bool m_loop100HzOk{true};
         virtual void timer10HzCallback();
+        bool m_loop10HzOk{true};
         virtual void timer1HzCallback();
+        bool m_loop1HzOk{true};
         virtual void timer01HzCallback();
+        bool m_loop_01HzOk{true};
         virtual void timer001HzCallback();
+        bool m_loop001HzOk{true};
         virtual void timerLoop1Callback();
+        bool m_loop1Ok{true};
         virtual void timerLoop2Callback();
+        bool m_loop2Ok{true};
         virtual void timerLoop3Callback();
+        bool m_loop3Ok{true};
         rclcpp::TimerBase::SharedPtr m_timer100Hz{nullptr};
         rclcpp::TimerBase::SharedPtr m_timer10Hz{nullptr};
         rclcpp::TimerBase::SharedPtr m_timer1Hz{nullptr};
@@ -151,8 +162,12 @@ namespace fast::rf_ros2 {
         rclcpp::Service<robot_framework_ros2::srv::ChangeLoggerLevel>::SharedPtr m_changeLoggerLevelSrvServer;
 
         // Data
+        uint8_t m_systemID{0};
+        uint8_t m_subsystemID{0};
+        uint8_t m_processID{0};
         std::vector<fast::rf::messages::InfrastructureMsgs::DiagnosticMsg> m_diagnostics;
         std::string m_robotNamespace;
         std::string m_nodeConfigNamespace;
+        fast::rf::messages::InfrastructureMsgs::DiagnosticMsg m_timingDiagnostic;
     };
 }  // namespace fast::rf_ros2

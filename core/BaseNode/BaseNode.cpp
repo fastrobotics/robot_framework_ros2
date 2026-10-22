@@ -19,6 +19,12 @@ namespace fast::rf_ros2 {
                    false)) {
         m_baseNodeName = nodeName;
         m_nodeState.state = robot_framework_ros2::msg::NodeState::STATE_UNKNOWN;
+        // Initialize Base Node Diagnostics
+
+        m_timingDiagnostic.diagnosticType = fast::rf::DiagnosticDefinition::DiagnosticType::TIMING;
+        m_timingDiagnostic.level = fast::rf::Level::INFO;
+        m_timingDiagnostic.diagnosticMessage = fast::rf::DiagnosticDefinition::DiagnosticMessage::INITIALIZING;
+        m_timingDiagnostic.description = "Initializing Diagnostic";
     }
     void BaseNode::changeLoggerLevelService(
         const std::shared_ptr<robot_framework_ros2::srv::ChangeLoggerLevel::Request> request,
@@ -275,9 +281,15 @@ namespace fast::rf_ros2 {
         const double expectedPeriodSeconds = 1.0 / m_loop1Rate;
         double slowDownRate = elapsedSeconds / expectedPeriodSeconds;
         if (slowDownRate > 1.0) {
-            fast::rf::Logger::logWarn("Loop1 Slow: Rate: " + std::to_string(slowDownRate) + "X " +
-                                      std::to_string(elapsedSeconds) +
-                                      " (sec) Expected: " + std::to_string(expectedPeriodSeconds));
+            m_loop1Ok = false;
+            m_timingDiagnostic.level = fast::rf::Level::WARN;
+            m_timingDiagnostic.diagnosticMessage = fast::rf::DiagnosticDefinition::DiagnosticMessage::DIAGNOSTIC_FAILED;
+            m_timingDiagnostic.description = "Loop1 Slow: Rate: " + std::to_string(slowDownRate) + "X " +
+                                             std::to_string(elapsedSeconds) +
+                                             " (sec) Expected: " + std::to_string(expectedPeriodSeconds);
+            fast::rf::Logger::logDiagnostic(m_timingDiagnostic);
+        } else {
+            m_loop1Ok = true;
         }
     }
     void BaseNode::timerLoop2Callback() { this->runLoop2(); }
@@ -299,6 +311,37 @@ namespace fast::rf_ros2 {
                 diagnosticMsg.node_name = this->get_name();
                 m_diagnosticPub->publish(diagnosticMsg);
             }
+        }
+        // Other Base Node Diagnostics
+        bool timingDiagnosticsOk = true;
+        {
+            if ((m_loop1Ok == true) && (m_loop2Ok == true) && (m_loop3Ok == true)) {
+                m_timingDiagnostic.level = fast::rf::Level::INFO;
+                m_timingDiagnostic.diagnosticMessage = fast::rf::DiagnosticDefinition::DiagnosticMessage::NOERROR;
+                m_timingDiagnostic.description = "No Loop Timing Issues";
+                m_timingDiagnostic.systemID = m_systemID;
+                m_timingDiagnostic.subsystemID = m_subsystemID;
+                m_timingDiagnostic.processID = m_processID;
+                robot_framework_ros2::msg::Diagnostic diagnosticMsg =
+                    fast::rf_ros2::utils::TranslateUtility::convert(m_timingDiagnostic);
+
+                diagnosticMsg.timestamp = this->get_clock()->now();
+                diagnosticMsg.node_name = this->get_name();
+                m_diagnosticPub->publish(diagnosticMsg);
+            } else {
+                timingDiagnosticsOk = false;
+            }
+        }
+        if (timingDiagnosticsOk == false) {  // Timing Diagnostic
+            m_timingDiagnostic.systemID = m_systemID;
+            m_timingDiagnostic.subsystemID = m_subsystemID;
+            m_timingDiagnostic.processID = m_processID;
+            robot_framework_ros2::msg::Diagnostic diagnosticMsg =
+                fast::rf_ros2::utils::TranslateUtility::convert(m_timingDiagnostic);
+
+            diagnosticMsg.timestamp = this->get_clock()->now();
+            diagnosticMsg.node_name = this->get_name();
+            m_diagnosticPub->publish(diagnosticMsg);
         }
         m_readyToArmPub->publish(m_readyToArm);
     }

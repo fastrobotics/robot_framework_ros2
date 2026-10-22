@@ -65,19 +65,75 @@ namespace fast::rf_ros2::utils {
         data.angular = convert(msg.angular);
         return data;
     }
+    fast::rf::messages::GeometryMsgs::PointMsg TranslateUtility::convert(geometry_msgs::msg::Point msg) {
+        fast::rf::messages::GeometryMsgs::PointMsg data;
+        data.x = msg.x;
+        data.y = msg.y;
+        data.z = msg.z;
+        return data;
+    }
 
+    geometry_msgs::msg::Point TranslateUtility::convert(fast::rf::messages::GeometryMsgs::PointMsg msg) {
+        geometry_msgs::msg::Point data;
+        data.x = msg.x;
+        data.y = msg.y;
+        data.z = msg.z;
+        return data;
+    }
+
+    fast::rf::messages::GeometryMsgs::PoseMsg TranslateUtility::convert(geometry_msgs::msg::Pose msg) {
+        fast::rf::messages::GeometryMsgs::PoseMsg data;
+        data.position = convert(msg.position);
+        data.orientation = convert(msg.orientation);
+        return data;
+    }
+
+    geometry_msgs::msg::Pose TranslateUtility::convert(fast::rf::messages::GeometryMsgs::PoseMsg msg) {
+        geometry_msgs::msg::Pose data;
+        data.position = convert(msg.position);
+        data.orientation = convert(msg.orientation);
+        return data;
+    }
+    fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg TranslateUtility::convert(
+        geometry_msgs::msg::PoseWithCovariance msg) {
+        fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg data;
+        data.pose = convert(msg.pose);
+        data.covariance = convert_covariance6D(msg.covariance);
+        return data;
+    }
+
+    geometry_msgs::msg::PoseWithCovariance TranslateUtility::convert(
+        fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg msg) {
+        geometry_msgs::msg::PoseWithCovariance data;
+        data.pose = convert(msg.pose);
+        data.covariance = convert_covariance6D(msg.covariance);
+        return data;
+    }
     fast::rf::messages::GeometryMsgs::OdomMsg TranslateUtility::convert(nav_msgs::msg::Odometry msg) {
         fast::rf::messages::GeometryMsgs::OdomMsg data;
         data.time_stamp = rclcpp::Time(msg.header.stamp).seconds();
-        // data.pose = convert(msg.pose);  // Translate this and any other attribute during AB#1813
+        data.pose = convert(msg.pose);
         data.twist.twist = convert(msg.twist.twist);
         return data;
     }
     nav_msgs::msg::Odometry TranslateUtility::convert(fast::rf::messages::GeometryMsgs::OdomMsg msg) {
         nav_msgs::msg::Odometry data;
         data.header.stamp = rclcpp::Time(static_cast<int64_t>(msg.time_stamp * 1e9));
-        // data.pose = convert(msg.pose);  // Translate this and any other attribute during AB#1813
+        data.pose = convert(msg.pose);
         data.twist.twist = convert(msg.twist.twist);
+        return data;
+    }
+    fast::rf::messages::GeometryMsgs::BoundingBox3DMsg TranslateUtility::convert(vision_msgs::msg::BoundingBox3D msg) {
+        fast::rf::messages::GeometryMsgs::BoundingBox3DMsg data;
+        data.center = convert(msg.center);
+        data.size = convert(msg.size);
+        return data;
+    }
+
+    vision_msgs::msg::BoundingBox3D TranslateUtility::convert(fast::rf::messages::GeometryMsgs::BoundingBox3DMsg msg) {
+        vision_msgs::msg::BoundingBox3D data;
+        data.center = convert(msg.center);
+        data.size = convert(msg.size);
         return data;
     }
 }  // namespace fast::rf_ros2::utils

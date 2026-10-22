@@ -173,11 +173,11 @@ namespace fast::rf_ros2 {
         m_timer01Hz = this->create_wall_timer(10s, std::bind(&BaseNode::timer01HzCallback, this));
         m_timer001Hz = this->create_wall_timer(100s, std::bind(&BaseNode::timer001HzCallback, this));
 
-        double loop1Rate = this->declare_parameter<double>("loop1_rate", -1.0);
-        if (loop1Rate <= 0.0) {
+        m_loop1Rate = this->declare_parameter<double>("loop1_rate", -1.0);
+        if (m_loop1Rate <= 0.0) {
             fast::rf::Logger::logWarn("Parameter: loop1_rate not present or invalid. Not running User Loop1 Code.");
         } else {
-            m_timerLoop1 = this->create_wall_timer(std::chrono::duration<double>(1.0 / loop1Rate),
+            m_timerLoop1 = this->create_wall_timer(std::chrono::duration<double>(1.0 / m_loop1Rate),
                                                    std::bind(&BaseNode::timerLoop1Callback, this));
         }
         double loop2Rate = this->declare_parameter<double>("loop2_rate", -1.0);
@@ -267,7 +267,19 @@ namespace fast::rf_ros2 {
         baseRun001Hz();
         this->run001Hz();
     }
-    void BaseNode::timerLoop1Callback() { this->runLoop1(); }
+    void BaseNode::timerLoop1Callback() {
+        // Refactor this during AB#5773.  Extend this to all timer Loops.
+        const auto start = std::chrono::steady_clock::now();
+        this->runLoop1();
+        const double elapsedSeconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+        const double expectedPeriodSeconds = 1.0 / m_loop1Rate;
+        double slowDownRate = elapsedSeconds / expectedPeriodSeconds;
+        if (slowDownRate > 1.0) {
+            fast::rf::Logger::logWarn("Loop1 Slow: Rate: " + std::to_string(slowDownRate) + "X " +
+                                      std::to_string(elapsedSeconds) +
+                                      " (sec) Expected: " + std::to_string(expectedPeriodSeconds));
+        }
+    }
     void BaseNode::timerLoop2Callback() { this->runLoop2(); }
     void BaseNode::timerLoop3Callback() { this->runLoop3(); }
     void BaseNode::baseRun100Hz() {}

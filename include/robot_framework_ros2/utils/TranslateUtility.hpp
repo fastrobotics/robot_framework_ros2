@@ -15,15 +15,19 @@
 #include <AccelWithCovarianceMsg.hpp>
 #include <ArmCommandMsg.hpp>
 #include <ArmStateChangeSrv.hpp>
+#include <BoundingBox3DMsg.hpp>
 #include <Covariance3DMsg.hpp>
 #include <Covariance6DMsg.hpp>
+#include <Detection3DMsg.hpp>
 #include <DiagnosticMsg.hpp>
 #include <ImuMsg.hpp>
 #include <JoyMsg.hpp>
 #include <MagneticFieldMsg.hpp>
+#include <ObjectHypothesisWithPoseMsg.hpp>
 #include <OdomMsg.hpp>
 #include <OrientationMsg.hpp>
 #include <PointCloudMsg.hpp>
+#include <PoseWithCovarianceMsg.hpp>
 #include <ReadyToArmStatusMsg.hpp>
 #include <TwistMsg.hpp>
 #include <Vector3DMsg.hpp>
@@ -37,6 +41,7 @@
 // ROS2 Interface Dependencies
 #include <geometry_msgs/msg/accel.hpp>
 #include <geometry_msgs/msg/accel_with_covariance_stamped.hpp>
+#include <geometry_msgs/msg/pose_with_covariance.hpp>
 #include <geometry_msgs/msg/quaternion.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
@@ -45,7 +50,9 @@
 #include <sensor_msgs/msg/joy.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
-
+#include <vision_msgs/msg/bounding_box3_d.hpp>
+#include <vision_msgs/msg/detection3_d.hpp>
+#include <vision_msgs/msg/object_hypothesis_with_pose.hpp>
 // General Dependencies
 #include <array>
 
@@ -270,6 +277,55 @@ namespace fast::rf_ros2::utils {
         static geometry_msgs::msg::Twist convert(fast::rf::messages::GeometryMsgs::TwistMsg msg);
 
         /**
+         * @brief Convert from a ROS2 message to a Core message of type Point
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::PointMsg
+         */
+        static fast::rf::messages::GeometryMsgs::PointMsg convert(geometry_msgs::msg::Point msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type Point
+         *
+         * @param msg
+         * @return geometry_msgs::msg::Point
+         */
+        static geometry_msgs::msg::Point convert(fast::rf::messages::GeometryMsgs::PointMsg msg);
+
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type Pose
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::PoseMsg
+         */
+        static fast::rf::messages::GeometryMsgs::PoseMsg convert(geometry_msgs::msg::Pose msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type Pose
+         *
+         * @param msg
+         * @return geometry_msgs::msg::Pose
+         */
+        static geometry_msgs::msg::Pose convert(fast::rf::messages::GeometryMsgs::PoseMsg msg);
+
+        /**
+         * @brief Convert from a ROS2 message to a ROS2 message of type PoseWithCovariance
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg
+         */
+        static fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg convert(
+            geometry_msgs::msg::PoseWithCovariance msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type PoseWithCovariance
+         *
+         * @param msg
+         * @return geometry_msgs::msg::PoseWithCovariance
+         */
+        static geometry_msgs::msg::PoseWithCovariance convert(
+            fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg msg);
+        /**
          * @brief Translate from a ROS2 mesage to a Core message of type Odometry
          *
          * @param msg
@@ -284,6 +340,22 @@ namespace fast::rf_ros2::utils {
          * @return nav_msgs::msg::Odometry
          */
         static nav_msgs::msg::Odometry convert(fast::rf::messages::GeometryMsgs::OdomMsg msg);
+
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type BoundingBox3D
+         *
+         * @param msg
+         * @return fast::rf::messages::GeometryMsgs::BoundingBox3DMsg
+         */
+        static fast::rf::messages::GeometryMsgs::BoundingBox3DMsg convert(vision_msgs::msg::BoundingBox3D msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type BoundingBox3D
+         *
+         * @param msg
+         * @return vision_msgs::msg::BoundingBox3D
+         */
+        static vision_msgs::msg::BoundingBox3D convert(fast::rf::messages::GeometryMsgs::BoundingBox3DMsg msg);
 
         // Sensor Messages
 
@@ -350,5 +422,28 @@ namespace fast::rf_ros2::utils {
          * @return sensor_msgs::msg::PointCloud2
          */
         static sensor_msgs::msg::PointCloud2 convert(const fast::rf::messages::SensorMsgs::PointCloudMsg& data);
+
+        // Vision Messages
+        /**
+         * @brief Convert from a ROS2 message to a Core message of type ObjectHypothesisWithPoseMsg
+         *
+         * @param msg
+         * @return fast::rf::messages::VisionMsgs::ObjectHypothesisWithPoseMsg
+         */
+        static fast::rf::messages::VisionMsgs::ObjectHypothesisWithPoseMsg convert(
+            vision_msgs::msg::ObjectHypothesisWithPose msg);
+
+        /**
+         * @brief Convert from a Core message to a ROS2 message of type ObjectHypothesisWithPose
+         *
+         * @param msg
+         * @return vision_msgs::msg::ObjectHypothesisWithPose
+         */
+        static vision_msgs::msg::ObjectHypothesisWithPose convert(
+            fast::rf::messages::VisionMsgs::ObjectHypothesisWithPoseMsg msg);
+
+        static fast::rf::messages::VisionMsgs::Detection3DMsg convert(vision_msgs::msg::Detection3D msg);
+
+        static vision_msgs::msg::Detection3D convert(fast::rf::messages::VisionMsgs::Detection3DMsg msg);
     };
 }  // namespace fast::rf_ros2::utils

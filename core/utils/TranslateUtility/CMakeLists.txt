@@ -6,7 +6,8 @@ find_package(pcl_conversions REQUIRED)
 add_library(
   translateUtility SHARED
   TranslateUtilityStandardMsgs.cpp TranslateUtilityInfrastructureMsgs.cpp
-  TranslateUtilityGeometryMsgs.cpp TranslateUtilitySensorMsgs.cpp)
+  TranslateUtilityGeometryMsgs.cpp TranslateUtilitySensorMsgs.cpp
+  TranslateUtilityVisionMsgs.cpp)
 target_include_directories(
   translateUtility
   PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -23,6 +24,8 @@ target_link_libraries(
          geometry_msgs
          sensor_msgs
          ${sensor_msgs_TARGETS}
+         vision_msgs::vision_msgs
+         ${vision_msgs_TARGETS}
          ${pcl_conversions_LIBRARIES}
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs

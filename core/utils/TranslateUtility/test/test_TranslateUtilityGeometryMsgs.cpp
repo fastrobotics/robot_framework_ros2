@@ -139,3 +139,81 @@ TEST(TestConversion, GeometryMessageConvertTwist) {
         ASSERT_FLOAT_EQ(msg.angular.z, twist.angular.z);
     }
 }
+TEST(TestConversion, GeometryMessageConvertPoint) {
+    {  // Convert to ROS Message
+        fast::rf::messages::GeometryMsgs::PointMsg data;
+        data.x = 1.0;
+        data.y = 2.0;
+        data.z = 3.0;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_FLOAT_EQ(data.x, msg.x);
+        ASSERT_FLOAT_EQ(data.y, msg.y);
+        ASSERT_FLOAT_EQ(data.z, msg.z);
+    }
+    {  // Convert from ROS Message
+        geometry_msgs::msg::Point data;
+        data.x = 1.0;
+        data.y = 2.0;
+        data.z = 3.0;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_FLOAT_EQ(data.x, msg.x);
+        ASSERT_FLOAT_EQ(data.y, msg.y);
+        ASSERT_FLOAT_EQ(data.z, msg.z);
+    }
+}
+TEST(TestConversion, GeometryMessageConvertPose) {
+    {  // Convert to ROS Message
+        fast::rf::messages::GeometryMsgs::PoseMsg data;
+        data.position.x = 1.0;
+        data.position.y = 2.0;
+        data.position.z = 3.0;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_FLOAT_EQ(data.position.x, msg.position.x);
+        ASSERT_FLOAT_EQ(data.position.y, msg.position.y);
+        ASSERT_FLOAT_EQ(data.position.z, msg.position.z);
+    }
+    {  // Convert from ROS Message
+        geometry_msgs::msg::Pose data;
+        data.position.x = 1.0;
+        data.position.y = 2.0;
+        data.position.z = 3.0;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_FLOAT_EQ(data.position.x, msg.position.x);
+        ASSERT_FLOAT_EQ(data.position.y, msg.position.y);
+        ASSERT_FLOAT_EQ(data.position.z, msg.position.z);
+    }
+}
+TEST(TestConversion, GeometryMessageConvertPoseWithCovariance) {
+    {  // Convert to ROS Message
+        fast::rf::messages::GeometryMsgs::PoseWithCovarianceMsg data;
+        data.pose.position.x = 1.0;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_FLOAT_EQ(data.pose.position.x, msg.pose.position.x);
+    }
+    {  // Convert from ROS Message
+        geometry_msgs::msg::PoseWithCovariance data;
+        data.pose.position.x = 1.0;
+        auto msg = TranslateUtility::convert(data);
+        ASSERT_FLOAT_EQ(data.pose.position.x, msg.pose.position.x);
+    }
+}
+TEST(TestConversion, GeometryMessageConvertBoundaryBox) {
+    {  // Convert to ROS Message
+        fast::rf::messages::GeometryMsgs::BoundingBox3DMsg box;
+        box.center.position.x = 1.0;
+        box.size.x = 4.0;
+        auto msg = TranslateUtility::convert(box);
+        ASSERT_FLOAT_EQ(box.center.position.x, msg.center.position.x);
+        ASSERT_FLOAT_EQ(box.size.x, msg.size.x);
+    }
+
+    {  // Convert from ROS Message
+        vision_msgs::msg::BoundingBox3D box;
+        box.center.position.x = 7.0;
+        box.size.x = 10.0;
+
+        auto msg = TranslateUtility::convert(box);
+        ASSERT_FLOAT_EQ(box.center.position.x, msg.center.position.x);
+        ASSERT_FLOAT_EQ(box.size.x, msg.size.x);
+    }
+}

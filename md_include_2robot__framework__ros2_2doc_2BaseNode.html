@@ -180,7 +180,8 @@ Loop: 0.01Hz</h4>
 User-Defined Loops</h3>
 <p>The Base Node provides 3 Loops that the User Node can set the rate and directly run at their discretion, named, Loop1, Loop2, Loop3.</p>
 <p>Common convention here is that Loop1 is the "slowest" and Loop3 is the fastest, but that's not required.</p>
-<p>To disable any of these User-Defined Loops, don't define a loop rate. </p>
+<p>To disable any of these User-Defined Loops, don't define a loop rate.</p>
+<p>All predefined and user-defined loops are checked for overruns. If a loop's user callback takes longer than its configured period, the Base Node logs a timing diagnostic and publishes the failed timing status with its regular 1 Hz diagnostics. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
